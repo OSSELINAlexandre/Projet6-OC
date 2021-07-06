@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" href="customProp.css">
+	<!-- Favicons -->
+	<meta name="theme-color" content="#7952b3">
+
+
+	<style>
+		.bd-placeholder-img {
+			font-size: 1.125rem;
+			text-anchor: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			user-select: none;
+		}
+
+		@media (min-width: 768px) {
+			.bd-placeholder-img-lg {
+				font-size: 3.5rem;
+			}
+		}
+	</style>
+
+
+	<!-- Custom styles for this template -->
+	<link href="registering.css" rel="stylesheet">
+	<link href="generalProperties.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+	<main class="form-signin border border-dark rounded text-center bg-white">
+		<form class ="theBox" th:action="@{/process_register}" th:object="${newUser}" method="post" >
+			<div class="Custom-Background w-50 text-white pb-2 pt-2 pl-2 pr-2  align-self-center rounded RemeberMeFontSize fw-bold ">Pay My Buddy</div>
+
+            <div class="input-group w-100 formPadding">
+              <span class="input-group-text commonSize" id="basic-addon1">
+                	<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+  						<path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/>
+					</svg>
+              </span>
+              <input type="email" class="form-control  commonSize" placeholder="name@example.com" aria-label="Input group example" aria-describedby="basic-addon1"  th:field="*{eMail}" required />
+            </div>
+           <div class="input-group w-100 formPadding">
+              <span class="input-group-text commonSize" id="basic-addon1">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-person" viewBox="0 0 16 16">
+  					<path d="M12 1a1 1 0 0 1 1 1v10.755S12 11 8 11s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h8zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/>
+ 					 <path d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+					</svg>
+              </span>
+              <input type="text" class="form-control commonSize" placeholder="First Name" aria-label="Input group example" aria-describedby="basic-addon1"   th:field="*{name}" required>
+            </div>
+
+            <div class="input-group w-100 formPadding">
+              <span class="input-group-text commonSize" id="basic-addon1">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-person-fill" viewBox="0 0 16 16">
+ 				 <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm-1 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm-3 4c2.623 0 4.146.826 5 1.755V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-1.245C3.854 11.825 5.377 11 8 11z"/>
+				</svg>
+              </span>
+              <input type="text" class="form-control commonSize" placeholder="Last Name" aria-label="Input group example" aria-describedby="basic-addon1"  th:field="*{lastName}" required>
+            </div>
+
+                   <div class="input-group w-100 formPadding">
+              <span class="input-group-text commonSize" id="basic-addon1">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-asterisk" viewBox="0 0 16 16">
+  					<path d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z"/>
+				</svg>
+              </span>
+              <input type="password" class="form-control commonSize" placeholder="Confirm password" aria-label="Input group example" aria-describedby="basic-addon1" th:field="*{password}" required>
+            </div>
+
+			<div class="ButtonFromLogin">
+			<button class="w-50 btn btn-lg btn-primary mb-3 formPaddingButton RemeberMeFontSize fw-bold " type="submit">Confirm</button>
+			</div>
+		</form>
+		<a class="w-50 btn btn-lg btn-primary RemeberMeFontSize fw-bold text-white" th:href="@{/}">Login</a>		
+		<p class="mt-5 mb-3 text-muted fw-bold">&copy; 2021, Betsaleël Technologies Inc</p>
+
+	</main>
+
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

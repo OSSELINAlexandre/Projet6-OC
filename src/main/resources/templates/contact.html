@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+
+<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+<!-- Favicons -->
+<meta name="theme-color" content="#7952b3">
+
+
+<style>
+	.bd-placeholder-img {
+		font-size: 1.125rem;
+		text-anchor: middle;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		user-select: none;
+	}
+
+	@media (min-width: 768px) {
+		.bd-placeholder-img-lg {
+			font-size: 3.5rem;
+		}
+	}
+</style>
+
+
+<!-- Custom styles for this template -->
+<link href="contact.css" rel="stylesheet">
+<link href="generalProperties.css" rel="stylesheet">
+
+</head>
+
+<body class="d-flex flex-column">
+
+
+	<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+		<a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+			<svg class="bi me-2" width="40" height="32">
+				<use xlink:href="#bootstrap" /></svg>
+				<div class="Logo-Background w-120 text-white pb-2 pt-2 pl-2 pr-2  align-self-center rounded RemeberMeFontSize fw-bold">Pay My Buddy</div>
+		</a>
+
+		<ul class="nav nav-pills">
+			<li class="nav-item"><a th:href="@{/userHome}" class="nav-link">Home</a></li>
+			<li class="nav-item"><a th:href="@{/transfer}" class="nav-link">Transfer</a></li>
+			<li class="nav-item"><a th:href="@{/profileUser}"class="nav-link">Profile</a></li>
+            <li class="nav-item"><a class="nav-link active" aria-current="page">Contact</a></li>
+			<li class="nav-item"><a th:href="@{/logoff}" class="nav-link">Log Off</a></li>
+		</ul>
+	</header>
+
+        <nav aria-label="breadcrumb " class="breadcrumbClass">
+             <ol class="breadcrumb bg-light fw-bold ">
+                 <li class="breadcrumb-item"><a href="#">Home</a></li>
+                 <li class="breadcrumb-item active" aria-current="page">Contact</li>
+
+            </ol>
+        </nav>
+        
+<main class="container">
+
+<h1 class="fw-bold">Your question </h1>
+<div class="d-flex flex-column align-items-center pt-3">
+
+	      <div class=" Custom-Background container p-4 d-flex align-items-center rounded sendMoneyContainer text-PRIMARY mainFrame FrameShadow"> 
+
+	      		<select name="question" >
+				  <option value="Transac">Error regarding a transaction</option>
+				  <option value="ID">Lost my phone with my ID</option>
+				  <option value="FRIEND">Couldn't find my friend</option>
+				  <option value="CLOSE">I would like to close my account</option>
+				  <option value="Question">Another question</option>
+				</select>
+
+	      </div>
+
+
+	      <div  class="LotofbadFrame container p-4 d-flex align-items-center rounded sendMoneyContainer bg-light text-PRIMARY mainFrame FrameShadow">
+	      	
+	      	<textarea class="inputClass" ></textarea>
+
+	      </div>
+	      <div class="container bg-light d-flex justify-content-center align-items-center buttonFrame FrameShadow">
+	      	<button class="btn btn-lg btn-primary fw-bold">Submit request</button>
+	      </div>
+</div>
+
+</main>
+
+</body>
+<footer class="bg-light text-center text-lg-start">
+  <!-- Copyright -->
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+    © 2021 Copyright:
+    <a class="text-dark">Betsaleël Technologies Inc</a>
+  </div>
+  <!-- Copyright -->
+</footer>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="bootstrap/js/bootstrap.bundle.js"></script>
+</html>

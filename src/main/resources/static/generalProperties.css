@@ -1,0 +1,22 @@
+
+.FrameShadow{
+
+  box-shadow: 0px 1px 2px 0PX #777777;
+
+}
+
+footer{
+	
+	margin-top:2vh;
+}
+
+.Logo-Background{
+display: flex;
+background: rgb(97,185,90);
+background: linear-gradient(90deg, rgba(97,185,90,1) 0%, rgba(139,195,74,1) 100%);
+align-self : center;
+justify-content: center;
+width: 15vw;
+font-size: 2vw;
+height: 7vh;
+}

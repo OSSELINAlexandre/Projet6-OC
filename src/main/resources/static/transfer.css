@@ -1,0 +1,92 @@
+
+main{
+	
+	  background-color: #f5f5f5;
+}
+
+footer
+{
+
+margin-top: 2vh;
+width: 100%;
+min-height: 5VH;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+
+
+}
+
+
+.Logo-Background{
+
+display: flex;
+background: rgb(97,185,90);
+background: linear-gradient(90deg, rgba(97,185,90,1) 0%, rgba(139,195,74,1) 100%);
+align-self : center;
+justify-content: center;
+width: 15vw;
+font-size: 2vw;
+height: 7vh;
+}
+
+.spaceInFrame{
+
+	margin-right: 3vw;
+}
+
+.cellSize{
+
+	width: 20%;
+}
+
+
+.sendMoneyFrame{
+
+width: 10vw;
+height: 7vh;
+font-size: 20px;
+text-align: center;
+margin-right: 60px;
+
+}
+
+.sendMoneyContainer{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+
+.tableFrame
+{
+
+min-height: 50VH;
+
+
+}
+
+.tableHeadClass{
+
+background: rgb(97,185,90);
+background: linear-gradient(90deg, rgba(97,185,90,1) 0%, rgba(139,195,74,1) 100%);
+font-size: 3VH;
+
+
+}
+
+.headClass{
+
+	height: 5vh;
+}
+
+.breadcrumbClass{
+
+	font-size: 25px;
+
+}
+
+.titlePayment{
+
+	justify-content: space-between;
+}

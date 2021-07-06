@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+	<!-- Favicons -->
+	<meta name="theme-color" content="#7952b3">
+
+
+	<style>
+		.bd-placeholder-img {
+			font-size: 1.125rem;
+			text-anchor: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			user-select: none;
+		}
+
+		@media (min-width: 768px) {
+			.bd-placeholder-img-lg {
+				font-size: 3.5rem;
+			}
+		}
+	</style>
+
+
+	<!-- Custom styles for this template -->
+	<link href="home.css" rel="stylesheet">
+	<link href="generalProperties.css" rel="stylesheet">
+
+</head>
+
+<body class="d-flex flex-column">
+
+
+	<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+		<a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+			<svg class="bi me-2" width="40" height="32">
+				<use xlink:href="#bootstrap" /></svg>
+			<div
+				class="Logo-Background w-120 text-white pb-2 pt-2 pl-2 pr-2  align-self-center rounded RemeberMeFontSize fw-bold">
+				Pay My Buddy</div>
+		</a>
+
+		<ul class="nav nav-pills">
+			<li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
+			<li class="nav-item"><a th:href="@{/transfer}" class="nav-link">Transfer</a></li>
+			<li class="nav-item"><a th:href="@{/profileUser}" class="nav-link">Profile</a></li>
+			<li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
+			<li class="nav-item"><a th:href="@{/logoff}" class="nav-link">Log Off</a></li>
+		</ul>
+	</header>
+
+	<nav aria-label="breadcrumb " class="breadcrumbClass">
+		<ol class="breadcrumb bg-light fw-bold ">
+			<li class="breadcrumb-item"><a href="#">Home</a></li>
+		</ol>
+	</nav>
+
+	<main class="container">
+
+		<h1 class="fw-bold">My PMB Account</h1>
+		<div class="d-flex flex-column align-items-center pt-3">
+			<div
+				class="container p-4  d-flex align-items-center rounded sendMoneyContainer Custom-Background text-white mainFrame FrameShadow">
+				<p class="fw-bold fontInPMBAccount">Available money</p>
+				<P class="fw-bold fontInPMBAccount" th:text="${AmountAvailable}"></P>
+			</div>
+
+
+
+
+			<div class="container bg-light d-flex justify-content-center align-items-center buttonFrame FrameShadow">
+
+				<form th:action="@{/withDrawPayment}" method="POST" class="d-flex" th:object="${withdrawalInformation}">
+
+					<button class="btn btn-primary display-5 fw-bold" type="button" data-bs-toggle="modal"
+						data-bs-target="#WithDrawModal">Withdraw</button>
+					<!-- Modal -->
+					<div class="modal fade" id="WithDrawModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">Withdraw money from PayMyBuddy</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<input type="text" class="form-control commonSize"
+										placeholder="Description of transaction" aria-label="Input group example"
+										aria-describedby="basic-addon1" th:field="*{amount}" required>
+
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-bs-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-primary">Withdraw</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+
+
+				<form th:action="@{/DepositAmount}" method="POST" class="d-flex" th:object="${depositInformation}">
+
+					<button class="btn btn-primary display-5 fw-bold" type="button" data-bs-toggle="modal"
+						data-bs-target="#DepositModal">Deposit</button>
+					<!-- Modal -->
+					<div class="modal fade" id="DepositModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">Deposit money to PayMyBuddy</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+
+									<input type="text" class="form-control commonSize" placeholder="Account Number"
+										aria-label="Input group example" aria-describedby="basic-addon1"
+										th:field="*{AccountNumber}" required>
+
+									<input type="text" class="form-control commonSize"
+										placeholder="How much do you want to deposit ?" aria-label="Input group example"
+										aria-describedby="basic-addon1" th:field="*{AmountToDeposit}" required>
+
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-bs-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-primary">Deposit</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+
+			</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</div>
+
+		<DIV class="newsPart">
+			<h1 class="fw-bold">Latest news</h1>
+			<div class="d-flex flex-column align-items-center pt-3">
+
+				<div
+					class="container p-4 d-flex align-items-center rounded sendMoneyContainer bg-light text-PRIMARY mainFrame FrameShadow">
+					<img src="green.png" width="200px"></img>
+					<p class="fw-bold">Pay My Buddy recently received the award of green Tech Award ! With only fews
+						pounds of CO² produced, we are the best. </p>
+				</div>
+				<div
+					class="container bg-light d-flex justify-content-center align-items-center buttonFrame FrameShadow">
+					<button class="btn btn-lg btn-primary fw-bold">See full news</button>
+				</div>
+			</div>
+
+
+			<div class="d-flex flex-column align-items-center FrameShadow newsPart">
+
+				<div
+					class="container p-4  d-flex align-items-center rounded sendMoneyContainer bg-primary text-white mainFrame FrameShadow">
+					<p class="fw-bold">Update your buddy account and received à 50% reductions in fee's !</p>
+				</div>
+				<div class="container bg-light d-flex justify-content-center align-items-center buttonFrame ">
+					<button class="btn btn-lg btn-primary fw-bold">See offer</button>
+				</div>
+			</div>
+		</DIV>
+	</main>
+
+</body>
+<footer class="bg-light text-center text-lg-start">
+	<!-- Copyright -->
+	<div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+		© 2021 Copyright:
+		<a class="text-dark">Betsaleël Technologies Inc</a>
+	</div>
+	<!-- Copyright -->
+</footer>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="bootstrap/js/bootstrap.bundle.js"></script>
+
+</html>
