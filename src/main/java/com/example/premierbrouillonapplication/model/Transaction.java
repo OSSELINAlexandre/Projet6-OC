@@ -12,33 +12,33 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "Transactions")
 public class Transaction {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID_Transactions")
+	@Column(name = "id_transaction")
 	private int id;
 
 	@Column(name = "Commentaire")
 	private String commentaire;
 
 	@Column(name = "Amount")
-	private Integer amount;
+	private Double amount;
 
 	@OneToOne
-	@JoinColumn(name = "willPayPerson", referencedColumnName = "ID_Person")
+	@JoinColumn(name = "Willpayperson", referencedColumnName = "id_person")
 	private Person payeur;
 
 	@OneToOne
-	@JoinColumn(name = "wilBePayPerson", referencedColumnName = "ID_Person")
+	@JoinColumn(name = "Willbepayedperson", referencedColumnName = "id_person")
 	private Person payee;
 
 	public Transaction() {
 		super();
 	}
 	
-	public Transaction(String commentaire, Integer amount, Person payeur, Person payee) {
+	public Transaction(String commentaire, Double amount, Person payeur, Person payee) {
 		super();
 		this.commentaire = commentaire;
 		this.amount = amount;
@@ -63,12 +63,12 @@ public class Transaction {
 		this.commentaire = commentaire;
 	}
 
-	public Integer getAmount() {
+	public Double getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Integer amount) {
-		this.amount = amount;
+	public void setAmount(Double integer) {
+		this.amount = integer;
 	}
 
 	public Person getPayeur() {

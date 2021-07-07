@@ -14,12 +14,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "person")
+@Table(name = "Person")
 public class Person {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID_Person")
+	@Column(name = "id_person")
 	private int id;
 
 	@Column(name = "Name")
@@ -31,7 +31,7 @@ public class Person {
 	@Column(name = "Email")
 	private String eMail;
 
-	@Column(name = "thepassword")
+	@Column(name = "Password")
 	private String password;
 	
 	@OneToMany(
@@ -39,7 +39,7 @@ public class Person {
 			orphanRemoval = true,
 			fetch = FetchType.EAGER
 			)
-	@JoinColumn(name ="willPayPerson")
+	@JoinColumn(name ="Willpayperson", nullable = true)
 	private List<Transaction> transactions;
 
 	public Person(int id, String name, String lastName, String eMail, String password) {

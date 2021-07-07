@@ -20,13 +20,12 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.example.premierbrouillonapplication.model.BankAccount;
 import com.example.premierbrouillonapplication.model.BuddiesInConnexion;
-import com.example.premierbrouillonapplication.model.DepositInformation;
 import com.example.premierbrouillonapplication.model.IdentificationData;
 import com.example.premierbrouillonapplication.model.LoginRegistration;
 import com.example.premierbrouillonapplication.model.PaymentData;
 import com.example.premierbrouillonapplication.model.Person;
 import com.example.premierbrouillonapplication.model.Transaction;
-import com.example.premierbrouillonapplication.model.WithdrawalInformation;
+import com.example.premierbrouillonapplication.model.BankAccountWithdrawalDepositInformation;
 import com.example.premierbrouillonapplication.service.BankAccountServices;
 import com.example.premierbrouillonapplication.service.MyAppServices;
 import com.example.premierbrouillonapplication.service.PersonServices;
@@ -62,8 +61,8 @@ public class MainController {
 
 		Person currentUser = (Person) session.getAttribute("Dude");
 
-		DepositInformation depositInfo = new DepositInformation();
-		WithdrawalInformation withdrawalInfo = new WithdrawalInformation();
+		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
+		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
 
 		Double amountAvailable = bankAccountServices.getTheAccountBalance(currentUser.getId());
 		model.addAttribute("AmountAvailable", amountAvailable);
@@ -95,9 +94,7 @@ public class MainController {
 	@PostMapping("/process_signin")
 	public String verifyIdentity(IdentificationData person, Model model, HttpSession session) {
 
-		logger.info("What is happening ?" + person.getPassword() + person.getEmail());
 		Person testing = services.findById(person);
-
 		if (testing == null) {
 			return "no_found_V1";
 		}
@@ -171,16 +168,41 @@ public class MainController {
 	}
 
 	@PostMapping("/withDrawPayment")
-	public String withdrawSomeMoney(WithdrawalInformation withdraw) {
-		logger.info("What is happening in wiiiithhddrawwalll?" + withdraw.getAmount());
+	public String withdrawSomeMoney(BankAccountWithdrawalDepositInformation withdrawMoney, Model model,
+			HttpSession session) {
+
+		Person currentUser = (Person) session.getAttribute("Dude");
+
+		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
+		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
+
+		if(bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())) {
+		bankAccountServices.saveForDepositorWithdrawal(currentUser, - withdrawMoney.getAmount());
+		}
+		//Créer un flag ici ! 
+
+		model.addAttribute("AmountAvailable", bankAccountServices.findById(currentUser.getId()).getAmount());
+		model.addAttribute("depositInformation", depositInfo);
+		model.addAttribute("withdrawalInformation", withdrawalInfo);
+
 		return "Home";
 	}
 
 	@PostMapping("/DepositAmount")
-	public String depositSomeMoney(DepositInformation depositMoney) {
+	public String depositSomeMoney(BankAccountWithdrawalDepositInformation depositMoney, Model model,
+			HttpSession session) {
 
-		logger.info("What is happening IN DEPOOOOOOSIT?" + depositMoney.getAccountNumber() + "//"
-				+ depositMoney.getAmountToDeposit());
+		Person currentUser = (Person) session.getAttribute("Dude");
+
+		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
+		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
+
+		bankAccountServices.saveForDepositorWithdrawal(currentUser, depositMoney.getAmount());
+
+		model.addAttribute("AmountAvailable", bankAccountServices.findById(currentUser.getId()).getAmount());
+		model.addAttribute("depositInformation", depositInfo);
+		model.addAttribute("withdrawalInformation", withdrawalInfo);
+
 		return "Home";
 	}
 
@@ -208,22 +230,41 @@ public class MainController {
 	public String processPayment(PaymentData pay, Model model, HttpSession session) {
 
 		Person currentUser = (Person) session.getAttribute("Dude");
-		if (bankAccountServices.checkAvailability(persService.getIt(Integer.parseInt(pay.getPersonToPay())),
-				currentUser, pay.getAmount())) {
+		
+		
+		
+		if(bankAccountServices.checkAmounts(currentUser, pay.getAmount()*1.005)) {
+			
+			
+			
+			bankAccountServices.adjustAccount(persService.getIt(Integer.parseInt(pay.getPersonToPay())), currentUser, pay.getAmount() * 1.05);
+			transacServices.saveANewTransaction(currentUser, pay, persService.getIt(Integer.parseInt(pay.getPersonToPay())));
+			
 
-			logger.info("===========================RESULTS : "
-					+ persService.getIt(Integer.parseInt(pay.getPersonToPay())).getName());
+			logger.info("Is it working ================================ ? : " + pay.getAmount() * 1.005 );
 
-			bankAccountServices.adjustAccount(persService.getIt(Integer.parseInt(pay.getPersonToPay())), currentUser,
-					pay.getAmount());
-			transacServices.saveANewTransaction(currentUser, pay,
-					persService.getIt(Integer.parseInt(pay.getPersonToPay())));
-			return "processingAccepted";
-
-		} else {
-
-			return null;
+			
+			
+			Map<Integer, String> listOfBuddies = (Map<Integer, String>) session.getAttribute("listOfBuddies");
+			List<Transaction> listofAllTransaction = (List<Transaction>) session.getAttribute("listTransactions");
+			model.addAttribute("buddy", new BuddiesInConnexion());
+			model.addAttribute("listOfBuddies", listOfBuddies);
+			model.addAttribute("listTransactions", listofAllTransaction);
+			PaymentData payId = new PaymentData();
+			model.addAttribute("PaymentID", payId);
+			return "Transfer";
 		}
+		
+		
+		Map<Integer, String> listOfBuddies = (Map<Integer, String>) session.getAttribute("listOfBuddies");
+		List<Transaction> listofAllTransaction = (List<Transaction>) session.getAttribute("listTransactions");
+		model.addAttribute("buddy", new BuddiesInConnexion());
+		model.addAttribute("listOfBuddies", listOfBuddies);
+		model.addAttribute("listTransactions", listofAllTransaction);
+		PaymentData payId = new PaymentData();
+		model.addAttribute("PaymentID", payId);
+		return "Transfer";
+		
 	}
 
 }

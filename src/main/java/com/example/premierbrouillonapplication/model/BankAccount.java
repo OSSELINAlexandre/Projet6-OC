@@ -10,33 +10,31 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "bank_account")
+@Table(name = "Bank_Account")
 public class BankAccount {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID_Account")
+	@Column(name = "id_account")
 	private int id;
 
 	@Column(name = "Amount")
 	private Double amount;
 
-	@Column(name = "Level_subscription")
-	private String levelSub;
 
 	@OneToOne
-	@JoinColumn(name = "ID_Person", referencedColumnName = "ID_Person")
+	@JoinColumn(name = "Accountholder", referencedColumnName = "id_person")
 	private Person holder;
 
 	public BankAccount() {
 		super();
 	}
 
-	public BankAccount(int id, Double amount, String levelSub) {
+	public BankAccount(int id, Double amount) {
 		super();
 		this.id = id;
 		this.amount = amount;
-		this.levelSub = levelSub;
+
 	}
 
 	public int getId() {
@@ -55,13 +53,6 @@ public class BankAccount {
 		this.amount = amount;
 	}
 
-	public String getLevelSub() {
-		return levelSub;
-	}
-
-	public void setLevelSub(String levelSub) {
-		this.levelSub = levelSub;
-	}
 
 	public Person getHolder() {
 		return holder;

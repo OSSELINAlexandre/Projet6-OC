@@ -8,7 +8,7 @@ public class PaymentData {
 
 //	private Person personPayingTheAmount;
 	private String personToPay;
-	private Integer amount;
+	private Double amount;
 	private String description;
 
 	
@@ -16,7 +16,7 @@ public class PaymentData {
 		super();
 	}
 	
-	public PaymentData(String personToPay, Integer amount, String description) {
+	public PaymentData(String personToPay, Double amount, String description) {
 		super();
 		this.personToPay = personToPay;
 		this.amount = amount;
@@ -28,10 +28,10 @@ public class PaymentData {
 	public void setPersonToPay(String personToPay) {
 		this.personToPay = personToPay;
 	}
-	public Integer getAmount() {
+	public Double getAmount() {
 		return amount;
 	}
-	public void setAmount(Integer amount) {
+	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
 	public String getDescription() {

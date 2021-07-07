@@ -66,7 +66,7 @@
 			<div
 				class="container p-4  d-flex align-items-center rounded sendMoneyContainer Custom-Background text-white mainFrame FrameShadow">
 				<p class="fw-bold fontInPMBAccount">Available money</p>
-				<P class="fw-bold fontInPMBAccount" th:text="${AmountAvailable}"></P>
+				<P class="fw-bold fontInPMBAccount" th:text="${AmountAvailable}" value="0"></P>
 			</div>
 
 
@@ -121,13 +121,10 @@
 								</div>
 								<div class="modal-body">
 
-									<input type="text" class="form-control commonSize" placeholder="Account Number"
-										aria-label="Input group example" aria-describedby="basic-addon1"
-										th:field="*{AccountNumber}" required>
 
 									<input type="text" class="form-control commonSize"
 										placeholder="How much do you want to deposit ?" aria-label="Input group example"
-										aria-describedby="basic-addon1" th:field="*{AmountToDeposit}" required>
+										aria-describedby="basic-addon1" th:field="*{amount}" required>
 
 								</div>
 								<div class="modal-footer">

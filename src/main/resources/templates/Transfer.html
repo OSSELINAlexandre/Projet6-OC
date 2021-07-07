@@ -63,8 +63,9 @@
 	<main class="d-flex flex-column">
 		<div class="container">
 			<div class="d-flex titlePayment">
-			<h3 class="display-6 fw-bold">Send Money</h3>
-				<button type="button" class="btn btn-primary display-6 fw-bold" data-bs-toggle="modal" data-bs-target="#exampleModal">
+				<h3 class="display-6 fw-bold">Send Money</h3>
+				<button type="button" class="btn btn-primary display-6 fw-bold" data-bs-toggle="modal"
+					data-bs-target="#exampleModal">
 					Add Connection
 				</button>
 
@@ -79,11 +80,12 @@
 									aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
-								
+
 								<form th:action="@{/transfer_validation}" th:object="${buddy}" method="post">
-								<input type="text" class="form-control commonSize" placeholder="EmailAdress"
-									aria-label="Input group example" aria-describedby="basic-addon1" th:field="*{email}"required>
-								
+									<input type="text" class="form-control commonSize" placeholder="EmailAdress"
+										aria-label="Input group example" aria-describedby="basic-addon1"
+										th:field="*{email}" required>
+
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -106,34 +108,37 @@
 
 					<input class="sendMoneyFrame" type="number" th:field="*{amount}" />
 
-					<button class="Logo-Background text-white border border-white rounded fw-bold"
-						type="button" data-bs-toggle="modal" data-bs-target="#ModalDesc">Pay</button>
-						
+					<button class="Logo-Background text-white border border-white rounded fw-bold" type="button"
+						data-bs-toggle="modal" data-bs-target="#ModalDesc">Pay</button>
 
-				<!-- Modal -->
-				<div class="modal fade" id="ModalDesc" tabindex="-1" aria-labelledby="exampleModalLabel"
-					aria-hidden="true">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="exampleModalLabel">Create a new transaction</h5>
-								<button type="button" class="btn-close" data-bs-dismiss="modal"
-									aria-label="Close"></button>
-							</div>
-							<div class="modal-body">
-								<input type="text" class="form-control commonSize" placeholder="Description of transaction"
-									aria-label="Input group example" aria-describedby="basic-addon1" th:field="*{description}"required>
-								
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-								<button type="submit" class="btn btn-primary">Send money to buddy</button>
+
+					<!-- Modal -->
+					<div class="modal fade" id="ModalDesc" tabindex="-1" aria-labelledby="exampleModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">Create a new transaction</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<p>A 0.5% fee will be applied to the amount you send to your Buddy.</p>
+									<input type="text" class="form-control commonSize"
+										placeholder="Description of transaction" aria-label="Input group example"
+										aria-describedby="basic-addon1" th:field="*{description}" required>
+
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-bs-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-primary">Send money to buddy</button>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
 
-			</form>
+				</form>
 
 			</div>
 
