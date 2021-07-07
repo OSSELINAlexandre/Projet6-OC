@@ -10,16 +10,19 @@ public class LoginRegistration {
 
 	private String password;
 
+	private String secondTestPassword;
+
 	public LoginRegistration() {
 		super();
 	}
 
-	public LoginRegistration(String name, String lastName, String eMail, String password) {
+	public LoginRegistration(String name, String lastName, String eMail, String password, String secondTestPassword) {
 		super();
 		this.name = name;
 		this.lastName = lastName;
 		this.eMail = eMail;
 		this.password = password;
+		this.secondTestPassword = secondTestPassword;
 	}
 
 	public String getName() {
@@ -52,6 +55,14 @@ public class LoginRegistration {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getSecondTestPassword() {
+		return secondTestPassword;
+	}
+
+	public void setSecondTestPassword(String secondTestPassword) {
+		this.secondTestPassword = secondTestPassword;
 	}
 
 }

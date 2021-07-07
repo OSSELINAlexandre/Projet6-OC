@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.example.premierbrouillonapplication.model.BankAccount;
 
 @Repository
-public interface BankAccountRepository extends CrudRepository<BankAccount, Integer>{
+public interface BankAccountRepository extends CrudRepository<BankAccount, Integer> {
 
+	public Iterable<BankAccount> findByholder(int id);
 }

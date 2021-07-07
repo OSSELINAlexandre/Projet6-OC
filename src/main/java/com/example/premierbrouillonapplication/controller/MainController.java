@@ -134,7 +134,6 @@ public class MainController {
 		model.addAttribute("PaymentID", payId);
 		model.addAttribute("currentUser", currentUser);
 
-
 		return "Transfer";
 	}
 
@@ -157,7 +156,6 @@ public class MainController {
 			model.addAttribute("PaymentID", payId);
 			model.addAttribute("currentUser", currentUser);
 
-
 			return "Transfer";
 
 		} else {
@@ -171,7 +169,6 @@ public class MainController {
 		PaymentData payId = new PaymentData();
 		model.addAttribute("PaymentID", payId);
 		model.addAttribute("currentUser", currentUser);
-
 
 		return "Transfer";
 
@@ -230,11 +227,25 @@ public class MainController {
 	}
 
 	@PostMapping("/process_register")
-	public String processRegistration(LoginRegistration person, HttpSession session) {
-		RefreshAndInitializeAllImportantData(session);
+	public String processRegistration(LoginRegistration person, HttpSession session, Model model) {
 
-		logger.info("Is it working ? : " + person.geteMail() + " / " + person.getLastName() + " / " + person.getName()
-				+ "///" + person.getPassword());
+		if (persService.checkExistingMail(person)) {
+
+			model.addAttribute("existingmail", true);
+			model.addAttribute("newUser", new LoginRegistration());
+
+			return "Register";
+
+		}
+
+		if (!person.getPassword().equals(person.getSecondTestPassword())) {
+
+			model.addAttribute("passwordmatch", true);
+			model.addAttribute("newUser", new LoginRegistration());
+
+			return "Register";
+
+		}
 
 		persService.saveNewPerson(person);
 
@@ -247,10 +258,14 @@ public class MainController {
 
 		RefreshAndInitializeAllImportantData(session);
 
+		logger.info("----------------------------------------- " + currentUser.getId());
+		logger.info("------------XXXXXXXXXXXXXXXXXXX--------------- " + persService.getIt(Integer.parseInt(pay.getPersonToPay())).getId());
+		logger.info("------------)))))))))))))))((((((((((((((--------------- " + pay.getAmount() + "!!!" );
+
 		if (bankAccountServices.checkAmounts(currentUser, pay.getAmount() * 1.005)) {
 
 			bankAccountServices.adjustAccount(persService.getIt(Integer.parseInt(pay.getPersonToPay())), currentUser,
-					pay.getAmount() * 1.05);
+					pay.getAmount() * 1.005);
 			transacServices.saveANewTransaction(currentUser, pay,
 					persService.getIt(Integer.parseInt(pay.getPersonToPay())));
 

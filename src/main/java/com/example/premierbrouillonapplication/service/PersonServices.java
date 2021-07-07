@@ -64,7 +64,6 @@ public class PersonServices {
 
 	public void saveNewPerson(LoginRegistration person) {
 
-		
 		Person newItem = new Person();
 		newItem.seteMail(person.geteMail());
 		newItem.setLastName(person.getLastName());
@@ -73,6 +72,20 @@ public class PersonServices {
 
 		personRepo.save(newItem);
 
+	}
+
+	public boolean checkExistingMail(LoginRegistration person) {
+
+		for (Person p : personRepo.findAll()) {
+
+			if (p.geteMail().equals(person.geteMail())) {
+
+				return true;
+			}
+
+		}
+
+		return false;
 	}
 
 }

@@ -17,10 +17,8 @@ import com.example.premierbrouillonapplication.repository.PersonRepository;
 @Service
 public class BankAccountServices {
 
-	
 	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(BankAccountServices.class);
-	
-	
+
 	@Autowired
 	BankAccountRepository bankAccountRepo;
 
@@ -81,10 +79,10 @@ public class BankAccountServices {
 
 		userAccount.setAmount(newUserAmount);
 		gonnaBePaidAccount.setAmount(newgonnaBePaidAccount);
-		
+
 		logger.info("IN ADJUSTACCOUNT, class BankAccountService, newUserAmount : " + newUserAmount);
 		logger.info("IN ADJUSTACCOUNT, class BankAccountService, newgonnaBePaidAccount : " + newgonnaBePaidAccount);
-		
+
 		bankAccountRepo.save(userAccount);
 		bankAccountRepo.save(gonnaBePaidAccount);
 
@@ -113,18 +111,25 @@ public class BankAccountServices {
 
 	}
 
-	public boolean checkAmounts(Person currentUser, Double amount) {
+	public boolean checkAmounts(Person currentUser, double d) {
 
-		BankAccount ba = bankAccountRepo.findById(currentUser.getId()).get();
+		for (BankAccount b : bankAccountRepo.findAll()) {
 
-		if (ba.getAmount() - amount >= 0) {
+			if (b.getHolder().getId() == currentUser.getId()) {
 
-			return true;
+				if (b.getAmount() - d >= 0) {
 
-		} else {
+					return true;
 
-			return false;
+				} else {
+
+					return false;
+				}
+
+			}
 		}
+
+		return false;
 	}
 
 }

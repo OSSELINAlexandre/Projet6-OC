@@ -9,7 +9,7 @@ CREATE TABLE Person (
 );
 
 
-CREATE TABLE Transabank_accountctions (
+CREATE TABLE Transactions (
                 ID_Transactions INT NOT NULL,
                 Commentaire VARCHAR(256) NOT NULL,
                 Amount DOUBLE PRECISION NOT NULL,
