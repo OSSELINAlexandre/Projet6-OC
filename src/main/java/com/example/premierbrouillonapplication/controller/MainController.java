@@ -48,6 +48,10 @@ public class MainController {
 	@Autowired
 	BankAccountServices bankAccountServices;
 
+	private Person currentUser;
+	private List<Transaction> listofAllTransaction;
+	private Map<Integer, String> listOfBuddies;
+
 	@GetMapping("/")
 	public String returnMainPage(Model model) {
 
@@ -59,7 +63,7 @@ public class MainController {
 	@GetMapping("/userHome")
 	public String returnHomePage(Model model, HttpSession session) {
 
-		Person currentUser = (Person) session.getAttribute("Dude");
+		RefreshAndInitializeAllImportantData(session);
 
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
@@ -73,44 +77,43 @@ public class MainController {
 	}
 
 	@GetMapping("/profileUser")
-	public String returnUserProfil() {
+	public String returnUserProfil(HttpSession session) {
+		RefreshAndInitializeAllImportantData(session);
 
 		return "UserProfile";
 	}
 
 	@GetMapping("/contact")
-	public String returnContactPages() {
+	public String returnContactPages(HttpSession session) {
+		RefreshAndInitializeAllImportantData(session);
+
 		return "contact";
-	}
-
-	@GetMapping("/logoff")
-	public String returnLoginOff(SessionStatus status) {
-
-		status.setComplete();
-
-		return "LogOff";
 	}
 
 	@PostMapping("/process_signin")
 	public String verifyIdentity(IdentificationData person, Model model, HttpSession session) {
 
-		Person testing = services.findById(person);
-		if (testing == null) {
-			return "no_found_V1";
+		currentUser = services.findById(person);
+
+		if (currentUser == null) {
+			model.addAttribute("ErrorFlag", true);
+			model.addAttribute("comingUser", new IdentificationData());
+
+			return "login";
 		}
 
-		List<Transaction> listofAllTransaction = new ArrayList<>();
-		listofAllTransaction = testing.getTransactions();
-
-		Map<Integer, String> listOfBuddies = transacServices.getListNoDuplicates(listofAllTransaction);
+		listofAllTransaction = currentUser.getAllTransactions();
+		listOfBuddies = transacServices.getListNoDuplicates(listofAllTransaction);
 
 		model.addAttribute("listTransactions", listofAllTransaction);
 		model.addAttribute("listOfBuddies", listOfBuddies);
 		PaymentData payId = new PaymentData();
 		model.addAttribute("PaymentID", payId);
 		model.addAttribute("buddy", new BuddiesInConnexion());
+		model.addAttribute("currentUser", currentUser);
+
 		session.setAttribute("listOfBuddies", listOfBuddies);
-		session.setAttribute("Dude", testing);
+		session.setAttribute("currentUser", currentUser);
 		session.setAttribute("listTransactions", listofAllTransaction);
 
 		return "Transfer";
@@ -119,8 +122,9 @@ public class MainController {
 
 	@GetMapping("/transfer")
 	public String returnTransferPage(Model model, HttpSession session) {
+		RefreshAndInitializeAllImportantData(session);
 
-		Person currentUser = (Person) session.getAttribute("Dude");
+		Person currentUser = (Person) session.getAttribute("currentUser");
 		Map<Integer, String> listOfBuddies = (Map<Integer, String>) session.getAttribute("listOfBuddies");
 		List<Transaction> listofAllTransaction = (List<Transaction>) session.getAttribute("listTransactions");
 		model.addAttribute("buddy", new BuddiesInConnexion());
@@ -128,6 +132,8 @@ public class MainController {
 		model.addAttribute("listTransactions", listofAllTransaction);
 		PaymentData payId = new PaymentData();
 		model.addAttribute("PaymentID", payId);
+		model.addAttribute("currentUser", currentUser);
+
 
 		return "Transfer";
 	}
@@ -135,33 +141,37 @@ public class MainController {
 	@PostMapping("/transfer_validation")
 	public String verificationOfBuddy(BuddiesInConnexion bud, HttpSession session, Model model) {
 
+		RefreshAndInitializeAllImportantData(session);
+
 		Map<Integer, String> result = persService.checkEmailFromBuddy(bud);
 
 		if (!result.isEmpty()) {
-			Map<Integer, String> listOfBuddies = (Map<Integer, String>) session.getAttribute("listOfBuddies");
+
 			listOfBuddies.putAll(result);
 			session.setAttribute("listOfBuddies", listOfBuddies);
 
-			Person currentUser = (Person) session.getAttribute("Dude");
-			List<Transaction> listofAllTransaction = (List<Transaction>) session.getAttribute("listTransactions");
 			model.addAttribute("buddy", new BuddiesInConnexion());
 			model.addAttribute("listOfBuddies", listOfBuddies);
 			model.addAttribute("listTransactions", listofAllTransaction);
 			PaymentData payId = new PaymentData();
 			model.addAttribute("PaymentID", payId);
+			model.addAttribute("currentUser", currentUser);
+
 
 			return "Transfer";
 
+		} else {
+
+			model.addAttribute("ErrorFindingBuddy", true);
 		}
 
-		Person currentUser = (Person) session.getAttribute("Dude");
-		Map<Integer, String> listOfBuddies = (Map<Integer, String>) session.getAttribute("listOfBuddies");
-		List<Transaction> listofAllTransaction = (List<Transaction>) session.getAttribute("listTransactions");
 		model.addAttribute("buddy", new BuddiesInConnexion());
 		model.addAttribute("listOfBuddies", listOfBuddies);
 		model.addAttribute("listTransactions", listofAllTransaction);
 		PaymentData payId = new PaymentData();
 		model.addAttribute("PaymentID", payId);
+		model.addAttribute("currentUser", currentUser);
+
 
 		return "Transfer";
 
@@ -171,15 +181,20 @@ public class MainController {
 	public String withdrawSomeMoney(BankAccountWithdrawalDepositInformation withdrawMoney, Model model,
 			HttpSession session) {
 
-		Person currentUser = (Person) session.getAttribute("Dude");
+		RefreshAndInitializeAllImportantData(session);
 
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
 
-		if(bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())) {
-		bankAccountServices.saveForDepositorWithdrawal(currentUser, - withdrawMoney.getAmount());
+		if (bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())) {
+
+			bankAccountServices.saveForDepositorWithdrawal(currentUser, -withdrawMoney.getAmount());
+
+		} else {
+
+			model.addAttribute("WithdrawErrorFlag", true);
 		}
-		//Créer un flag ici ! 
+		// Créer un flag ici !
 
 		model.addAttribute("AmountAvailable", bankAccountServices.findById(currentUser.getId()).getAmount());
 		model.addAttribute("depositInformation", depositInfo);
@@ -192,7 +207,7 @@ public class MainController {
 	public String depositSomeMoney(BankAccountWithdrawalDepositInformation depositMoney, Model model,
 			HttpSession session) {
 
-		Person currentUser = (Person) session.getAttribute("Dude");
+		RefreshAndInitializeAllImportantData(session);
 
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
@@ -207,7 +222,7 @@ public class MainController {
 	}
 
 	@GetMapping("/register")
-	public String registeringNewPerson(Model model) {
+	public String registeringNewPerson(Model model, HttpSession session) {
 
 		model.addAttribute("newUser", new LoginRegistration());
 
@@ -215,7 +230,8 @@ public class MainController {
 	}
 
 	@PostMapping("/process_register")
-	public String processRegistration(LoginRegistration person) {
+	public String processRegistration(LoginRegistration person, HttpSession session) {
+		RefreshAndInitializeAllImportantData(session);
 
 		logger.info("Is it working ? : " + person.geteMail() + " / " + person.getLastName() + " / " + person.getName()
 				+ "///" + person.getPassword());
@@ -229,42 +245,48 @@ public class MainController {
 	@PostMapping("/processingPayment")
 	public String processPayment(PaymentData pay, Model model, HttpSession session) {
 
-		Person currentUser = (Person) session.getAttribute("Dude");
-		
-		
-		
-		if(bankAccountServices.checkAmounts(currentUser, pay.getAmount()*1.005)) {
-			
-			
-			
-			bankAccountServices.adjustAccount(persService.getIt(Integer.parseInt(pay.getPersonToPay())), currentUser, pay.getAmount() * 1.05);
-			transacServices.saveANewTransaction(currentUser, pay, persService.getIt(Integer.parseInt(pay.getPersonToPay())));
-			
+		RefreshAndInitializeAllImportantData(session);
 
-			logger.info("Is it working ================================ ? : " + pay.getAmount() * 1.005 );
+		if (bankAccountServices.checkAmounts(currentUser, pay.getAmount() * 1.005)) {
 
-			
-			
-			Map<Integer, String> listOfBuddies = (Map<Integer, String>) session.getAttribute("listOfBuddies");
-			List<Transaction> listofAllTransaction = (List<Transaction>) session.getAttribute("listTransactions");
+			bankAccountServices.adjustAccount(persService.getIt(Integer.parseInt(pay.getPersonToPay())), currentUser,
+					pay.getAmount() * 1.05);
+			transacServices.saveANewTransaction(currentUser, pay,
+					persService.getIt(Integer.parseInt(pay.getPersonToPay())));
+
+			logger.info("Is it working ================================ ? : " + pay.getAmount() * 1.005);
+
 			model.addAttribute("buddy", new BuddiesInConnexion());
 			model.addAttribute("listOfBuddies", listOfBuddies);
 			model.addAttribute("listTransactions", listofAllTransaction);
 			PaymentData payId = new PaymentData();
 			model.addAttribute("PaymentID", payId);
+			model.addAttribute("currentUser", currentUser);
+
 			return "Transfer";
+		} else {
+
+			model.addAttribute("ErrorPayingBuddy", true);
 		}
-		
-		
-		Map<Integer, String> listOfBuddies = (Map<Integer, String>) session.getAttribute("listOfBuddies");
-		List<Transaction> listofAllTransaction = (List<Transaction>) session.getAttribute("listTransactions");
+
 		model.addAttribute("buddy", new BuddiesInConnexion());
 		model.addAttribute("listOfBuddies", listOfBuddies);
 		model.addAttribute("listTransactions", listofAllTransaction);
 		PaymentData payId = new PaymentData();
 		model.addAttribute("PaymentID", payId);
+		model.addAttribute("currentUser", currentUser);
+
 		return "Transfer";
-		
+
+	}
+
+	private void RefreshAndInitializeAllImportantData(HttpSession session) {
+
+		currentUser = (Person) session.getAttribute("currentUser");
+
+		listofAllTransaction = currentUser.getAllTransactions();
+		listOfBuddies = transacServices.getListNoDuplicates(listofAllTransaction);
+
 	}
 
 }

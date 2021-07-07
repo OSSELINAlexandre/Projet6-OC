@@ -28,8 +28,24 @@ justify-content: flex-end;
 }
 
 
+.PMBAccount{
+	
+	display: flex;
+	justify-content: space-between;
+	
+}
 
-.Logo-Background{
+
+.dangerFrame{
+	
+	display : flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.Logo-Background
+{
 display: flex;
 background: rgb(97,185,90);
 background: linear-gradient(90deg, rgba(97,185,90,1) 0%, rgba(139,195,74,1) 100%);

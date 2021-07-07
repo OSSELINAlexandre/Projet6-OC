@@ -51,6 +51,34 @@ margin-right: 60px;
 
 }
 
+.Debit{
+	
+	color : red;
+	
+}
+
+.Credit{
+	
+	color : green;
+}
+
+.ConnectionError
+{
+
+
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+}
+.ConnectionContainer{
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
 .sendMoneyContainer{
 	display: flex;
 	flex-direction: row;

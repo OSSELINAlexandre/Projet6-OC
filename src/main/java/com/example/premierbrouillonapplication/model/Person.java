@@ -1,5 +1,6 @@
 package com.example.premierbrouillonapplication.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -33,14 +34,14 @@ public class Person {
 
 	@Column(name = "Password")
 	private String password;
-	
-	@OneToMany(
-			cascade = CascadeType.ALL,
-			orphanRemoval = true,
-			fetch = FetchType.EAGER
-			)
-	@JoinColumn(name ="Willpayperson", nullable = true)
-	private List<Transaction> transactions;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@JoinColumn(name = "Willpayperson", nullable = true)
+	private List<Transaction> transactionsPayed;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "Willbepayedperson", nullable = true)
+	private List<Transaction> transactionsThatWasPayed;
 
 	public Person(int id, String name, String lastName, String eMail, String password) {
 		super();
@@ -95,14 +96,29 @@ public class Person {
 		this.password = password;
 	}
 
-	public List<Transaction> getTransactions() {
-		return transactions;
+	public List<Transaction> getTransactionsPayed() {
+		return transactionsPayed;
 	}
 
-	public void setTransactions(List<Transaction> transactions) {
-		this.transactions = transactions;
+	public void setTransactionsPayed(List<Transaction> transactionsPayed) {
+		this.transactionsPayed = transactionsPayed;
 	}
-	
-	
+
+	public List<Transaction> getTransactionsThatWasPayed() {
+		return transactionsThatWasPayed;
+	}
+
+	public void setTransactionsThatWasPayed(List<Transaction> transactionsThatWasPayed) {
+		this.transactionsThatWasPayed = transactionsThatWasPayed;
+	}
+
+	public List<Transaction> getAllTransactions() {
+
+		List<Transaction> result = new ArrayList<Transaction>();
+		result.addAll(transactionsThatWasPayed);
+		result.addAll(transactionsPayed);
+		return result;
+
+	}
 
 }
