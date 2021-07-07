@@ -1,0 +1,46 @@
+
+CREATE TABLE Person (
+                id_person INT AUTO_INCREMENT NOT NULL,
+                Name VARCHAR(50) NOT NULL,
+                Surname VARCHAR(50) NOT NULL,
+                Email VARCHAR(50),
+                Password VARCHAR(264) NOT NULL,
+                PRIMARY KEY (ID_Person)
+);
+
+
+CREATE TABLE Transabank_accountctions (
+                ID_Transactions INT NOT NULL,
+                Commentaire VARCHAR(256) NOT NULL,
+                Amount DOUBLE PRECISION NOT NULL,
+                Willpayperson INT NOT NULL,
+                Willbepayedperson INT NOT NULL,
+                PRIMARY KEY (ID_Transactions)
+);
+
+
+CREATE TABLE Bank_Account (
+                ID_Account INT AUTO_INCREMENT NOT NULL,
+                Amount DOUBLE PRECISION NOT NULL,
+                Accountholder INT NOT NULL,
+                PRIMARY KEY (ID_Account)
+);
+
+
+ALTER TABLE Transactions ADD CONSTRAINT person_transactions_fk
+FOREIGN KEY (Willpayperson)
+REFERENCES Person (id_person)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE Transactions ADD CONSTRAINT person_transactions_fk1
+FOREIGN KEY (Willbepayedperson)
+REFERENCES Person (id_person)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE Bank_Account ADD CONSTRAINT person_bank_account_fk
+FOREIGN KEY (Accountholder)
+REFERENCES Person (id_person)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
