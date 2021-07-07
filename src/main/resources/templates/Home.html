@@ -102,7 +102,7 @@
 										aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
-									<input type="text" class="form-control commonSize"
+									<input step="0.01" min="1" type="number" class="form-control commonSize"
 										placeholder="Description of transaction" aria-label="Input group example"
 										aria-describedby="basic-addon1" th:field="*{amount}" required>
 
@@ -135,7 +135,7 @@
 								<div class="modal-body">
 
 
-									<input type="text" class="form-control commonSize"
+									<input step="0.01" min="1" type="number" class="form-control commonSize"
 										placeholder="How much do you want to deposit ?" aria-label="Input group example"
 										aria-describedby="basic-addon1" th:field="*{amount}" required>
 

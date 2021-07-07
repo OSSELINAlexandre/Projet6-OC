@@ -43,18 +43,21 @@ public class PersonServices {
 		return personRepo.findAll();
 	}
 
-	public Map<Integer, String> checkEmailFromBuddy(BuddiesInConnexion bud) {
+	public Map<Integer, String> checkEmailFromBuddy(BuddiesInConnexion bud, Person currentUser) {
 
 		Map<Integer, String> result = new HashMap<>();
 
 		for (Person p : personRepo.findAll()) {
 
-			if (p.geteMail().equals(bud.getEmail())) {
+			if (p.geteMail().equals(bud.getEmail()) && !p.geteMail().equals(currentUser.geteMail())) {
 
 				result.put(p.getId(), p.getLastName() + ", " + p.getName());
 
 				return result;
 
+			}else if(p.geteMail().equals(bud.getEmail()) && p.geteMail().equals(currentUser.geteMail())){
+				
+				result.put(0, "BUG");
 			}
 
 		}

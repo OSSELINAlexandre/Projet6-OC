@@ -1,5 +1,7 @@
 package com.example.premierbrouillonapplication.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -94,8 +96,16 @@ public class BankAccountServices {
 
 			if (b.getHolder().getId() == currentUser.getId()) {
 
+				logger.info("-------------X-------------X-----------" + depositMoney);
 				Double oldAmount = b.getAmount();
-				b.setAmount(oldAmount + depositMoney);
+				
+				Double newAmount = oldAmount + depositMoney ;
+				
+		        BigDecimal bd = new BigDecimal (newAmount).setScale(2, RoundingMode.HALF_UP);
+		        double finalThink = bd.doubleValue ();
+		        
+				b.setAmount(finalThink);
+				logger.info("-------------o-------------O-----------" + b.getAmount());
 				bankAccountRepo.save(b);
 				return;
 

@@ -142,9 +142,10 @@ public class MainController {
 
 		RefreshAndInitializeAllImportantData(session);
 
-		Map<Integer, String> result = persService.checkEmailFromBuddy(bud);
+		
+		Map<Integer, String> result = persService.checkEmailFromBuddy(bud, currentUser);
 
-		if (!result.isEmpty()) {
+		if (!result.isEmpty() && result.get(0) == null) {
 
 			listOfBuddies.putAll(result);
 			session.setAttribute("listOfBuddies", listOfBuddies);
@@ -158,6 +159,11 @@ public class MainController {
 
 			return "Transfer";
 
+		}else if(result.get(0) != null){ 
+		
+			model.addAttribute("CannotAddYourself", true);
+
+			
 		} else {
 
 			model.addAttribute("ErrorFindingBuddy", true);
@@ -214,6 +220,7 @@ public class MainController {
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
 
+	
 		return "Home";
 	}
 
@@ -269,7 +276,7 @@ public class MainController {
 					persService.getIt(Integer.parseInt(pay.getPersonToPay())));
 
 			logger.info("Is it working ================================ ? : " + pay.getAmount() * 1.005);
-
+			RefreshAndInitializeAllImportantData(session);
 			model.addAttribute("buddy", new BuddiesInConnexion());
 			model.addAttribute("listOfBuddies", listOfBuddies);
 			model.addAttribute("listTransactions", listofAllTransaction);
@@ -278,6 +285,7 @@ public class MainController {
 			model.addAttribute("currentUser", currentUser);
 
 			return "Transfer";
+			
 		} else {
 
 			model.addAttribute("ErrorPayingBuddy", true);
