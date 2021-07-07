@@ -5,25 +5,25 @@ CREATE TABLE Person (
                 Surname VARCHAR(50) NOT NULL,
                 Email VARCHAR(50),
                 Password VARCHAR(264) NOT NULL,
-                PRIMARY KEY (ID_Person)
+                PRIMARY KEY (id_person)
 );
 
 
 CREATE TABLE Transactions (
-                ID_Transactions INT NOT NULL,
+                id_transaction INT NOT NULL,
                 Commentaire VARCHAR(256) NOT NULL,
-                Amount DOUBLE PRECISION NOT NULL,
+                Amount DECIMAL(11,2) NOT NULL,
                 Willpayperson INT NOT NULL,
                 Willbepayedperson INT NOT NULL,
-                PRIMARY KEY (ID_Transactions)
+                PRIMARY KEY (id_transaction)
 );
 
 
 CREATE TABLE Bank_Account (
-                ID_Account INT AUTO_INCREMENT NOT NULL,
+                id_account INT AUTO_INCREMENT NOT NULL,
                 Amount DOUBLE PRECISION NOT NULL,
                 Accountholder INT NOT NULL,
-                PRIMARY KEY (ID_Account)
+                PRIMARY KEY (id_account)
 );
 
 
