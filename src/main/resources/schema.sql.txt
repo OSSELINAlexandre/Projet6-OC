@@ -10,7 +10,7 @@ CREATE TABLE Person (
 
 
 CREATE TABLE Transactions (
-                id_transaction INT NOT NULL,
+                id_transaction INT AUTO_INCREMENT NOT NULL,
                 Commentaire VARCHAR(256) NOT NULL,
                 Amount DECIMAL(11,2) NOT NULL,
                 Willpayperson INT NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE Transactions (
 
 CREATE TABLE Bank_Account (
                 id_account INT AUTO_INCREMENT NOT NULL,
-                Amount DOUBLE PRECISION NOT NULL,
+                Amount DECIMAL(11,2) NOT NULL,
                 Accountholder INT NOT NULL,
                 PRIMARY KEY (id_account)
 );

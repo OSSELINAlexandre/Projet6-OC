@@ -74,7 +74,7 @@ public class BankAccountServices {
 		BankAccount userAccount = findById(currentUser.getId());
 		BankAccount gonnaBePaidAccount = findById(it.getId());
 
-		Double newUserAmount = userAccount.getAmount() - amount;
+		Double newUserAmount = userAccount.getAmount() - (amount * 1.005);
 		Double newgonnaBePaidAccount = gonnaBePaidAccount.getAmount() + amount;
 
 		userAccount.setAmount(newUserAmount);

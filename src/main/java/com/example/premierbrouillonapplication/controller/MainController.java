@@ -191,7 +191,6 @@ public class MainController {
 
 			model.addAttribute("WithdrawErrorFlag", true);
 		}
-		// Créer un flag ici !
 
 		model.addAttribute("AmountAvailable", bankAccountServices.findById(currentUser.getId()).getAmount());
 		model.addAttribute("depositInformation", depositInfo);
@@ -265,7 +264,7 @@ public class MainController {
 		if (bankAccountServices.checkAmounts(currentUser, pay.getAmount() * 1.005)) {
 
 			bankAccountServices.adjustAccount(persService.getIt(Integer.parseInt(pay.getPersonToPay())), currentUser,
-					pay.getAmount() * 1.005);
+					pay.getAmount());
 			transacServices.saveANewTransaction(currentUser, pay,
 					persService.getIt(Integer.parseInt(pay.getPersonToPay())));
 
