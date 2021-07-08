@@ -275,7 +275,6 @@ public class MainController {
 			transacServices.saveANewTransaction(currentUser, pay,
 					persService.getIt(Integer.parseInt(pay.getPersonToPay())));
 
-			logger.info("Is it working ================================ ? : " + pay.getAmount() * 1.005);
 			RefreshAndInitializeAllImportantData(session);
 			model.addAttribute("buddy", new BuddiesInConnexion());
 			model.addAttribute("listOfBuddies", listOfBuddies);

@@ -8,6 +8,16 @@ main{
 	  background-color: #f5f5f5;
 }
 
+
+.ButtonPad{
+
+
+	margin-right: 20PX;
+	font-size: 25px;
+
+}
+
+
 .Custom-Background{
 background: rgb(97,185,90);
 background: linear-gradient(90deg, rgba(97,185,90,1) 0%, rgba(139,195,74,1) 100%);
