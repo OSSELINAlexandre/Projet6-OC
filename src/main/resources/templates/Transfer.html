@@ -161,7 +161,7 @@
 						<option th:each="name : ${listOfBuddies}" th:value="${name.key}" th:text="${name.value}" />
 					</select>
 
-					<input step="0.01" min="1" class="sendMoneyFrame" type="number" th:field="*{amount}" />
+					<input step="0.01" min="1" class="sendMoneyFrame" type="number" th:field="*{amount}" required/>
 
 					<button class="Logo-Background text-white border border-white rounded fw-bold" type="button"
 						data-bs-toggle="modal" data-bs-target="#ModalDesc">Pay</button>
