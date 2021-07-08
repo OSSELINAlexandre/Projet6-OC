@@ -43,35 +43,38 @@ public class TransactionsServices {
 		return null;
 	}
 
-	public Map<Integer, String> getListNoDuplicates(List<Transaction> listofAllTransaction) {
+	public Map<Integer, String> getListNoDuplicates(List<Transaction> listofAllTransaction, Person currentUser) {
 
 		Map<Integer, String> result = new HashMap<>();
 		Boolean flag = true;
 
 		for (Transaction t : listofAllTransaction) {
 
-			if (!result.isEmpty()) {
+			if (t.getPayee().getId() != currentUser.getId()) {
 
-				for (Integer Tr : result.keySet()) {
+				if (!result.isEmpty()) {
 
-					if (Tr == t.getPayee().getId()) {
+					for (Integer Tr : result.keySet()) {
 
-						flag = false;
+						if (Tr == t.getPayee().getId()) {
+
+							flag = false;
+						}
+
 					}
 
-				}
+					if (flag) {
 
-				if (flag) {
+						result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
+					}
+
+					flag = true;
+				} else {
 
 					result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
 				}
 
-				flag = true;
-			} else {
-
-				result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
 			}
-
 		}
 
 		return result;

@@ -103,7 +103,7 @@ public class MainController {
 		}
 
 		listofAllTransaction = currentUser.getAllTransactions();
-		listOfBuddies = transacServices.getListNoDuplicates(listofAllTransaction);
+		listOfBuddies = transacServices.getListNoDuplicates(listofAllTransaction, currentUser);
 
 		model.addAttribute("listTransactions", listofAllTransaction);
 		model.addAttribute("listOfBuddies", listOfBuddies);
@@ -142,7 +142,6 @@ public class MainController {
 
 		RefreshAndInitializeAllImportantData(session);
 
-		
 		Map<Integer, String> result = persService.checkEmailFromBuddy(bud, currentUser);
 
 		if (!result.isEmpty() && result.get(0) == null) {
@@ -159,11 +158,10 @@ public class MainController {
 
 			return "Transfer";
 
-		}else if(result.get(0) != null){ 
-		
+		} else if (result.get(0) != null) {
+
 			model.addAttribute("CannotAddYourself", true);
 
-			
 		} else {
 
 			model.addAttribute("ErrorFindingBuddy", true);
@@ -220,7 +218,6 @@ public class MainController {
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
 
-	
 		return "Home";
 	}
 
@@ -265,10 +262,13 @@ public class MainController {
 		RefreshAndInitializeAllImportantData(session);
 
 		logger.info("----------------------------------------- " + currentUser.getId());
-		logger.info("------------XXXXXXXXXXXXXXXXXXX--------------- " + persService.getIt(Integer.parseInt(pay.getPersonToPay())).getId());
-		logger.info("------------)))))))))))))))((((((((((((((--------------- " + pay.getAmount() + "!!!" );
+		logger.info("------------XXXXXXXXXXXXXXXXXXX--------------- "
+				+ persService.getIt(Integer.parseInt(pay.getPersonToPay())).getId());
+		logger.info("------------)))))))))))))))((((((((((((((--------------- " + pay.getAmount() + "!!!");
 
-		if (bankAccountServices.checkAmounts(currentUser, pay.getAmount() * 1.005)) {
+		BankAccount personToPay = bankAccountServices.findById(Integer.parseInt(pay.getPersonToPay()));
+
+		if (bankAccountServices.checkAmounts(currentUser, pay.getAmount() * 1.005) && personToPay != null) {
 
 			bankAccountServices.adjustAccount(persService.getIt(Integer.parseInt(pay.getPersonToPay())), currentUser,
 					pay.getAmount());
@@ -285,7 +285,11 @@ public class MainController {
 			model.addAttribute("currentUser", currentUser);
 
 			return "Transfer";
-			
+
+		} else if (personToPay == null) {
+
+			model.addAttribute("ErrorInitializationAccountBuddy", true);
+
 		} else {
 
 			model.addAttribute("ErrorPayingBuddy", true);
@@ -307,7 +311,7 @@ public class MainController {
 		currentUser = (Person) session.getAttribute("currentUser");
 
 		listofAllTransaction = currentUser.getAllTransactions();
-		listOfBuddies = transacServices.getListNoDuplicates(listofAllTransaction);
+		listOfBuddies = transacServices.getListNoDuplicates(listofAllTransaction, currentUser);
 
 	}
 
