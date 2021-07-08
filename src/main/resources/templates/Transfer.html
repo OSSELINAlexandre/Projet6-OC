@@ -157,7 +157,7 @@
 				<form th:action="@{/processingPayment}" method="POST" th:object="${PaymentID}" class="d-flex ">
 
 
-					<select class="sendMoneyFrame" th:field="*{personToPay}">
+					<select class="sendMoneyFrame" th:field="*{personToPay}" required>
 						<option th:each="name : ${listOfBuddies}" th:value="${name.key}" th:text="${name.value}" />
 					</select>
 
