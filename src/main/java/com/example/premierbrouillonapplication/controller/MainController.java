@@ -304,6 +304,13 @@ public class MainController {
 		return "Transfer";
 
 	}
+	
+	@GetMapping("/Logoff")
+	public String logOfftheAccount() {
+		
+		
+		return "LogOff";
+	}
 
 	private void RefreshAndInitializeAllImportantData(HttpSession session) {
 
