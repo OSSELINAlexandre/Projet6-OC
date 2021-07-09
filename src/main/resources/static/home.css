@@ -16,6 +16,16 @@ main{
 	font-size: 25px;
 
 }
+.Debit{
+	
+	color : red;
+	
+}
+
+.Credit{
+	
+	color : green;
+}
 
 
 .Custom-Background{

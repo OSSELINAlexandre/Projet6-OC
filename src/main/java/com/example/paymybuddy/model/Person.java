@@ -1,4 +1,4 @@
-package com.example.premierbrouillonapplication.model;
+package com.example.paymybuddy.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,33 +23,47 @@ public class Person {
 	@Column(name = "id_person")
 	private int id;
 
-	@Column(name = "Name")
+	@Column(name = "name")
 	private String name;
 
-	@Column(name = "Surname")
+	@Column(name = "surname")
 	private String lastName;
 
-	@Column(name = "Email")
-	private String eMail;
+	@Column(name = "email")
+	private String email;
 
-	@Column(name = "Password")
+	@Column(name = "accountfunds")
+	private Double accountfunds;
+
+	@Column(name = "password")
 	private String password;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	@JoinColumn(name = "Willpayperson", nullable = true)
+	@JoinColumn(name = "willpayperson", nullable = true)
 	private List<Transaction> transactionsPayed;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "Willbepayedperson", nullable = true)
+	@JoinColumn(name = "willbepayedperson", nullable = true)
 	private List<Transaction> transactionsThatWasPayed;
+
+	public Person(int id, String name, String lastName, String eMail, String password, Double amount) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.lastName = lastName;
+		this.email = eMail;
+		this.password = password;
+		this.accountfunds = amount;
+	}
 
 	public Person(int id, String name, String lastName, String eMail, String password) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.lastName = lastName;
-		this.eMail = eMail;
+		this.email = eMail;
 		this.password = password;
+		this.accountfunds = 0.0;
 	}
 
 	public Person() {
@@ -81,15 +95,31 @@ public class Person {
 	}
 
 	public String geteMail() {
-		return eMail;
+		return email;
 	}
 
 	public void seteMail(String eMail) {
-		this.eMail = eMail;
+		this.email = eMail;
 	}
 
 	public String getPassword() {
 		return password;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Double getAmount() {
+		return accountfunds;
+	}
+
+	public void setAmount(Double amount) {
+		this.accountfunds = amount;
 	}
 
 	public void setPassword(String password) {

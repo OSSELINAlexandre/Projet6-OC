@@ -1,46 +1,48 @@
 
 CREATE TABLE Person (
                 id_person INT AUTO_INCREMENT NOT NULL,
-                Name VARCHAR(50) NOT NULL,
-                Surname VARCHAR(50) NOT NULL,
-                Email VARCHAR(50),
-                Password VARCHAR(264) NOT NULL,
+                name VARCHAR(50) NOT NULL,
+                surname VARCHAR(50) NOT NULL,
+                email VARCHAR(100) NOT NULL,
+                password VARCHAR(264) NOT NULL,
+                accountfunds DECIMAL(11,2) NOT NULL,
                 PRIMARY KEY (id_person)
 );
 
 
-CREATE TABLE Transactions (
-                id_transaction INT AUTO_INCREMENT NOT NULL,
-                Commentaire VARCHAR(256) NOT NULL,
-                Amount DECIMAL(11,2) NOT NULL,
-                Willpayperson INT NOT NULL,
-                Willbepayedperson INT NOT NULL,
-                PRIMARY KEY (id_transaction)
+CREATE TABLE Transaction (
+                id_transactions INT AUTO_INCREMENT NOT NULL,
+                commentaire VARCHAR(264) NOT NULL,
+                amount DECIMAL(11,2) NOT NULL,
+                willpayperson INT NOT NULL,
+                willbepayedperson INT NOT NULL,
+                PRIMARY KEY (id_transactions)
 );
 
 
-CREATE TABLE Bank_Account (
-                id_account INT AUTO_INCREMENT NOT NULL,
-                Amount DECIMAL(11,2) NOT NULL,
-                Accountholder INT NOT NULL,
-                PRIMARY KEY (id_account)
+CREATE TABLE Account_operation (
+                id_operation INT AUTO_INCREMENT NOT NULL,
+                typeoftransaction BOOLEAN NOT NULL,
+                amount DECIMAL(11,2) NOT NULL,
+                accountholder INT NOT NULL,
+                PRIMARY KEY (id_operation)
 );
 
 
-ALTER TABLE Transactions ADD CONSTRAINT person_transactions_fk
-FOREIGN KEY (Willpayperson)
+ALTER TABLE Transaction ADD CONSTRAINT person_transactions_fk
+FOREIGN KEY (willpayperson)
 REFERENCES Person (id_person)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
-ALTER TABLE Transactions ADD CONSTRAINT person_transactions_fk1
-FOREIGN KEY (Willbepayedperson)
+ALTER TABLE Transaction ADD CONSTRAINT person_transactions_fk1
+FOREIGN KEY (willbepayedperson)
 REFERENCES Person (id_person)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
-ALTER TABLE Bank_Account ADD CONSTRAINT person_bank_account_fk
-FOREIGN KEY (Accountholder)
+ALTER TABLE Account_operation ADD CONSTRAINT person_bank_account_fk
+FOREIGN KEY (accountholder)
 REFERENCES Person (id_person)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;

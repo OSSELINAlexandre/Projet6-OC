@@ -1,4 +1,4 @@
-package com.example.premierbrouillonapplication;
+package com.example.paymybuddy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,19 +9,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.example.premierbrouillonapplication.model.Person;
-import com.example.premierbrouillonapplication.model.Transaction;
-import com.example.premierbrouillonapplication.service.PersonServices;
-import com.example.premierbrouillonapplication.service.TransactionsServices;
+import com.example.paymybuddy.model.Person;
+import com.example.paymybuddy.model.Transaction;
+import com.example.paymybuddy.service.UserServices;
+import com.example.paymybuddy.service.TransactionsServices;
 
 @SpringBootApplication
 public class PremierbrouillonapplicationApplication {
 
-	@Autowired
-	PersonServices personServ;
-
-	@Autowired
-	TransactionsServices transacServ;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PremierbrouillonapplicationApplication.class, args);

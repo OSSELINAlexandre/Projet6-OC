@@ -1,4 +1,4 @@
-package com.example.premierbrouillonapplication.model;
+package com.example.paymybuddy.DTO;
 
 public class IdentificationData {
 
@@ -12,7 +12,6 @@ public class IdentificationData {
 	}
 
 	public IdentificationData(String email, String password) {
-		super();
 		this.email = email;
 		this.password = password;
 	}

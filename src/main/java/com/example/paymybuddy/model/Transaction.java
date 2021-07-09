@@ -1,4 +1,4 @@
-package com.example.premierbrouillonapplication.model;
+package com.example.paymybuddy.model;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,26 +12,26 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Transactions")
+@Table(name = "Transaction")
 public class Transaction {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_transaction")
+	@Column(name = "id_transactions")
 	private int id;
 
-	@Column(name = "Commentaire")
+	@Column(name = "commentaire")
 	private String commentaire;
 
-	@Column(name = "Amount")
+	@Column(name = "amount")
 	private Double amount;
 
 	@OneToOne
-	@JoinColumn(name = "Willpayperson", referencedColumnName = "id_person")
+	@JoinColumn(name = "willpayperson", referencedColumnName = "id_person")
 	private Person payeur;
 
 	@OneToOne
-	@JoinColumn(name = "Willbepayedperson", referencedColumnName = "id_person")
+	@JoinColumn(name = "willbepayedperson", referencedColumnName = "id_person")
 	private Person payee;
 
 	public Transaction() {

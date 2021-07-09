@@ -62,7 +62,7 @@
 
 	<main class="d-flex flex-column">
 
-		<DIV class="container ConnectionError" th:if="${ErrorFindingBuddy != null }">
+		<DIV class="container ConnectionError" th:if="${errorFindingBuddy != null }">
 			<div class="bg-danger text-white fw-bold rounded FrameShadow ConnectionContainer">
 				<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor"
 					class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
@@ -74,7 +74,7 @@
 				<p>Couldn't add this buddy, please try another adress.</p>
 			</div>
 		</DIV>
-		<DIV class="container ConnectionError" th:if="${ErrorPayingBuddy != null }">
+		<DIV class="container ConnectionError" th:if="${errorPayingBuddy != null }">
 			<div class="bg-danger text-white fw-bold rounded FrameShadow ConnectionContainer">
 				<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor"
 					class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
@@ -87,7 +87,7 @@
 			</div>
 		</DIV>
 
-		<DIV class="container ConnectionError" th:if="${ErrorInitializationAccountBuddy != null }">
+		<DIV class="container ConnectionError" th:if="${errorInitializationAccountBuddy != null }">
 			<div class="bg-danger text-white fw-bold rounded FrameShadow ConnectionContainer">
 				<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor"
 					class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
@@ -96,12 +96,13 @@
 					<path
 						d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z" />
 				</svg>
-				<p>Your buddy registered to the app, but didn't linked it to a bank account. You cannot send him money.</p>
+				<p>Your buddy registered to the app, but didn't linked it to a bank account. You cannot send him money.
+				</p>
 			</div>
 		</DIV>
 
 
-		<DIV class="container ConnectionError" th:if="${CannotAddYourself != null }">
+		<DIV class="container ConnectionError" th:if="${cannotAddYourself != null }">
 			<div class="bg-danger text-white fw-bold rounded FrameShadow ConnectionContainer">
 				<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor"
 					class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
@@ -154,14 +155,14 @@
 			<div class=" FrameShadow container p-4 bg-light d-flex align-items-center sendMoneyContainer">
 
 
-				<form th:action="@{/processingPayment}" method="POST" th:object="${PaymentID}" class="d-flex ">
+				<form th:action="@{/processingPayment}" method="POST" th:object="${paymentID}" class="d-flex ">
 
 
 					<select class="sendMoneyFrame" th:field="*{personToPay}" required>
 						<option th:each="name : ${listOfBuddies}" th:value="${name.key}" th:text="${name.value}" />
 					</select>
 
-					<input step="0.01" min="1" class="sendMoneyFrame" type="number" th:field="*{amount}" required/>
+					<input step="0.01" min="1" class="sendMoneyFrame" type="number" th:field="*{amount}" required />
 
 					<button class="Logo-Background text-white border border-white rounded fw-bold" type="button"
 						data-bs-toggle="modal" data-bs-target="#ModalDesc">Pay</button>
@@ -213,7 +214,8 @@
 						<td th:text="${transac.payee.id == currentUser.id ? transac.payeur.name : transac.payee.name}">
 						</td>
 						<td th:text="${transac.commentaire}"></td>
-						<td th:text="${transac.amount}" th:attr="class=${transac.payee.id == currentUser.id ? 'Credit' : 'Debit'}"></td>
+						<td th:text="${transac.amount}"
+							th:attr="class=${transac.payee.id == currentUser.id ? 'Credit' : 'Debit'}"></td>
 					</tr>
 				</tbody>
 			</table>

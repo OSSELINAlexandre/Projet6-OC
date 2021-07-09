@@ -1,4 +1,4 @@
-package com.example.premierbrouillonapplication.model;
+package com.example.paymybuddy.DTO;
 
 public class BankAccountWithdrawalDepositInformation {
 
