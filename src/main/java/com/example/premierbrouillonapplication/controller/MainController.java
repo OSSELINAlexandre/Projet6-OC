@@ -1,33 +1,24 @@
 package com.example.premierbrouillonapplication.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
 import javax.servlet.http.HttpSession;
-
 import org.apache.logging.log4j.LogManager;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.support.SessionStatus;
 
+import com.example.premierbrouillonapplication.DTO.BankAccountWithdrawalDepositInformation;
+import com.example.premierbrouillonapplication.DTO.BuddiesInConnexion;
+import com.example.premierbrouillonapplication.DTO.IdentificationData;
+import com.example.premierbrouillonapplication.DTO.LoginRegistration;
+import com.example.premierbrouillonapplication.DTO.PaymentData;
 import com.example.premierbrouillonapplication.model.BankAccount;
-import com.example.premierbrouillonapplication.model.BuddiesInConnexion;
-import com.example.premierbrouillonapplication.model.IdentificationData;
-import com.example.premierbrouillonapplication.model.LoginRegistration;
-import com.example.premierbrouillonapplication.model.PaymentData;
 import com.example.premierbrouillonapplication.model.Person;
 import com.example.premierbrouillonapplication.model.Transaction;
-import com.example.premierbrouillonapplication.model.BankAccountWithdrawalDepositInformation;
 import com.example.premierbrouillonapplication.service.BankAccountServices;
-import com.example.premierbrouillonapplication.service.MyAppServices;
 import com.example.premierbrouillonapplication.service.PersonServices;
 import com.example.premierbrouillonapplication.service.TransactionsServices;
 
@@ -37,13 +28,10 @@ public class MainController {
 	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(MainController.class);
 
 	@Autowired
-	MyAppServices services;
+	PersonServices personService;
 
 	@Autowired
-	PersonServices persService;
-
-	@Autowired
-	TransactionsServices transacServices;
+	TransactionsServices transactionServices;
 
 	@Autowired
 	BankAccountServices bankAccountServices;
@@ -73,7 +61,7 @@ public class MainController {
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
 
-		return "Home";
+		return "home_page";
 	}
 
 	@GetMapping("/profileUser")
@@ -93,7 +81,7 @@ public class MainController {
 	@PostMapping("/process_signin")
 	public String verifyIdentity(IdentificationData person, Model model, HttpSession session) {
 
-		currentUser = services.findById(person);
+		currentUser = personService.findById(person);
 
 		if (currentUser == null) {
 			model.addAttribute("ErrorFlag", true);
@@ -103,7 +91,7 @@ public class MainController {
 		}
 
 		listofAllTransaction = currentUser.getAllTransactions();
-		listOfBuddies = transacServices.getListNoDuplicates(listofAllTransaction, currentUser);
+		listOfBuddies = transactionServices.getListNoDuplicates(listofAllTransaction, currentUser);
 
 		model.addAttribute("listTransactions", listofAllTransaction);
 		model.addAttribute("listOfBuddies", listOfBuddies);
@@ -116,7 +104,7 @@ public class MainController {
 		session.setAttribute("currentUser", currentUser);
 		session.setAttribute("listTransactions", listofAllTransaction);
 
-		return "Transfer";
+		return "transfer_page";
 
 	}
 
@@ -134,7 +122,7 @@ public class MainController {
 		model.addAttribute("PaymentID", payId);
 		model.addAttribute("currentUser", currentUser);
 
-		return "Transfer";
+		return "transfer_page";
 	}
 
 	@PostMapping("/transfer_validation")
@@ -142,7 +130,7 @@ public class MainController {
 
 		RefreshAndInitializeAllImportantData(session);
 
-		Map<Integer, String> result = persService.checkEmailFromBuddy(bud, currentUser);
+		Map<Integer, String> result = personService.checkEmailFromBuddy(bud, currentUser);
 
 		if (!result.isEmpty() && result.get(0) == null) {
 
@@ -156,7 +144,7 @@ public class MainController {
 			model.addAttribute("PaymentID", payId);
 			model.addAttribute("currentUser", currentUser);
 
-			return "Transfer";
+			return "transfer_page";
 
 		} else if (result.get(0) != null) {
 
@@ -174,7 +162,7 @@ public class MainController {
 		model.addAttribute("PaymentID", payId);
 		model.addAttribute("currentUser", currentUser);
 
-		return "Transfer";
+		return "transfer_page";
 
 	}
 
@@ -200,7 +188,7 @@ public class MainController {
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
 
-		return "Home";
+		return "home_page";
 	}
 
 	@PostMapping("/DepositAmount")
@@ -218,7 +206,7 @@ public class MainController {
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
 
-		return "Home";
+		return "home_page";
 	}
 
 	@GetMapping("/register")
@@ -226,18 +214,18 @@ public class MainController {
 
 		model.addAttribute("newUser", new LoginRegistration());
 
-		return "Register";
+		return "register";
 	}
 
 	@PostMapping("/process_register")
 	public String processRegistration(LoginRegistration person, HttpSession session, Model model) {
 
-		if (persService.checkExistingMail(person)) {
+		if (personService.checkExistingMail(person)) {
 
 			model.addAttribute("existingmail", true);
 			model.addAttribute("newUser", new LoginRegistration());
 
-			return "Register";
+			return "register";
 
 		}
 
@@ -246,13 +234,13 @@ public class MainController {
 			model.addAttribute("passwordmatch", true);
 			model.addAttribute("newUser", new LoginRegistration());
 
-			return "Register";
+			return "register";
 
 		}
 
-		persService.saveNewPerson(person);
+		personService.saveNewPerson(person);
 
-		return "SucessfullyRegistered";
+		return "register_successfully";
 
 	}
 
@@ -263,17 +251,17 @@ public class MainController {
 
 		logger.info("----------------------------------------- " + currentUser.getId());
 		logger.info("------------XXXXXXXXXXXXXXXXXXX--------------- "
-				+ persService.getIt(Integer.parseInt(pay.getPersonToPay())).getId());
+				+ personService.getIt(Integer.parseInt(pay.getPersonToPay())).getId());
 		logger.info("------------)))))))))))))))((((((((((((((--------------- " + pay.getAmount() + "!!!");
 
 		BankAccount personToPay = bankAccountServices.findById(Integer.parseInt(pay.getPersonToPay()));
 
 		if (bankAccountServices.checkAmounts(currentUser, pay.getAmount() * 1.005) && personToPay != null) {
 
-			bankAccountServices.adjustAccount(persService.getIt(Integer.parseInt(pay.getPersonToPay())), currentUser,
+			bankAccountServices.adjustAccount(personService.getIt(Integer.parseInt(pay.getPersonToPay())), currentUser,
 					pay.getAmount());
-			transacServices.saveANewTransaction(currentUser, pay,
-					persService.getIt(Integer.parseInt(pay.getPersonToPay())));
+			transactionServices.saveANewTransaction(currentUser, pay,
+					personService.getIt(Integer.parseInt(pay.getPersonToPay())));
 
 			RefreshAndInitializeAllImportantData(session);
 			model.addAttribute("buddy", new BuddiesInConnexion());
@@ -283,7 +271,7 @@ public class MainController {
 			model.addAttribute("PaymentID", payId);
 			model.addAttribute("currentUser", currentUser);
 
-			return "Transfer";
+			return "transfer_page";
 
 		} else if (personToPay == null) {
 
@@ -301,15 +289,14 @@ public class MainController {
 		model.addAttribute("PaymentID", payId);
 		model.addAttribute("currentUser", currentUser);
 
-		return "Transfer";
+		return "transfer_page";
 
 	}
-	
+
 	@GetMapping("/Logoff")
 	public String logOfftheAccount() {
-		
-		
-		return "LogOff";
+
+		return "log_off";
 	}
 
 	private void RefreshAndInitializeAllImportantData(HttpSession session) {
@@ -317,7 +304,7 @@ public class MainController {
 		currentUser = (Person) session.getAttribute("currentUser");
 
 		listofAllTransaction = currentUser.getAllTransactions();
-		listOfBuddies = transacServices.getListNoDuplicates(listofAllTransaction, currentUser);
+		listOfBuddies = transactionServices.getListNoDuplicates(listofAllTransaction, currentUser);
 
 	}
 

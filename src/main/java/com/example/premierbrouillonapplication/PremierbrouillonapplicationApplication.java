@@ -17,11 +17,6 @@ import com.example.premierbrouillonapplication.service.TransactionsServices;
 @SpringBootApplication
 public class PremierbrouillonapplicationApplication {
 
-	@Autowired
-	PersonServices personServ;
-
-	@Autowired
-	TransactionsServices transacServ;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PremierbrouillonapplicationApplication.class, args);

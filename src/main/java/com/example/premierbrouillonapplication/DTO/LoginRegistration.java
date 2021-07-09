@@ -1,4 +1,4 @@
-package com.example.premierbrouillonapplication.model;
+package com.example.premierbrouillonapplication.DTO;
 
 public class LoginRegistration {
 
@@ -17,7 +17,6 @@ public class LoginRegistration {
 	}
 
 	public LoginRegistration(String name, String lastName, String eMail, String password, String secondTestPassword) {
-		super();
 		this.name = name;
 		this.lastName = lastName;
 		this.eMail = eMail;

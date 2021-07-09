@@ -1,4 +1,4 @@
-package com.example.premierbrouillonapplication.model;
+package com.example.premierbrouillonapplication.DTO;
 
 import java.util.List;
 
@@ -17,7 +17,6 @@ public class PaymentData {
 	}
 	
 	public PaymentData(String personToPay, Double amount, String description) {
-		super();
 		this.personToPay = personToPay;
 		this.amount = amount;
 		this.description = description;

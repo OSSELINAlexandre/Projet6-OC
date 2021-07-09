@@ -5,16 +5,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.premierbrouillonapplication.model.BuddiesInConnexion;
-import com.example.premierbrouillonapplication.model.LoginRegistration;
+import com.example.premierbrouillonapplication.DTO.BuddiesInConnexion;
+import com.example.premierbrouillonapplication.DTO.IdentificationData;
+import com.example.premierbrouillonapplication.DTO.LoginRegistration;
 import com.example.premierbrouillonapplication.model.Person;
 import com.example.premierbrouillonapplication.repository.PersonRepository;
 
 @Service
 public class PersonServices {
+
+	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(PersonServices.class);
 
 	@Autowired
 	PersonRepository personRepo;
@@ -55,8 +59,8 @@ public class PersonServices {
 
 				return result;
 
-			}else if(p.geteMail().equals(bud.getEmail()) && p.geteMail().equals(currentUser.geteMail())){
-				
+			} else if (p.geteMail().equals(bud.getEmail()) && p.geteMail().equals(currentUser.geteMail())) {
+
 				result.put(0, "BUG");
 			}
 
@@ -89,6 +93,21 @@ public class PersonServices {
 		}
 
 		return false;
+	}
+
+	public Person findById(IdentificationData person) {
+
+		Iterable<Person> allList = personRepo.findAll();
+
+		for (Person p : allList) {
+
+			if (p.geteMail().equals(person.getEmail()) && (p.getPassword().equals(person.getPassword()))) {
+
+				return p;
+			}
+		}
+
+		return null;
 	}
 
 }

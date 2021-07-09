@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.premierbrouillonapplication.model.PaymentData;
+import com.example.premierbrouillonapplication.DTO.PaymentData;
 import com.example.premierbrouillonapplication.model.Person;
 import com.example.premierbrouillonapplication.model.Transaction;
 import com.example.premierbrouillonapplication.repository.TransactionRepository;

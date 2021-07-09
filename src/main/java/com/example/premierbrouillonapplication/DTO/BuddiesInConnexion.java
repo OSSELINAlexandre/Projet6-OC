@@ -1,16 +1,14 @@
-package com.example.premierbrouillonapplication.model;
+package com.example.premierbrouillonapplication.DTO;
 
 public class BuddiesInConnexion {
 
 	private String email;
 
 	public BuddiesInConnexion(String email) {
-		super();
 		this.email = email;
 	}
 
 	public BuddiesInConnexion() {
-		super();
 	}
 
 	public String getEmail() {

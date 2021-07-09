@@ -8,10 +8,10 @@ import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.premierbrouillonapplication.DTO.BankAccountWithdrawalDepositInformation;
+import com.example.premierbrouillonapplication.DTO.PaymentData;
 import com.example.premierbrouillonapplication.controller.MainController;
 import com.example.premierbrouillonapplication.model.BankAccount;
-import com.example.premierbrouillonapplication.model.BankAccountWithdrawalDepositInformation;
-import com.example.premierbrouillonapplication.model.PaymentData;
 import com.example.premierbrouillonapplication.model.Person;
 import com.example.premierbrouillonapplication.repository.BankAccountRepository;
 import com.example.premierbrouillonapplication.repository.PersonRepository;
