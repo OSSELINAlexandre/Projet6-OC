@@ -83,10 +83,14 @@ public class TransferController {
 
 			transactionServices.adjustAccount(transactionServices.getPersonById(Integer.parseInt(pay.getPersonToPay())),
 					currentUser, pay.getAmount());
-			transactionServices.saveANewTransaction(currentUser, pay,
+			Transaction transitoryItem = transactionServices.saveANewTransaction(currentUser, pay,
 					transactionServices.getPersonById(Integer.parseInt(pay.getPersonToPay())));
 
+
+			currentUser.addTransitoryTransaction(transitoryItem);
 			RefreshAndInitializeAllImportantData(session);
+			session.setAttribute("currentUser", currentUser);
+			session.setAttribute("listTransactions", listOfAllTransactions);
 			model.addAttribute("buddy", new BuddiesInConnexion());
 			model.addAttribute("listOfBuddies", listOfBuddies);
 			model.addAttribute("listTransactions", listOfAllTransactions);

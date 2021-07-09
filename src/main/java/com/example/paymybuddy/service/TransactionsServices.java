@@ -182,7 +182,7 @@ public class TransactionsServices {
 	}
 
 	@Transactional
-	public void saveANewTransaction(Person currentUser, PaymentData pay, Person it) {
+	public Transaction saveANewTransaction(Person currentUser, PaymentData pay, Person it) {
 
 		Transaction newItem = new Transaction();
 		newItem.setAmount(pay.getAmount());
@@ -191,7 +191,7 @@ public class TransactionsServices {
 		newItem.setPayeur(currentUser);
 
 		transacRepo.save(newItem);
-
+		return newItem;
 	}
 
 }

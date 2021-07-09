@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.paymybuddy.DTO.BankAccountWithdrawalDepositInformation;
+import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.service.OperationOnAccountServices;
@@ -24,8 +25,7 @@ public class OperationController {
 	OperationOnAccountServices bankAccountServices;
 
 	private Person currentUser;
-	//TODO mettre en place un bouton qui permet de voire toutes les transactions existantes dans un MODAL. 
-	private List<Transaction> listOfAllTransactions;
+	private List<BankOperation> listOfAllOperation;
 
 	@PostMapping("/withDrawPayment")
 	public String withdrawSomeMoney(BankAccountWithdrawalDepositInformation withdrawMoney, Model model,
@@ -35,18 +35,23 @@ public class OperationController {
 
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
+		List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
 
 		if (bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())) {
 
-			bankAccountServices.saveForDepositorWithdrawal(currentUser, withdrawMoney.getAmount(), false);
-
+			BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser,
+					withdrawMoney.getAmount(), false);
+			listOfAllOperations.add(transitoryItem);
 		} else {
 
 			model.addAttribute("withdrawErrorFlag", true);
 		}
 
 		model.addAttribute("amountAvailable", bankAccountServices.findById(currentUser.getId()).getAmount());
-		logger.info("----------------------------------------------------------------" + bankAccountServices.findById(currentUser.getId()).getAmount());
+		logger.info("----------------------------------------------------------------"
+				+ bankAccountServices.findById(currentUser.getId()).getAmount());
+
+		model.addAttribute("listOperations", listOfAllOperations);
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
 
@@ -62,9 +67,13 @@ public class OperationController {
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
 
-		bankAccountServices.saveForDepositorWithdrawal(currentUser, depositMoney.getAmount(), true);
+		BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser,
+				depositMoney.getAmount(), true);
 
 		model.addAttribute("amountAvailable", bankAccountServices.findById(currentUser.getId()).getAmount());
+		List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
+		listOfAllOperations.add(transitoryItem);
+		model.addAttribute("listOperations", listOfAllOperations);
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
 
@@ -74,8 +83,6 @@ public class OperationController {
 	private void RefreshAndInitializeAllImportantData(HttpSession session) {
 
 		currentUser = (Person) session.getAttribute("currentUser");
-
-		listOfAllTransactions = currentUser.getAllTransactions();
 
 	}
 
