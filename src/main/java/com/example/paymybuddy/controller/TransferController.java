@@ -29,10 +29,16 @@ public class TransferController {
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
 	private Map<Integer, String> listOfBuddies;
+	
+	
+	//This attribute is to avoid refresh error : multiple transaction can be paid if the user refresh will on a PostPage.
+	public static Boolean refreshErrorTrueIfAlreadyBeingPaid;
 
 	@PostMapping("/transfer_validation")
 	public String verificationOfBuddy(BuddiesInConnexion bud, HttpSession session, Model model) {
-
+		refreshErrorTrueIfAlreadyBeingPaid = true; 
+		
+		
 		RefreshAndInitializeAllImportantData(session);
 
 		Map<Integer, String> result = transactionServices.checkEmailFromBuddy(bud, currentUser);
@@ -79,8 +85,9 @@ public class TransferController {
 		BankOperation personToPay = transactionServices.findBankOperationById(Integer.parseInt(pay.getPersonToPay()));
 
 		if (transactionServices.checkAmounts(currentUser, pay.getAmount() * (1 + Fees.CLASSIC_FEE_APP))
-				&& personToPay != null) {
-
+				&& personToPay != null && refreshErrorTrueIfAlreadyBeingPaid) {
+			
+			refreshErrorTrueIfAlreadyBeingPaid = false;
 			transactionServices.adjustAccount(transactionServices.getPersonById(Integer.parseInt(pay.getPersonToPay())),
 					currentUser, pay.getAmount());
 			Transaction transitoryItem = transactionServices.saveANewTransaction(currentUser, pay,
@@ -100,7 +107,7 @@ public class TransferController {
 
 			return "transfer_page";
 
-		} else if (personToPay == null) {
+		} else if (personToPay == null && refreshErrorTrueIfAlreadyBeingPaid) {
 
 			model.addAttribute("ErrorInitializationAccountBuddy", true);
 
@@ -128,5 +135,7 @@ public class TransferController {
 		listOfBuddies = transactionServices.getListNoDuplicates(listOfAllTransactions, currentUser);
 
 	}
+
+
 
 }
