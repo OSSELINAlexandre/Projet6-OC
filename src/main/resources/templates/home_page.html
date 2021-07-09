@@ -87,6 +87,54 @@
 
 			<div class="container bg-light d-flex justify-content-center align-items-center buttonFrame FrameShadow">
 
+
+				<button class="ButtonPad btn btn-primary display-5 fw-bold" type="button" data-bs-toggle="modal"
+					data-bs-target="#TransactionModal">See all transactions</button>
+				<!-- Modal -->
+				<div class="modal fade" id="TransactionModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+					aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">List of all your transactions</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+
+								<table
+									class=" FrameShadow table table-striped table-hover justify-content-center text-center tableFrame"
+									align="center" data-page-length='3'>
+									<thead >
+										<tr>
+											<th class="cellSize" scope="col">Operation</th>
+											<th scope="col">Amount</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="font-weight-bold" th:each="transac : ${listOperations}">
+											<td
+												th:text="${transac.depositIsTrueWithdrawIsFalse == true ? 'Deposit' : 'Withdraw'}">
+											</td>
+											<td th:text="${transac.amount}" 
+											th:attr="class=${transac.depositIsTrueWithdrawIsFalse == true ? 'Credit' : 'Debit'}"></td>
+										</tr>
+									</tbody>
+								</table>
+
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+
+
+
 				<form th:action="@{/withDrawPayment}" method="POST" class="d-flex" th:object="${withdrawalInformation}">
 
 					<button class="ButtonPad btn btn-primary display-5 fw-bold" type="button" data-bs-toggle="modal"

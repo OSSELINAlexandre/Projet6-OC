@@ -46,6 +46,7 @@ public class OperationController {
 		}
 
 		model.addAttribute("amountAvailable", bankAccountServices.findById(currentUser.getId()).getAmount());
+		logger.info("----------------------------------------------------------------" + bankAccountServices.findById(currentUser.getId()).getAmount());
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
 

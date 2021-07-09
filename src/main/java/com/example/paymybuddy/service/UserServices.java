@@ -1,5 +1,6 @@
 package com.example.paymybuddy.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
+import com.example.paymybuddy.repository.BankOperationRepository;
 import com.example.paymybuddy.repository.PersonRepository;
 
 @Service
@@ -24,6 +26,9 @@ public class UserServices {
 
 	@Autowired
 	PersonRepository personRepo;
+	
+	@Autowired
+	BankOperationRepository operationRepo;
 
 	public UserServices() {
 		super();
@@ -158,6 +163,24 @@ public class UserServices {
 			}
 		}
 
+		return result;
+	}
+
+	public List<BankOperation> getAllOperations(Person currentUser) {
+		
+		
+		List<BankOperation> result = new ArrayList<BankOperation>();
+		
+		
+		for(BankOperation bo : operationRepo.findAll()) {
+			
+			if(bo.getHolder().getId() == currentUser.getId()) {
+				
+				result.add(bo);
+			}
+		}
+		
+		
 		return result;
 	}
 

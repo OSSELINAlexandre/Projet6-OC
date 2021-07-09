@@ -36,11 +36,11 @@ public class OperationOnAccountServices {
 		bankAccountRepo.save(B);
 	}
 
-	public BankOperation findById(int id) {
+	public Person findById(int id) {
 
-		for (BankOperation ba : bankAccountRepo.findAll()) {
+		for (Person ba : userServices.findAll()) {
 
-			if (ba.getHolder().getId() == id) {
+			if (ba.getId() == id) {
 
 				return ba;
 			}
@@ -48,17 +48,6 @@ public class OperationOnAccountServices {
 
 		return null;
 
-	}
-
-	public boolean checkAvailability(Person it, Person currentUser, Double amount) {
-
-		BankOperation userAccount = findById(currentUser.getId());
-
-		if (userAccount.getAmount() >= amount) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	public void saveForDepositorWithdrawal(Person currentUser, Double depositMoney, boolean depositTrueWithdrawFalse) {

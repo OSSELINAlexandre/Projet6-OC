@@ -17,6 +17,7 @@ import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.IdentificationData;
 import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.DTO.PaymentData;
+import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.service.UserServices;
@@ -31,6 +32,7 @@ public class UserController {
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
 	private Map<Integer, String> listOfBuddies;
+	private List<BankOperation> listOfAllOperation;
 
 	@GetMapping("/")
 	public String returnMainPage(Model model) {
@@ -47,11 +49,14 @@ public class UserController {
 
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
-
+		List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
+		
 		Double amountAvailable = userServices.getTheAccountBalance(currentUser.getId());
 		model.addAttribute("amountAvailable", amountAvailable);
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
+		model.addAttribute("listOperations", listOfAllOperations);
+
 
 		return "home_page";
 	}
@@ -84,6 +89,7 @@ public class UserController {
 
 		listOfAllTransactions = currentUser.getAllTransactions();
 		listOfBuddies = userServices.getListNoDuplicates(listOfAllTransactions, currentUser);
+		listOfAllOperation = userServices.getAllOperations(currentUser);
 
 		model.addAttribute("listTransactions", listOfAllTransactions);
 		model.addAttribute("listOfBuddies", listOfBuddies);
@@ -95,6 +101,7 @@ public class UserController {
 		session.setAttribute("listOfBuddies", listOfBuddies);
 		session.setAttribute("currentUser", currentUser);
 		session.setAttribute("listTransactions", listOfAllTransactions);
+		session.setAttribute("listOfAllOperations", listOfAllOperation);
 
 		return "transfer_page";
 
@@ -106,10 +113,10 @@ public class UserController {
 
 		Person currentUser = (Person) session.getAttribute("currentUser");
 		//TODO add a button to see through a modal all the transaction done.
-		List<Transaction> listofAllTransaction = (List<Transaction>) session.getAttribute("listTransactions");
+		List<Transaction> listOfAllTransactions = (List<Transaction>) session.getAttribute("listTransactions");
 		model.addAttribute("buddy", new BuddiesInConnexion());
 		model.addAttribute("listOfBuddies", listOfBuddies);
-		model.addAttribute("listTransactions", listofAllTransaction);
+		model.addAttribute("listTransactions", listOfAllTransactions);
 		PaymentData payId = new PaymentData();
 		model.addAttribute("paymentID", payId);
 		model.addAttribute("currentUser", currentUser);
@@ -164,6 +171,7 @@ public class UserController {
 
 		listOfAllTransactions = currentUser.getAllTransactions();
 		listOfBuddies = userServices.getListNoDuplicates(listOfAllTransactions, currentUser);
+		listOfAllOperation = userServices.getAllOperations(currentUser);
 
 	}
 
