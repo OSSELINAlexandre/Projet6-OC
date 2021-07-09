@@ -45,6 +45,8 @@ public class Person {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "willbepayedperson", nullable = true)
 	private List<Transaction> transactionsThatWasPayed;
+	
+
 
 	public Person(int id, String name, String lastName, String eMail, String password, Double amount) {
 		super();
@@ -149,6 +151,13 @@ public class Person {
 		result.addAll(transactionsPayed);
 		return result;
 
+	}
+	
+	public List<Transaction> addTransitoryTransaction(Transaction transitoryItem){
+		
+		transactionsPayed.add(transitoryItem);
+		return getAllTransactions();
+	
 	}
 
 }

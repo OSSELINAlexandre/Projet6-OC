@@ -15,11 +15,11 @@ import com.example.paymybuddy.service.UserServices;
 import com.example.paymybuddy.service.TransactionsServices;
 
 @SpringBootApplication
-public class PremierbrouillonapplicationApplication {
+public class PayMyBuddyApplication {
 
 
 	public static void main(String[] args) {
-		SpringApplication.run(PremierbrouillonapplicationApplication.class, args);
+		SpringApplication.run(PayMyBuddyApplication.class, args);
 	}
 
 

@@ -50,7 +50,7 @@ public class OperationOnAccountServices {
 
 	}
 
-	public void saveForDepositorWithdrawal(Person currentUser, Double depositMoney, boolean depositTrueWithdrawFalse) {
+	public BankOperation saveForDepositorWithdrawal(Person currentUser, Double depositMoney, boolean depositTrueWithdrawFalse) {
 
 		BankOperation newBankOperation = new BankOperation();
 		newBankOperation.setDepositIsTrueWithdrawIsFalse(depositTrueWithdrawFalse);
@@ -74,7 +74,7 @@ public class OperationOnAccountServices {
 		currentUser.setAmount(finalAmountSaved);
 		userServices.save(currentUser);
 		bankAccountRepo.save(newBankOperation);
-		return;
+		return newBankOperation;
 
 	}
 
