@@ -1,4 +1,4 @@
-package com.example.premierbrouillonapplication.DTO;
+package com.example.paymybuddy.DTO;
 
 public class BuddiesInConnexion {
 

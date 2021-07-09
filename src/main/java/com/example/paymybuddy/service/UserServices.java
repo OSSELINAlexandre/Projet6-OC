@@ -1,4 +1,4 @@
-package com.example.premierbrouillonapplication.service;
+package com.example.paymybuddy.service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,21 +9,23 @@ import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.premierbrouillonapplication.DTO.BuddiesInConnexion;
-import com.example.premierbrouillonapplication.DTO.IdentificationData;
-import com.example.premierbrouillonapplication.DTO.LoginRegistration;
-import com.example.premierbrouillonapplication.model.Person;
-import com.example.premierbrouillonapplication.repository.PersonRepository;
+import com.example.paymybuddy.DTO.BuddiesInConnexion;
+import com.example.paymybuddy.DTO.IdentificationData;
+import com.example.paymybuddy.DTO.LoginRegistration;
+import com.example.paymybuddy.model.BankOperation;
+import com.example.paymybuddy.model.Person;
+import com.example.paymybuddy.model.Transaction;
+import com.example.paymybuddy.repository.PersonRepository;
 
 @Service
-public class PersonServices {
+public class UserServices {
 
-	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(PersonServices.class);
+	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(UserServices.class);
 
 	@Autowired
 	PersonRepository personRepo;
 
-	public PersonServices() {
+	public UserServices() {
 		super();
 	}
 
@@ -76,6 +78,7 @@ public class PersonServices {
 		newItem.setLastName(person.getLastName());
 		newItem.setName(person.getName());
 		newItem.setPassword(person.getPassword());
+		newItem.setAmount(0.0);
 
 		personRepo.save(newItem);
 
@@ -95,11 +98,22 @@ public class PersonServices {
 		return false;
 	}
 
+	public Double getTheAccountBalance(int id) {
+
+		for (Person ba : personRepo.findAll()) {
+
+			if (ba.getId() == id) {
+
+				return ba.getAmount();
+			}
+		}
+
+		return null;
+	}
+
 	public Person findById(IdentificationData person) {
 
-		Iterable<Person> allList = personRepo.findAll();
-
-		for (Person p : allList) {
+		for (Person p : personRepo.findAll()) {
 
 			if (p.geteMail().equals(person.getEmail()) && (p.getPassword().equals(person.getPassword()))) {
 
@@ -108,6 +122,43 @@ public class PersonServices {
 		}
 
 		return null;
+	}
+
+	public Map<Integer, String> getListNoDuplicates(List<Transaction> listofAllTransaction, Person currentUser) {
+
+		Map<Integer, String> result = new HashMap<>();
+		Boolean flag = true;
+
+		for (Transaction t : listofAllTransaction) {
+
+			if (t.getPayee().getId() != currentUser.getId()) {
+
+				if (!result.isEmpty()) {
+
+					for (Integer Tr : result.keySet()) {
+
+						if (Tr == t.getPayee().getId()) {
+
+							flag = false;
+						}
+
+					}
+
+					if (flag) {
+
+						result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
+					}
+
+					flag = true;
+				} else {
+
+					result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
+				}
+
+			}
+		}
+
+		return result;
 	}
 
 }

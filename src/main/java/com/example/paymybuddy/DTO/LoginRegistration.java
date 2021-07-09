@@ -1,4 +1,4 @@
-package com.example.premierbrouillonapplication.DTO;
+package com.example.paymybuddy.DTO;
 
 public class LoginRegistration {
 
@@ -6,7 +6,7 @@ public class LoginRegistration {
 
 	private String lastName;
 
-	private String eMail;
+	private String email;
 
 	private String password;
 
@@ -19,7 +19,7 @@ public class LoginRegistration {
 	public LoginRegistration(String name, String lastName, String eMail, String password, String secondTestPassword) {
 		this.name = name;
 		this.lastName = lastName;
-		this.eMail = eMail;
+		this.email = eMail;
 		this.password = password;
 		this.secondTestPassword = secondTestPassword;
 	}
@@ -41,11 +41,11 @@ public class LoginRegistration {
 	}
 
 	public String geteMail() {
-		return eMail;
+		return email;
 	}
 
 	public void seteMail(String eMail) {
-		this.eMail = eMail;
+		this.email = eMail;
 	}
 
 	public String getPassword() {

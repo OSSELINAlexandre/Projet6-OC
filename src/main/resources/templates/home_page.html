@@ -64,7 +64,7 @@
 		<div class="PMBAccount">
 			<h1 class="fw-bold">My PMB Account</h1>
 			<div class=" dangerFrame bg-danger text-white fw-bold rounded FrameShadow"
-				th:if="${WithdrawErrorFlag != null }">
+				th:if="${withdrawErrorFlag != null }">
 				<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor"
 					class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
 					<path
@@ -79,7 +79,7 @@
 			<div
 				class="container p-4  d-flex align-items-center rounded sendMoneyContainer Custom-Background text-white mainFrame FrameShadow">
 				<p class="fw-bold fontInPMBAccount">Available money</p>
-				<P class="fw-bold fontInPMBAccount" th:text="${AmountAvailable}" value="0"></P>
+				<P class="fw-bold fontInPMBAccount" th:text="${amountAvailable}" value="0"></P>
 			</div>
 
 

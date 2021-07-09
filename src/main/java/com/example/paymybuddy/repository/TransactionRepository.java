@@ -1,8 +1,8 @@
-package com.example.premierbrouillonapplication.repository;
+package com.example.paymybuddy.repository;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.example.premierbrouillonapplication.model.Transaction;
+import com.example.paymybuddy.model.Transaction;
 
 public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
 
