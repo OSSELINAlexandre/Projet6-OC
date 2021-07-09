@@ -50,13 +50,12 @@ public class UserController {
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
 		List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
-		
+
 		Double amountAvailable = userServices.getTheAccountBalance(currentUser.getId());
 		model.addAttribute("amountAvailable", amountAvailable);
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
 		model.addAttribute("listOperations", listOfAllOperations);
-
 
 		return "home_page";
 	}
@@ -112,7 +111,7 @@ public class UserController {
 		RefreshAndInitializeAllImportantData(session);
 
 		Person currentUser = (Person) session.getAttribute("currentUser");
-		//TODO add a button to see through a modal all the transaction done.
+		// TODO add a button to see through a modal all the transaction done.
 		List<Transaction> listOfAllTransactions = (List<Transaction>) session.getAttribute("listTransactions");
 		model.addAttribute("buddy", new BuddiesInConnexion());
 		model.addAttribute("listOfBuddies", listOfBuddies);
@@ -166,6 +165,9 @@ public class UserController {
 	}
 
 	private void RefreshAndInitializeAllImportantData(HttpSession session) {
+		TransferController.refreshErrorTrueIfAlreadyBeingPaid = true;
+		OperationController.refreshErrorTrueIfAlreadyBeingPaidWithDraw = true;
+		OperationController.refreshErrorTrueIfAlreadyBeingPaidDeposit = true;
 
 		currentUser = (Person) session.getAttribute("currentUser");
 
