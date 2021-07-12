@@ -45,7 +45,7 @@ public class UserController {
 	@GetMapping("/userHome")
 	public String returnHomePage(Model model, HttpSession session) {
 
-		RefreshAndInitializeAllImportantData(session);
+		refreshAndInitializeAllImportantData(session);
 
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
@@ -62,14 +62,14 @@ public class UserController {
 
 	@GetMapping("/profileUser")
 	public String returnUserProfil(HttpSession session) {
-		RefreshAndInitializeAllImportantData(session);
+		refreshAndInitializeAllImportantData(session);
 
 		return "user_profile";
 	}
 
 	@GetMapping("/contact")
 	public String returnContactPages(HttpSession session) {
-		RefreshAndInitializeAllImportantData(session);
+		refreshAndInitializeAllImportantData(session);
 
 		return "contact";
 	}
@@ -108,7 +108,7 @@ public class UserController {
 
 	@GetMapping("/transfer")
 	public String returnTransferPage(Model model, HttpSession session) {
-		RefreshAndInitializeAllImportantData(session);
+		refreshAndInitializeAllImportantData(session);
 
 		Person currentUser = (Person) session.getAttribute("currentUser");
 		// TODO add a button to see through a modal all the transaction done.
@@ -164,7 +164,7 @@ public class UserController {
 		return "log_off";
 	}
 
-	private void RefreshAndInitializeAllImportantData(HttpSession session) {
+	private void refreshAndInitializeAllImportantData(HttpSession session) {
 		TransferController.refreshErrorTrueIfAlreadyBeingPaid = true;
 		OperationController.refreshErrorTrueIfAlreadyBeingPaidWithDraw = true;
 		OperationController.refreshErrorTrueIfAlreadyBeingPaidDeposit = true;

@@ -26,30 +26,34 @@ public class OperationController {
 
 	private Person currentUser;
 	private List<BankOperation> listOfAllOperation;
-	
-	//This attribute is to avoid refresh error : multiple transaction can be paid if the user refresh will on a PostPage.
+
+	// This attribute is to avoid refresh error : multiple withdraw can be done
+	// if the user refresh the page after a withdraw.
 	public static Boolean refreshErrorTrueIfAlreadyBeingPaidWithDraw;
-	
-	//This attribute is to avoid refresh error : multiple transaction can be paid if the user refresh will on a PostPage.
+
+	// This attribute is to avoid refresh error : multiple withdraw can be done
+	// if the user refresh the page after a deposit.
 	public static Boolean refreshErrorTrueIfAlreadyBeingPaidDeposit;
-	
+
 	@PostMapping("/withDrawPayment")
 	public String withdrawSomeMoney(BankAccountWithdrawalDepositInformation withdrawMoney, Model model,
 			HttpSession session) {
 		refreshErrorTrueIfAlreadyBeingPaidDeposit = true;
-		
-		RefreshAndInitializeAllImportantData(session);
+
+		refreshAndInitializeAllImportantData(session);
 
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
 		List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
 
-		if (bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount()) && refreshErrorTrueIfAlreadyBeingPaidWithDraw) {
+		if (bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())
+				&& refreshErrorTrueIfAlreadyBeingPaidWithDraw) {
 			refreshErrorTrueIfAlreadyBeingPaidWithDraw = false;
 			BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser,
 					withdrawMoney.getAmount(), false);
 			listOfAllOperations.add(transitoryItem);
-		} else if(!bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount()) && refreshErrorTrueIfAlreadyBeingPaidWithDraw) {
+		} else if (!bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())
+				&& refreshErrorTrueIfAlreadyBeingPaidWithDraw) {
 
 			model.addAttribute("withdrawErrorFlag", true);
 		}
@@ -69,19 +73,17 @@ public class OperationController {
 	public String depositSomeMoney(BankAccountWithdrawalDepositInformation depositMoney, Model model,
 			HttpSession session) {
 		refreshErrorTrueIfAlreadyBeingPaidWithDraw = true;
-		RefreshAndInitializeAllImportantData(session);
+		refreshAndInitializeAllImportantData(session);
 
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
-		
 
-		
-		if(refreshErrorTrueIfAlreadyBeingPaidDeposit) {
+		if (refreshErrorTrueIfAlreadyBeingPaidDeposit) {
 			BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser,
-				depositMoney.getAmount(), true);
-		List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
-		listOfAllOperations.add(transitoryItem);
-		refreshErrorTrueIfAlreadyBeingPaidDeposit = false;
+					depositMoney.getAmount(), true);
+			List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
+			listOfAllOperations.add(transitoryItem);
+			refreshErrorTrueIfAlreadyBeingPaidDeposit = false;
 		}
 
 		model.addAttribute("amountAvailable", bankAccountServices.findById(currentUser.getId()).getAmount());
@@ -93,7 +95,7 @@ public class OperationController {
 		return "home_page";
 	}
 
-	private void RefreshAndInitializeAllImportantData(HttpSession session) {
+	private void refreshAndInitializeAllImportantData(HttpSession session) {
 
 		currentUser = (Person) session.getAttribute("currentUser");
 
