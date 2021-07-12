@@ -1,17 +1,12 @@
 package com.example.paymybuddy.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
 import javax.transaction.Transactional;
-
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.PaymentData;
 import com.example.paymybuddy.constant.Fees;
@@ -37,7 +32,6 @@ public class TransactionsServices {
 	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(TransactionsServices.class);
 
 	public TransactionsServices() {
-		super();
 	}
 
 	public void saveIt(Transaction t) {
@@ -117,7 +111,6 @@ public class TransactionsServices {
 	}
 
 	public void adjustAccount(Person buddyGoingToBePaidAccount, Person currentUser, Double amount) {
-
 
 		Double currentUserNewAmount = currentUser.getAmount() - (amount * (1 + Fees.CLASSIC_FEE_APP));
 		Double buddyPaidNewAmount = buddyGoingToBePaidAccount.getAmount() + amount;

@@ -8,7 +8,6 @@ public class IdentificationData {
 	
 
 	public IdentificationData() {
-		super();
 	}
 
 	public IdentificationData(String email, String password) {

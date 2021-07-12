@@ -2,14 +2,9 @@ package com.example.paymybuddy.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Optional;
-
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.example.paymybuddy.DTO.BankAccountWithdrawalDepositInformation;
-import com.example.paymybuddy.DTO.PaymentData;
 import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.repository.BankOperationRepository;
@@ -28,7 +23,6 @@ public class OperationOnAccountServices {
 	PersonRepository userServices;
 
 	public OperationOnAccountServices() {
-		super();
 	}
 
 	public void saveIt(BankOperation B) {
@@ -50,7 +44,8 @@ public class OperationOnAccountServices {
 
 	}
 
-	public BankOperation saveForDepositorWithdrawal(Person currentUser, Double depositMoney, boolean depositTrueWithdrawFalse) {
+	public BankOperation saveForDepositorWithdrawal(Person currentUser, Double depositMoney,
+			boolean depositTrueWithdrawFalse) {
 
 		BankOperation newBankOperation = new BankOperation();
 		newBankOperation.setDepositIsTrueWithdrawIsFalse(depositTrueWithdrawFalse);

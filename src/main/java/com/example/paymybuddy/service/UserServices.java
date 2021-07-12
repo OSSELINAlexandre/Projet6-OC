@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.IdentificationData;
 import com.example.paymybuddy.DTO.LoginRegistration;
@@ -26,12 +23,11 @@ public class UserServices {
 
 	@Autowired
 	PersonRepository personRepo;
-	
+
 	@Autowired
 	BankOperationRepository operationRepo;
 
 	public UserServices() {
-		super();
 	}
 
 	public void saveIt(Person P) {
@@ -167,20 +163,17 @@ public class UserServices {
 	}
 
 	public List<BankOperation> getAllOperations(Person currentUser) {
-		
-		
+
 		List<BankOperation> result = new ArrayList<BankOperation>();
-		
-		
-		for(BankOperation bo : operationRepo.findAll()) {
-			
-			if(bo.getHolder().getId() == currentUser.getId()) {
-				
+
+		for (BankOperation bo : operationRepo.findAll()) {
+
+			if (bo.getHolder().getId() == currentUser.getId()) {
+
 				result.add(bo);
 			}
 		}
-		
-		
+
 		return result;
 	}
 

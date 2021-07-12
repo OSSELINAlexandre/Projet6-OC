@@ -29,11 +29,9 @@ public class BankOperation {
 	private Person holder;
 
 	public BankOperation() {
-		super();
 	}
 
 	public BankOperation(int id, Double amount, boolean depositIsTrueWithdrawIsFalse, Person holder) {
-		super();
 		this.id = id;
 		this.amount = amount;
 		this.depositIsTrueWithdrawIsFalse = depositIsTrueWithdrawIsFalse;
@@ -41,7 +39,6 @@ public class BankOperation {
 	}
 
 	public BankOperation(int id, Double amount) {
-		super();
 		this.id = id;
 		this.amount = amount;
 
