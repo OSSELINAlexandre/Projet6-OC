@@ -1,9 +1,7 @@
 package com.example.paymybuddy.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,17 +33,14 @@ public class Transaction {
 	private Person payee;
 
 	public Transaction() {
-		super();
 	}
-	
+
 	public Transaction(String commentaire, Double amount, Person payeur, Person payee) {
-		super();
 		this.commentaire = commentaire;
 		this.amount = amount;
 		this.payeur = payeur;
 		this.payee = payee;
 	}
-
 
 	public int getId() {
 		return id;

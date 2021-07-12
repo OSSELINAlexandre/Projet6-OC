@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example.paymybuddy.DTO.BankAccountWithdrawalDepositInformation;
 import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.Person;
-import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.service.OperationOnAccountServices;
 
 @Controller
@@ -25,7 +24,6 @@ public class OperationController {
 	OperationOnAccountServices bankAccountServices;
 
 	private Person currentUser;
-	private List<BankOperation> listOfAllOperation;
 
 	// This attribute is to avoid refresh error : multiple withdraw can be done
 	// if the user refresh the page after a withdraw.

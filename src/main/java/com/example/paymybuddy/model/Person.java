@@ -49,7 +49,6 @@ public class Person {
 
 
 	public Person(int id, String name, String lastName, String eMail, String password, Double amount) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.lastName = lastName;
@@ -59,7 +58,6 @@ public class Person {
 	}
 
 	public Person(int id, String name, String lastName, String eMail, String password) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.lastName = lastName;
@@ -69,7 +67,6 @@ public class Person {
 	}
 
 	public Person() {
-		super();
 	}
 
 	public int getId() {

@@ -5,12 +5,10 @@ public class BankAccountWithdrawalDepositInformation {
 	private Double amount;
 
 	public BankAccountWithdrawalDepositInformation(Double amount) {
-		super();
 		this.amount = amount;
 	}
 
 	public BankAccountWithdrawalDepositInformation() {
-		super();
 	}
 
 	public Double getAmount() {

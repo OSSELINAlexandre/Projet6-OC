@@ -13,7 +13,6 @@ public class LoginRegistration {
 	private String secondTestPassword;
 
 	public LoginRegistration() {
-		super();
 	}
 
 	public LoginRegistration(String name, String lastName, String eMail, String password, String secondTestPassword) {
