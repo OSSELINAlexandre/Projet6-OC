@@ -39,7 +39,7 @@ public class TransferController {
 		refreshErrorTrueIfAlreadyBeingPaid = true; 
 		
 		
-		RefreshAndInitializeAllImportantData(session);
+		refreshAndInitializeAllImportantData(session);
 
 		Map<Integer, String> result = transactionServices.checkEmailFromBuddy(bud, currentUser);
 
@@ -80,7 +80,7 @@ public class TransferController {
 	@PostMapping("/processingPayment")
 	public String processPayment(PaymentData pay, Model model, HttpSession session) {
 
-		RefreshAndInitializeAllImportantData(session);
+		refreshAndInitializeAllImportantData(session);
 
 		BankOperation personToPay = transactionServices.findBankOperationById(Integer.parseInt(pay.getPersonToPay()));
 
@@ -95,7 +95,7 @@ public class TransferController {
 
 
 			currentUser.addTransitoryTransaction(transitoryItem);
-			RefreshAndInitializeAllImportantData(session);
+			refreshAndInitializeAllImportantData(session);
 			session.setAttribute("currentUser", currentUser);
 			session.setAttribute("listTransactions", listOfAllTransactions);
 			model.addAttribute("buddy", new BuddiesInConnexion());
@@ -127,7 +127,7 @@ public class TransferController {
 
 	}
 
-	private void RefreshAndInitializeAllImportantData(HttpSession session) {
+	private void refreshAndInitializeAllImportantData(HttpSession session) {
 
 		currentUser = (Person) session.getAttribute("currentUser");
 

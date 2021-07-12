@@ -27,12 +27,12 @@ public class OperationController {
 	private Person currentUser;
 	private List<BankOperation> listOfAllOperation;
 
-	// This attribute is to avoid refresh error : multiple transaction can be paid
-	// if the user refresh will on a PostPage.
+	// This attribute is to avoid refresh error : multiple withdraw can be done
+	// if the user refresh the page after a withdraw.
 	public static Boolean refreshErrorTrueIfAlreadyBeingPaidWithDraw;
 
-	// This attribute is to avoid refresh error : multiple transaction can be paid
-	// if the user refresh will on a PostPage.
+	// This attribute is to avoid refresh error : multiple withdraw can be done
+	// if the user refresh the page after a deposit.
 	public static Boolean refreshErrorTrueIfAlreadyBeingPaidDeposit;
 
 	@PostMapping("/withDrawPayment")
@@ -40,7 +40,7 @@ public class OperationController {
 			HttpSession session) {
 		refreshErrorTrueIfAlreadyBeingPaidDeposit = true;
 
-		RefreshAndInitializeAllImportantData(session);
+		refreshAndInitializeAllImportantData(session);
 
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
@@ -73,7 +73,7 @@ public class OperationController {
 	public String depositSomeMoney(BankAccountWithdrawalDepositInformation depositMoney, Model model,
 			HttpSession session) {
 		refreshErrorTrueIfAlreadyBeingPaidWithDraw = true;
-		RefreshAndInitializeAllImportantData(session);
+		refreshAndInitializeAllImportantData(session);
 
 		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
@@ -95,7 +95,7 @@ public class OperationController {
 		return "home_page";
 	}
 
-	private void RefreshAndInitializeAllImportantData(HttpSession session) {
+	private void refreshAndInitializeAllImportantData(HttpSession session) {
 
 		currentUser = (Person) session.getAttribute("currentUser");
 
