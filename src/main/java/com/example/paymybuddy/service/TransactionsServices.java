@@ -11,9 +11,11 @@ import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.PaymentData;
 import com.example.paymybuddy.constant.Fees;
 import com.example.paymybuddy.model.BankOperation;
+import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.repository.BankOperationRepository;
+import com.example.paymybuddy.repository.ConnexionBetweenBuddiesRepository;
 import com.example.paymybuddy.repository.PersonRepository;
 import com.example.paymybuddy.repository.TransactionRepository;
 
@@ -28,6 +30,9 @@ public class TransactionsServices {
 
 	@Autowired
 	BankOperationRepository bankAccountRepo;
+
+	@Autowired
+	ConnexionBetweenBuddiesRepository connexionRepo;
 
 	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(TransactionsServices.class);
 
@@ -51,28 +56,6 @@ public class TransactionsServices {
 		}
 
 		return null;
-	}
-
-	public Map<Integer, String> checkEmailFromBuddy(BuddiesInConnexion bud, Person currentUser) {
-
-		Map<Integer, String> result = new HashMap<>();
-
-		for (Person p : personRepo.findAll()) {
-
-			if (p.geteMail().equals(bud.getEmail()) && !p.geteMail().equals(currentUser.geteMail())) {
-
-				result.put(p.getId(), p.getLastName() + ", " + p.getName());
-
-				return result;
-
-			} else if (p.geteMail().equals(bud.getEmail()) && p.geteMail().equals(currentUser.geteMail())) {
-
-				result.put(0, "BUG");
-			}
-
-		}
-
-		return result;
 	}
 
 	public boolean checkAmounts(Person currentUser, double d) {
@@ -110,19 +93,21 @@ public class TransactionsServices {
 
 	}
 
-	public void adjustAccount(Person buddyGoingToBePaidAccount, Person currentUser, Double amount) {
+	public Transaction adjustAccount(PaymentData Data, Person currentUser) {
 
-		Double currentUserNewAmount = currentUser.getAmount() - (amount * (1 + Fees.CLASSIC_FEE_APP));
-		Double buddyPaidNewAmount = buddyGoingToBePaidAccount.getAmount() + amount;
-
+		Person theBud = personRepo.findById(Integer.parseInt(Data.getPersonToPay())).get();
+		Double currentUserNewAmount = currentUser.getAmount() - (Data.getAmount() * (1 + Fees.CLASSIC_FEE_APP));
+		Double buddyPaidNewAmount = theBud.getAmount() + Data.getAmount();
 		currentUser.setAmount(currentUserNewAmount);
-		buddyGoingToBePaidAccount.setAmount(buddyPaidNewAmount);
-
+		theBud.setAmount(buddyPaidNewAmount);
 		logger.info("IN ADJUSTACCOUNT, class BankAccountService, newUserAmount : " + currentUserNewAmount);
 		logger.info("IN ADJUSTACCOUNT, class BankAccountService, newgonnaBePaidAccount : " + buddyPaidNewAmount);
-
+	
+		Transaction tempTransac = saveANewTransaction(currentUser, Data, theBud);
 		personRepo.save(currentUser);
-		personRepo.save(buddyGoingToBePaidAccount);
+		personRepo.save(theBud);
+		
+		return tempTransac;
 
 	}
 
@@ -137,43 +122,6 @@ public class TransactionsServices {
 		return null;
 	}
 
-	public Map<Integer, String> getListNoDuplicates(List<Transaction> listofAllTransaction, Person currentUser) {
-
-		Map<Integer, String> result = new HashMap<>();
-		Boolean flag = true;
-
-		for (Transaction t : listofAllTransaction) {
-
-			if (t.getPayee().getId() != currentUser.getId()) {
-
-				if (!result.isEmpty()) {
-
-					for (Integer Tr : result.keySet()) {
-
-						if (Tr == t.getPayee().getId()) {
-
-							flag = false;
-						}
-
-					}
-
-					if (flag) {
-
-						result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
-					}
-
-					flag = true;
-				} else {
-
-					result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
-				}
-
-			}
-		}
-
-		return result;
-	}
-
 	@Transactional
 	public Transaction saveANewTransaction(Person currentUser, PaymentData pay, Person it) {
 
@@ -186,5 +134,61 @@ public class TransactionsServices {
 		transacRepo.save(newItem);
 		return newItem;
 	}
+
+	public ConnexionBetweenBuddies addingABuddyToTheCurrentUser(BuddiesInConnexion bud, Person currentUser) {
+
+		Boolean result = true;
+		Person buddyInConnection = personRepo.findByEmail(bud.getEmail());
+
+		for (ConnexionBetweenBuddies budi : connexionRepo.findAll()) {
+
+			if (budi.getBuddyOfACenter() == buddyInConnection.getId() && budi.getIdOfCenter() == currentUser.getId()) {
+
+				result = false;
+			}
+
+		}
+
+		if (result) {
+
+			ConnexionBetweenBuddies newConnexion = new ConnexionBetweenBuddies();
+			newConnexion.setIdOfCenter(currentUser.getId());
+			newConnexion.setBuddyOfACenter(buddyInConnection.getId());
+			connexionRepo.save(newConnexion);
+			
+			return newConnexion;
+
+		}
+		return null;
+
+	}
+
+	public boolean checkIfBuddyExists(BuddiesInConnexion bud) {
+
+		for (Person p : personRepo.findAll()) {
+
+			if (p.geteMail().equals(bud.getEmail())) {
+
+				return true;
+			}
+
+		}
+
+		return false;
+	}
+
+	public Map<Person, String> addTemporaryConnexion(ConnexionBetweenBuddies temporaryConnexion) {
+		
+		Map<Person, String> temporaryResult = new HashMap<>();
+		
+		Person tempBuddy = personRepo.findById(temporaryConnexion.getBuddyOfACenter()).get();
+		
+		temporaryResult.put(tempBuddy, tempBuddy.getName() + ", " + tempBuddy.getLastName());
+
+		return temporaryResult;
+		
+	}
+
+
 
 }

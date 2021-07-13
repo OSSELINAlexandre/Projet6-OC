@@ -11,9 +11,11 @@ import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.IdentificationData;
 import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.model.BankOperation;
+import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.repository.BankOperationRepository;
+import com.example.paymybuddy.repository.ConnexionBetweenBuddiesRepository;
 import com.example.paymybuddy.repository.PersonRepository;
 
 @Service
@@ -26,6 +28,9 @@ public class UserServices {
 
 	@Autowired
 	BankOperationRepository operationRepo;
+
+	@Autowired
+	ConnexionBetweenBuddiesRepository connexionRepo;
 
 	public UserServices() {
 	}
@@ -112,7 +117,7 @@ public class UserServices {
 		return null;
 	}
 
-	public Person findById(IdentificationData person) {
+	public Person findByIdentificationDataLogin(IdentificationData person) {
 
 		for (Person p : personRepo.findAll()) {
 
@@ -123,43 +128,6 @@ public class UserServices {
 		}
 
 		return null;
-	}
-
-	public Map<Integer, String> getListNoDuplicates(List<Transaction> listofAllTransaction, Person currentUser) {
-
-		Map<Integer, String> result = new HashMap<>();
-		Boolean flag = true;
-
-		for (Transaction t : listofAllTransaction) {
-
-			if (t.getPayee().getId() != currentUser.getId()) {
-
-				if (!result.isEmpty()) {
-
-					for (Integer Tr : result.keySet()) {
-
-						if (Tr == t.getPayee().getId()) {
-
-							flag = false;
-						}
-
-					}
-
-					if (flag) {
-
-						result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
-					}
-
-					flag = true;
-				} else {
-
-					result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
-				}
-
-			}
-		}
-
-		return result;
 	}
 
 	public List<BankOperation> getAllOperations(Person currentUser) {
@@ -177,4 +145,17 @@ public class UserServices {
 		return result;
 	}
 
+
+	public Map<Person, String> getListOfBuddies(Person currentUser) {
+
+		Map<Person, String> result = new HashMap<>();
+
+		for (ConnexionBetweenBuddies ba : currentUser.getListOfBuddies()) {
+
+			Person buddy = personRepo.findById(ba.getBuddyOfACenter()).get();
+			result.put(buddy, buddy.getName() + ", " + buddy.getLastName());
+		}
+
+		return result;
+	}
 }

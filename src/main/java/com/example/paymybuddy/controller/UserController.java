@@ -2,6 +2,7 @@ package com.example.paymybuddy.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -10,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.example.paymybuddy.DTO.BankAccountWithdrawalDepositInformation;
 import com.example.paymybuddy.DTO.BuddiesInConnexion;
@@ -31,33 +35,20 @@ public class UserController {
 
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
-	private Map<Integer, String> listOfBuddies;
 	private List<BankOperation> listOfAllOperation;
+	private Map<Person, String> listOfBuddies;
 
 	@GetMapping("/")
-	public String returnMainPage(Model model) {
+	public String returnMainPage(@RequestParam("errorFlag") Optional<Boolean> errorFlag, Model model) {
 
 		model.addAttribute("comingUser", new IdentificationData());
 
+		if (errorFlag.isPresent()) {
+
+			model.addAttribute("errorFlag", true);
+		}
+
 		return "login";
-	}
-
-	@GetMapping("/userHome")
-	public String returnHomePage(Model model, HttpSession session) {
-
-		refreshAndInitializeAllImportantData(session);
-
-		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
-		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
-		List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
-
-		Double amountAvailable = userServices.getTheAccountBalance(currentUser.getId());
-		model.addAttribute("amountAvailable", amountAvailable);
-		model.addAttribute("depositInformation", depositInfo);
-		model.addAttribute("withdrawalInformation", withdrawalInfo);
-		model.addAttribute("listOperations", listOfAllOperations);
-
-		return "home_page";
 	}
 
 	@GetMapping("/profileUser")
@@ -67,60 +58,10 @@ public class UserController {
 		return "user_profile";
 	}
 
-	@GetMapping("/contact")
-	public String returnContactPages(HttpSession session) {
-		refreshAndInitializeAllImportantData(session);
+	@GetMapping("/Logoff")
+	public String logOfftheAccount() {
 
-		return "contact";
-	}
-
-	@PostMapping("/process_signin")
-	public String verifyIdentity(IdentificationData person, Model model, HttpSession session) {
-
-		currentUser = userServices.findById(person);
-
-		if (currentUser == null) {
-			model.addAttribute("errorFlag", true);
-			model.addAttribute("comingUser", new IdentificationData());
-
-			return "login";
-		}
-
-		listOfAllTransactions = currentUser.getAllTransactions();
-		listOfBuddies = userServices.getListNoDuplicates(listOfAllTransactions, currentUser);
-		listOfAllOperation = userServices.getAllOperations(currentUser);
-
-		model.addAttribute("listTransactions", listOfAllTransactions);
-		model.addAttribute("listOfBuddies", listOfBuddies);
-		PaymentData payId = new PaymentData();
-		model.addAttribute("paymentID", payId);
-		model.addAttribute("buddy", new BuddiesInConnexion());
-		model.addAttribute("currentUser", currentUser);
-
-		session.setAttribute("listOfBuddies", listOfBuddies);
-		session.setAttribute("currentUser", currentUser);
-		session.setAttribute("listTransactions", listOfAllTransactions);
-		session.setAttribute("listOfAllOperations", listOfAllOperation);
-
-		return "transfer_page";
-
-	}
-
-	@GetMapping("/transfer")
-	public String returnTransferPage(Model model, HttpSession session) {
-		refreshAndInitializeAllImportantData(session);
-
-		Person currentUser = (Person) session.getAttribute("currentUser");
-		// TODO add a button to see through a modal all the transaction done.
-		List<Transaction> listOfAllTransactions = (List<Transaction>) session.getAttribute("listTransactions");
-		model.addAttribute("buddy", new BuddiesInConnexion());
-		model.addAttribute("listOfBuddies", listOfBuddies);
-		model.addAttribute("listTransactions", listOfAllTransactions);
-		PaymentData payId = new PaymentData();
-		model.addAttribute("paymentID", payId);
-		model.addAttribute("currentUser", currentUser);
-
-		return "transfer_page";
+		return "log_off";
 	}
 
 	@GetMapping("/register")
@@ -131,48 +72,72 @@ public class UserController {
 		return "register";
 	}
 
+	@GetMapping("/registersucessfully")
+	public String registerIsASucess() {
+
+		return "register_successfully";
+	}
+
+	@PostMapping("/process_signin")
+	public ModelAndView verifyIdentity(IdentificationData person, Model model, HttpSession session) {
+
+		currentUser = userServices.findByIdentificationDataLogin(person);
+
+		if (currentUser == null) {
+
+			ModelAndView theview = new ModelAndView("redirect:http://localhost:8080/");
+			theview.addObject("errorFlag", true);
+			return theview;
+
+		} else {
+
+			ModelAndView theview = new ModelAndView("redirect:http://localhost:8080/userHome");
+
+			listOfAllTransactions = currentUser.getAllTransactions();
+			listOfAllOperation = userServices.getAllOperations(currentUser);
+			listOfBuddies = userServices.getListOfBuddies(currentUser);
+
+			session.setAttribute("listOfBuddies", listOfBuddies);
+			session.setAttribute("currentUser", currentUser);
+			session.setAttribute("listTransactions", listOfAllTransactions);
+			session.setAttribute("listOfAllOperations", listOfAllOperation);
+
+			return theview;
+
+		}
+
+	}
+
 	@PostMapping("/process_register")
-	public String processRegistration(LoginRegistration person, HttpSession session, Model model) {
+	public ModelAndView processRegistration(LoginRegistration person, HttpSession session, Model model) {
 
 		if (userServices.checkExistingMail(person)) {
 
-			model.addAttribute("existingmail", true);
-			model.addAttribute("newUser", new LoginRegistration());
+			ModelAndView theView = new ModelAndView("redirect:http://localhost:8080/register");
+			theView.addObject("existingmail", true);
+			return theView;
 
-			return "register";
+		} else if (!person.getPassword().equals(person.getSecondTestPassword())) {
+
+			ModelAndView theView = new ModelAndView("redirect:http://localhost:8080/register");
+			theView.addObject("passwordmatch", true);
+			return theView;
+
+		} else {
+
+			ModelAndView theView = new ModelAndView("redirect:http://localhost:8080/registersucessfully");
+			userServices.saveNewPerson(person);
+
+			return theView;
 
 		}
 
-		if (!person.getPassword().equals(person.getSecondTestPassword())) {
-
-			model.addAttribute("passwordmatch", true);
-			model.addAttribute("newUser", new LoginRegistration());
-
-			return "register";
-
-		}
-
-		userServices.saveNewPerson(person);
-
-		return "register_successfully";
-
-	}
-
-	@GetMapping("/Logoff")
-	public String logOfftheAccount() {
-
-		return "log_off";
 	}
 
 	private void refreshAndInitializeAllImportantData(HttpSession session) {
-		TransferController.refreshErrorTrueIfAlreadyBeingPaid = true;
-		OperationController.refreshErrorTrueIfAlreadyBeingPaidWithDraw = true;
-		OperationController.refreshErrorTrueIfAlreadyBeingPaidDeposit = true;
 
 		currentUser = (Person) session.getAttribute("currentUser");
-
 		listOfAllTransactions = currentUser.getAllTransactions();
-		listOfBuddies = userServices.getListNoDuplicates(listOfAllTransactions, currentUser);
 		listOfAllOperation = userServices.getAllOperations(currentUser);
 
 	}

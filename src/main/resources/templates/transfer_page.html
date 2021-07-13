@@ -74,7 +74,7 @@
 				<p>Couldn't add this buddy, please try another adress.</p>
 			</div>
 		</DIV>
-		<DIV class="container ConnectionError" th:if="${errorPayingBuddy != null }">
+		<DIV class="container ConnectionError" th:if="${ErrorPayingBuddy != null }">
 			<div class="bg-danger text-white fw-bold rounded FrameShadow ConnectionContainer">
 				<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor"
 					class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
@@ -159,7 +159,7 @@
 
 
 					<select class="sendMoneyFrame" th:field="*{personToPay}" required>
-						<option th:each="name : ${listOfBuddies}" th:value="${name.key}" th:text="${name.value}" />
+						<option th:each="name : ${listOfBuddies}" th:value="${name.key.id}" th:text="${name.value}" />
 					</select>
 
 					<input step="0.01" min="1" class="sendMoneyFrame" type="number" th:field="*{amount}" required />

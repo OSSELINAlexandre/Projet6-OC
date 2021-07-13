@@ -45,8 +45,10 @@ public class Person {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "willbepayedperson", nullable = true)
 	private List<Transaction> transactionsThatWasPayed;
-	
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "center", nullable = true)
+	private List<ConnexionBetweenBuddies> listOfBuddies;
 
 	public Person(int id, String name, String lastName, String eMail, String password, Double amount) {
 		this.id = id;
@@ -105,14 +107,6 @@ public class Person {
 		return password;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	public Double getAmount() {
 		return accountfunds;
 	}
@@ -149,12 +143,28 @@ public class Person {
 		return result;
 
 	}
-	
-	public List<Transaction> addTransitoryTransaction(Transaction transitoryItem){
-		
+
+	public List<Transaction> addTransitoryTransaction(Transaction transitoryItem) {
+
 		transactionsPayed.add(transitoryItem);
 		return getAllTransactions();
-	
+
+	}
+
+	public Double getAccountfunds() {
+		return accountfunds;
+	}
+
+	public void setAccountfunds(Double accountfunds) {
+		this.accountfunds = accountfunds;
+	}
+
+	public List<ConnexionBetweenBuddies> getListOfBuddies() {
+		return listOfBuddies;
+	}
+
+	public void setListOfBuddies(List<ConnexionBetweenBuddies> listOfBuddies) {
+		this.listOfBuddies = listOfBuddies;
 	}
 
 }

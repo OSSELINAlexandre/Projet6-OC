@@ -1,6 +1,7 @@
 package com.example.paymybuddy.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -8,12 +9,17 @@ import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.example.paymybuddy.DTO.BankAccountWithdrawalDepositInformation;
 import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.service.OperationOnAccountServices;
+import com.example.paymybuddy.service.UserServices;
 
 @Controller
 public class OperationController {
@@ -22,21 +28,15 @@ public class OperationController {
 
 	@Autowired
 	OperationOnAccountServices bankAccountServices;
+	
+	@Autowired
+	UserServices userServices;
 
 	private Person currentUser;
 
-	// This attribute is to avoid refresh error : multiple withdraw can be done
-	// if the user refresh the page after a withdraw.
-	public static Boolean refreshErrorTrueIfAlreadyBeingPaidWithDraw;
-
-	// This attribute is to avoid refresh error : multiple withdraw can be done
-	// if the user refresh the page after a deposit.
-	public static Boolean refreshErrorTrueIfAlreadyBeingPaidDeposit;
-
-	@PostMapping("/withDrawPayment")
-	public String withdrawSomeMoney(BankAccountWithdrawalDepositInformation withdrawMoney, Model model,
+	@GetMapping("/userHome")
+	public String returnHomePage(@RequestParam("withdrawErrorFlag") Optional<Boolean> WithdrawError, Model model,
 			HttpSession session) {
-		refreshErrorTrueIfAlreadyBeingPaidDeposit = true;
 
 		refreshAndInitializeAllImportantData(session);
 
@@ -44,53 +44,55 @@ public class OperationController {
 		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
 		List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
 
-		if (bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())
-				&& refreshErrorTrueIfAlreadyBeingPaidWithDraw) {
-			refreshErrorTrueIfAlreadyBeingPaidWithDraw = false;
-			BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser,
-					withdrawMoney.getAmount(), false);
-			listOfAllOperations.add(transitoryItem);
-		} else if (!bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())
-				&& refreshErrorTrueIfAlreadyBeingPaidWithDraw) {
-
-			model.addAttribute("withdrawErrorFlag", true);
-		}
-
-		model.addAttribute("amountAvailable", bankAccountServices.findById(currentUser.getId()).getAmount());
-		logger.info("----------------------------------------------------------------"
-				+ bankAccountServices.findById(currentUser.getId()).getAmount());
-
-		model.addAttribute("listOperations", listOfAllOperations);
+		Double amountAvailable = userServices.getTheAccountBalance(currentUser.getId());
+		model.addAttribute("amountAvailable", amountAvailable);
 		model.addAttribute("depositInformation", depositInfo);
 		model.addAttribute("withdrawalInformation", withdrawalInfo);
+		model.addAttribute("listOperations", listOfAllOperations);
+
+		if (WithdrawError.isPresent()) {
+			model.addAttribute("withdrawErrorFlag", WithdrawError);
+		}
 
 		return "home_page";
 	}
+	
 
-	@PostMapping("/DepositAmount")
-	public String depositSomeMoney(BankAccountWithdrawalDepositInformation depositMoney, Model model,
-			HttpSession session) {
-		refreshErrorTrueIfAlreadyBeingPaidWithDraw = true;
+	@PostMapping("/withDrawPayment")
+	public ModelAndView withdrawSomeMoney(BankAccountWithdrawalDepositInformation withdrawMoney, Model model,
+			HttpSession session, ModelMap modelmap) {
+
+		ModelAndView theview = new ModelAndView("redirect:http://localhost:8080/userHome");
+
 		refreshAndInitializeAllImportantData(session);
 
-		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
-		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
 
-		if (refreshErrorTrueIfAlreadyBeingPaidDeposit) {
-			BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser,
-					depositMoney.getAmount(), true);
-			List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
-			listOfAllOperations.add(transitoryItem);
-			refreshErrorTrueIfAlreadyBeingPaidDeposit = false;
+
+		if (bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())) {
+			
+			BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser, withdrawMoney.getAmount(), false);
+
+		} else {
+
+			theview.addObject("withdrawErrorFlag", true);
 		}
+		
 
-		model.addAttribute("amountAvailable", bankAccountServices.findById(currentUser.getId()).getAmount());
-		List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
-		model.addAttribute("listOperations", listOfAllOperations);
-		model.addAttribute("depositInformation", depositInfo);
-		model.addAttribute("withdrawalInformation", withdrawalInfo);
+		return theview;
+	}
 
-		return "home_page";
+	@PostMapping("/DepositAmount")
+	public ModelAndView depositSomeMoney(BankAccountWithdrawalDepositInformation depositMoney, Model model,
+			HttpSession session) {
+		refreshAndInitializeAllImportantData(session);
+
+		ModelAndView theview = new ModelAndView("redirect:http://localhost:8080/userHome");
+		
+		BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser, depositMoney.getAmount(), true);
+
+		
+
+		return theview;
 	}
 
 	private void refreshAndInitializeAllImportantData(HttpSession session) {

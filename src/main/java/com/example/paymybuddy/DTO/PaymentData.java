@@ -1,5 +1,7 @@
 package com.example.paymybuddy.DTO;
 
+import com.example.paymybuddy.model.Person;
+
 public class PaymentData {
 
 	private String personToPay;
