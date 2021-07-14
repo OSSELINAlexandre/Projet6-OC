@@ -67,9 +67,17 @@ public class UserController {
 	}
 
 	@GetMapping("/register")
-	public String registeringNewPerson(Model model, HttpSession session) {
+	public String registeringNewPerson(@RequestParam("passwordmatch") Optional<Boolean> passwordmatch,
+			@RequestParam("existingmail") Optional<Boolean> existingmail, Model model, HttpSession session) {
 
 		model.addAttribute("newUser", new LoginRegistration());
+
+		if (passwordmatch.isPresent()) {
+			model.addAttribute("passwordmatch", true);
+		}
+		if (existingmail.isPresent()) {
+			model.addAttribute("existingmail", true);
+		}
 
 		return "register";
 	}
