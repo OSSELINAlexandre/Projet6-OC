@@ -9,5 +9,7 @@ import com.example.paymybuddy.model.Person;
 public interface PersonRepository extends CrudRepository<Person, Integer> {
 
 	Person findByEmail(String email);
+	
+	Person findByEmailAndPassword(String email, String password);
 
 }

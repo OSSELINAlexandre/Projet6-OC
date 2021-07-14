@@ -22,6 +22,7 @@ import com.example.paymybuddy.DTO.IdentificationData;
 import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.DTO.PaymentData;
 import com.example.paymybuddy.model.BankOperation;
+import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.service.UserServices;
@@ -36,7 +37,8 @@ public class UserController {
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
 	private List<BankOperation> listOfAllOperation;
-	private Map<Person, String> listOfBuddies;
+	private List<ConnexionBetweenBuddies> listOfAllBuds;
+	private Map<Person, String> ListOfBuddies;
 
 	@GetMapping("/")
 	public String returnMainPage(@RequestParam("errorFlag") Optional<Boolean> errorFlag, Model model) {
@@ -94,10 +96,11 @@ public class UserController {
 			ModelAndView theview = new ModelAndView("redirect:http://localhost:8080/userHome");
 
 			listOfAllTransactions = currentUser.getAllTransactions();
-			listOfAllOperation = userServices.getAllOperations(currentUser);
-			listOfBuddies = userServices.getListOfBuddies(currentUser);
+			listOfAllOperation = currentUser.getListOfALLOperations();
+			listOfAllBuds = currentUser.getListOfBuddies();
+			ListOfBuddies = userServices.getListOfBuddiesForThymeleaf(currentUser);
 
-			session.setAttribute("listOfBuddies", listOfBuddies);
+			session.setAttribute("listOfBuddies", ListOfBuddies);
 			session.setAttribute("currentUser", currentUser);
 			session.setAttribute("listTransactions", listOfAllTransactions);
 			session.setAttribute("listOfAllOperations", listOfAllOperation);

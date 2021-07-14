@@ -42,39 +42,11 @@ public class UserServices {
 
 	public Person getIt(Integer p) {
 
-		for (Person aperson : personRepo.findAll()) {
-
-			if (aperson.getId() == p)
-				return aperson;
-
-		}
-		return null;
+		return personRepo.findById(p).get();
 	}
 
 	public Iterable<Person> getItAll() {
 		return personRepo.findAll();
-	}
-
-	public Map<Integer, String> checkEmailFromBuddy(BuddiesInConnexion bud, Person currentUser) {
-
-		Map<Integer, String> result = new HashMap<>();
-
-		for (Person p : personRepo.findAll()) {
-
-			if (p.geteMail().equals(bud.getEmail()) && !p.geteMail().equals(currentUser.geteMail())) {
-
-				result.put(p.getId(), p.getLastName() + ", " + p.getName());
-
-				return result;
-
-			} else if (p.geteMail().equals(bud.getEmail()) && p.geteMail().equals(currentUser.geteMail())) {
-
-				result.put(0, "BUG");
-			}
-
-		}
-
-		return result;
 	}
 
 	public void saveNewPerson(LoginRegistration person) {
@@ -92,61 +64,36 @@ public class UserServices {
 
 	public boolean checkExistingMail(LoginRegistration person) {
 
-		for (Person p : personRepo.findAll()) {
+		if (personRepo.findByEmail(person.geteMail()) != null) {
 
-			if (p.geteMail().equals(person.geteMail())) {
+			return true;
 
-				return true;
-			}
+		} else {
 
+			return false;
 		}
 
-		return false;
 	}
 
 	public Double getTheAccountBalance(int id) {
 
-		for (Person ba : personRepo.findAll()) {
+		return personRepo.findById(id).get().getAmount();
 
-			if (ba.getId() == id) {
-
-				return ba.getAmount();
-			}
-		}
-
-		return null;
 	}
 
 	public Person findByIdentificationDataLogin(IdentificationData person) {
 
-		for (Person p : personRepo.findAll()) {
+		return personRepo.findByEmailAndPassword(person.getEmail(), person.getPassword());
 
-			if (p.geteMail().equals(person.getEmail()) && (p.getPassword().equals(person.getPassword()))) {
-
-				return p;
-			}
-		}
-
-		return null;
 	}
 
 	public List<BankOperation> getAllOperations(Person currentUser) {
 
-		List<BankOperation> result = new ArrayList<BankOperation>();
+		return (List<BankOperation>) operationRepo.findByholder(currentUser);
 
-		for (BankOperation bo : operationRepo.findAll()) {
-
-			if (bo.getHolder().getId() == currentUser.getId()) {
-
-				result.add(bo);
-			}
-		}
-
-		return result;
 	}
 
-
-	public Map<Person, String> getListOfBuddies(Person currentUser) {
+	public Map<Person, String> getListOfBuddiesForThymeleaf(Person currentUser) {
 
 		Map<Person, String> result = new HashMap<>();
 

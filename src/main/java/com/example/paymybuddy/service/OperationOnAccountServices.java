@@ -2,6 +2,10 @@ package com.example.paymybuddy.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,15 +36,7 @@ public class OperationOnAccountServices {
 
 	public Person findById(int id) {
 
-		for (Person ba : userServices.findAll()) {
-
-			if (ba.getId() == id) {
-
-				return ba;
-			}
-		}
-
-		return null;
+		return userServices.findById(id).get();
 
 	}
 
@@ -75,22 +71,32 @@ public class OperationOnAccountServices {
 
 	public boolean checkAmounts(Person currentUser, double d) {
 
-		for (Person person : userServices.findAll()) {
+		if (currentUser.getAmount() - d >= 0) {
 
-			if (person.getId() == currentUser.getId()) {
+			return true;
 
-				if (person.getAmount() - d >= 0) {
+		} else {
 
-					return true;
-
-				} else {
-
-					return false;
-				}
-			}
+			return false;
 		}
 
-		return false;
+	}
+
+	public List<BankOperation> saveTemporaryListForBankOperation(Person currentUser, BankOperation transitoryItem,
+			HttpSession session) {
+
+		List<BankOperation> resultList = currentUser.getListOfALLOperations();
+		resultList.add(transitoryItem);
+
+		return resultList;
+	}
+
+	public void setTemporaryList(BankOperation transitoryItem, HttpSession session) {
+
+		List<BankOperation> theResult = (List<BankOperation>) session.getAttribute("listOfAllOperations");
+		theResult.add(transitoryItem);
+		session.setAttribute("listOfAllOperations", theResult);
+
 	}
 
 }

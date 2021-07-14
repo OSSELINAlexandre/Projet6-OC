@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.example.paymybuddy.DTO.BuddiesInConnexion;
+
 @Entity
 @Table(name = "Person")
 public class Person {
@@ -38,17 +40,41 @@ public class Person {
 	@Column(name = "password")
 	private String password;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "willpayperson", nullable = true)
 	private List<Transaction> transactionsPayed;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "willbepayedperson", nullable = true)
 	private List<Transaction> transactionsThatWasPayed;
-
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@JoinColumn(name = "accountholder", nullable = true)
+	private List<BankOperation> listOfALLOperations;
+	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "center", nullable = true)
 	private List<ConnexionBetweenBuddies> listOfBuddies;
+	
+	
+	
+	
+
+	public Person(int id, String name, String lastName, String email, Double accountfunds, String password,
+			List<Transaction> transactionsPayed, List<Transaction> transactionsThatWasPayed,
+			List<BankOperation> listOfALLOperations, List<ConnexionBetweenBuddies> listOfBuddies) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.lastName = lastName;
+		this.email = email;
+		this.accountfunds = accountfunds;
+		this.password = password;
+		this.transactionsPayed = transactionsPayed;
+		this.transactionsThatWasPayed = transactionsThatWasPayed;
+		this.listOfALLOperations = listOfALLOperations;
+		this.listOfBuddies = listOfBuddies;
+	}
 
 	public Person(int id, String name, String lastName, String eMail, String password, Double amount) {
 		this.id = id;
@@ -159,6 +185,23 @@ public class Person {
 		this.accountfunds = accountfunds;
 	}
 
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public List<BankOperation> getListOfALLOperations() {
+		return listOfALLOperations;
+	}
+
+	public void setListOfALLOperations(List<BankOperation> listOfALLOperations) {
+		this.listOfALLOperations = listOfALLOperations;
+	}
+
 	public List<ConnexionBetweenBuddies> getListOfBuddies() {
 		return listOfBuddies;
 	}
@@ -166,5 +209,7 @@ public class Person {
 	public void setListOfBuddies(List<ConnexionBetweenBuddies> listOfBuddies) {
 		this.listOfBuddies = listOfBuddies;
 	}
+	
+	
 
 }

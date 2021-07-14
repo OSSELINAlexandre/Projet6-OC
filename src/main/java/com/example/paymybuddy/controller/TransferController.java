@@ -35,17 +35,19 @@ public class TransferController {
 
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
-	private Map<Person, String> listOfBuddies;
+	private Map<Person, String> ListOfBuddies;
 
 	@GetMapping("/transfer")
 	public String returnTransferPage(@RequestParam("ErrorFindingBuddy") Optional<Boolean> ErrorFindingBuddy,
-			@RequestParam("ErrorPayingBuddy") Optional<Boolean> ErrorPayingBuddy, Model model, HttpSession session) {
+			@RequestParam("ErrorPayingBuddy") Optional<Boolean> ErrorPayingBuddy,
+			@RequestParam("AlreadyHavingBuddy") Optional<Boolean> AlreadyHavingBuddy,
+			@RequestParam("cannotAddYourself") Optional<Boolean> cannotAddYourself, Model model, HttpSession session) {
 
 		refreshAndInitializeAllImportantData(session);
 
 		Person currentUser = (Person) session.getAttribute("currentUser");
 		model.addAttribute("buddy", new BuddiesInConnexion());
-		model.addAttribute("listOfBuddies", listOfBuddies);
+		model.addAttribute("listOfBuddies", ListOfBuddies);
 		model.addAttribute("listTransactions", listOfAllTransactions);
 		PaymentData payId = new PaymentData();
 		model.addAttribute("paymentID", payId);
@@ -60,6 +62,16 @@ public class TransferController {
 			model.addAttribute("ErrorPayingBuddy", true);
 
 		}
+		if (AlreadyHavingBuddy.isPresent()) {
+
+			model.addAttribute("AlreadyHavingBuddy", true);
+
+		}
+		if (cannotAddYourself.isPresent()) {
+
+			model.addAttribute("cannotAddYourself", true);
+
+		}
 
 		return "transfer_page";
 	}
@@ -70,14 +82,24 @@ public class TransferController {
 
 		refreshAndInitializeAllImportantData(session);
 		ModelAndView theView = new ModelAndView("redirect:http://localhost:8080/transfer");
+		ConnexionBetweenBuddies temporaryConnexion = transactionServices.addingABuddyToTheCurrentUser(bud, currentUser);
 
-		if (transactionServices.checkIfBuddyExists(bud)) {
-			
-			
-			ConnexionBetweenBuddies temporaryConnexion = transactionServices.addingABuddyToTheCurrentUser(bud, currentUser);
+		if (transactionServices.checkIfBuddyExists(bud) && temporaryConnexion != null) {
+
 			Map<Person, String> tempResult = transactionServices.addTemporaryConnexion(temporaryConnexion);
-			listOfBuddies.putAll(tempResult);
-			
+			ListOfBuddies.putAll(tempResult);
+
+		} else if (transactionServices.checkIfBuddyExists(bud) && temporaryConnexion == null) {
+
+			if (transactionServices.findByEmailFromRepo(bud.getEmail()).getId() == currentUser.getId()) {
+
+				theView.addObject("cannotAddYourself", true);
+
+			} else {
+
+				theView.addObject("AlreadyHavingBuddy", true);
+			}
+
 		} else {
 
 			theView.addObject("ErrorFindingBuddy", true);
@@ -95,16 +117,14 @@ public class TransferController {
 		ModelAndView theView = new ModelAndView("redirect:http://localhost:8080/transfer");
 
 		if (transactionServices.checkAmounts(currentUser, pay.getAmount() * (1 + Fees.CLASSIC_FEE_APP))) {
-			logger.info("==========COULD WE GET HERE ?");
+
 			Transaction tempTransac = transactionServices.adjustAccount(pay, currentUser);
-			List<Transaction> temporary = currentUser.getTransactionsPayed();
-			temporary.add(tempTransac);
-			currentUser.setTransactionsPayed(temporary);
+
+			currentUser.setTransactionsPayed(transactionServices.setNewTransactionPayed(currentUser, tempTransac));
 
 		} else {
 
 			theView.addObject("ErrorPayingBuddy", true);
-
 		}
 
 		return theView;
@@ -114,7 +134,8 @@ public class TransferController {
 	private void refreshAndInitializeAllImportantData(HttpSession session) {
 
 		currentUser = (Person) session.getAttribute("currentUser");
-		listOfBuddies = (Map<Person, String>) session.getAttribute("listOfBuddies");
+		logger.info("--------------------- LOL -------------------" + currentUser.getId());
+		ListOfBuddies = (Map<Person, String>) session.getAttribute("listOfBuddies");
 		listOfAllTransactions = currentUser.getAllTransactions();
 
 	}

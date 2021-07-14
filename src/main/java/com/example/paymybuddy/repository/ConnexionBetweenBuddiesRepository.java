@@ -8,4 +8,6 @@ import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 @Repository
 public interface ConnexionBetweenBuddiesRepository extends CrudRepository<ConnexionBetweenBuddies, Integer> {
 
+	
+	ConnexionBetweenBuddies findByIdOfCenterAndBuddyOfACenter(int idOfCenter, int buddyOfACenter);
 }

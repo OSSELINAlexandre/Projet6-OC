@@ -12,6 +12,13 @@ public class ContactController {
 	
 	private Person currentUser;
 	
+	/**
+	 * This controller is a mock to show how the architecture would be done if the contact form was a requirement for the client
+	 * @param session
+	 * @return
+	 */
+	
+	
 	@GetMapping("/contact")
 	public String returnContactPages(HttpSession session) {
 		refreshAndInitializeAllImportantData(session);

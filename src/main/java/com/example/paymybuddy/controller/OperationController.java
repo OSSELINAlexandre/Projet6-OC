@@ -28,7 +28,7 @@ public class OperationController {
 
 	@Autowired
 	OperationOnAccountServices bankAccountServices;
-	
+
 	@Autowired
 	UserServices userServices;
 
@@ -56,7 +56,6 @@ public class OperationController {
 
 		return "home_page";
 	}
-	
 
 	@PostMapping("/withDrawPayment")
 	public ModelAndView withdrawSomeMoney(BankAccountWithdrawalDepositInformation withdrawMoney, Model model,
@@ -66,17 +65,17 @@ public class OperationController {
 
 		refreshAndInitializeAllImportantData(session);
 
-
-
 		if (bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())) {
-			
-			BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser, withdrawMoney.getAmount(), false);
 
+			BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser,
+					withdrawMoney.getAmount(), false);
+			bankAccountServices.setTemporaryList(transitoryItem, session);
+			
+			
 		} else {
 
 			theview.addObject("withdrawErrorFlag", true);
 		}
-		
 
 		return theview;
 	}
@@ -87,10 +86,10 @@ public class OperationController {
 		refreshAndInitializeAllImportantData(session);
 
 		ModelAndView theview = new ModelAndView("redirect:http://localhost:8080/userHome");
-		
-		BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser, depositMoney.getAmount(), true);
 
-		
+		BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser,
+				depositMoney.getAmount(), true);
+		bankAccountServices.setTemporaryList(transitoryItem, session);
 
 		return theview;
 	}
