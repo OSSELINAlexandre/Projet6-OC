@@ -2,6 +2,7 @@ package com.example.paymybuddy.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,11 +10,17 @@ import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.PaymentData;
 import com.example.paymybuddy.model.BankOperation;
+import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.constant.*;
@@ -28,114 +35,109 @@ public class TransferController {
 
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
-	private Map<Integer, String> listOfBuddies;
-	
-	
-	//This attribute is to avoid refresh error : multiple transaction can be paid if the user refresh will on a PostPage.
-	public static Boolean refreshErrorTrueIfAlreadyBeingPaid;
+	private Map<Person, String> ListOfBuddies;
 
-	@PostMapping("/transfer_validation")
-	public String verificationOfBuddy(BuddiesInConnexion bud, HttpSession session, Model model) {
-		refreshErrorTrueIfAlreadyBeingPaid = true; 
-		
-		
+	@GetMapping("/transfer")
+	public String returnTransferPage(@RequestParam("ErrorFindingBuddy") Optional<Boolean> ErrorFindingBuddy,
+			@RequestParam("ErrorPayingBuddy") Optional<Boolean> ErrorPayingBuddy,
+			@RequestParam("AlreadyHavingBuddy") Optional<Boolean> AlreadyHavingBuddy,
+			@RequestParam("cannotAddYourself") Optional<Boolean> cannotAddYourself, Model model, HttpSession session) {
+
 		refreshAndInitializeAllImportantData(session);
 
-		Map<Integer, String> result = transactionServices.checkEmailFromBuddy(bud, currentUser);
-
-		if (!result.isEmpty() && result.get(0) == null) {
-
-			listOfBuddies.putAll(result);
-			session.setAttribute("listOfBuddies", listOfBuddies);
-
-			model.addAttribute("buddy", new BuddiesInConnexion());
-			model.addAttribute("listOfBuddies", listOfBuddies);
-			model.addAttribute("listTransactions", listOfAllTransactions);
-			PaymentData payId = new PaymentData();
-			model.addAttribute("paymentID", payId);
-			model.addAttribute("currentUser", currentUser);
-
-			return "transfer_page";
-
-		} else if (result.get(0) != null) {
-
-			model.addAttribute("CannotAddYourself", true);
-
-		} else {
-
-			model.addAttribute("ErrorFindingBuddy", true);
-		}
-
+		Person currentUser = (Person) session.getAttribute("currentUser");
 		model.addAttribute("buddy", new BuddiesInConnexion());
-		model.addAttribute("listOfBuddies", listOfBuddies);
+		model.addAttribute("listOfBuddies", ListOfBuddies);
 		model.addAttribute("listTransactions", listOfAllTransactions);
 		PaymentData payId = new PaymentData();
 		model.addAttribute("paymentID", payId);
 		model.addAttribute("currentUser", currentUser);
 
+		if (ErrorFindingBuddy.isPresent()) {
+
+			model.addAttribute("ErrorFindingBuddy", true);
+		}
+		if (ErrorPayingBuddy.isPresent()) {
+
+			model.addAttribute("ErrorPayingBuddy", true);
+
+		}
+		if (AlreadyHavingBuddy.isPresent()) {
+
+			model.addAttribute("AlreadyHavingBuddy", true);
+
+		}
+		if (cannotAddYourself.isPresent()) {
+
+			model.addAttribute("cannotAddYourself", true);
+
+		}
+
 		return "transfer_page";
+	}
+
+	@PostMapping("/transfer_validation")
+	public ModelAndView verificationOfBuddy(BuddiesInConnexion bud, HttpSession session, Model model,
+			ModelMap modelmap) {
+
+		refreshAndInitializeAllImportantData(session);
+		ModelAndView theView = new ModelAndView("redirect:http://localhost:8080/transfer");
+		ConnexionBetweenBuddies temporaryConnexion = transactionServices.addingABuddyToTheCurrentUser(bud, currentUser);
+
+		if (transactionServices.checkIfBuddyExists(bud) && temporaryConnexion != null) {
+
+			Map<Person, String> tempResult = transactionServices.addTemporaryConnexion(temporaryConnexion);
+			ListOfBuddies.putAll(tempResult);
+
+		} else if (transactionServices.checkIfBuddyExists(bud) && temporaryConnexion == null) {
+
+			if (transactionServices.findByEmailFromRepo(bud.getEmail()).getId() == currentUser.getId()) {
+
+				theView.addObject("cannotAddYourself", true);
+
+			} else {
+
+				theView.addObject("AlreadyHavingBuddy", true);
+			}
+
+		} else {
+
+			theView.addObject("ErrorFindingBuddy", true);
+
+		}
+
+		return theView;
 
 	}
 
 	@PostMapping("/processingPayment")
-	public String processPayment(PaymentData pay, Model model, HttpSession session) {
+	public ModelAndView processPayment(PaymentData pay, Model model, HttpSession session, ModelMap modelmap) {
 
 		refreshAndInitializeAllImportantData(session);
+		ModelAndView theView = new ModelAndView("redirect:http://localhost:8080/transfer");
 
-		BankOperation personToPay = transactionServices.findBankOperationById(Integer.parseInt(pay.getPersonToPay()));
+		if (transactionServices.checkAmounts(currentUser, pay.getAmount() * (1 + Fees.CLASSIC_FEE_APP))) {
 
-		if (transactionServices.checkAmounts(currentUser, pay.getAmount() * (1 + Fees.CLASSIC_FEE_APP))
-				&& personToPay != null && refreshErrorTrueIfAlreadyBeingPaid) {
-			
-			refreshErrorTrueIfAlreadyBeingPaid = false;
-			transactionServices.adjustAccount(transactionServices.getPersonById(Integer.parseInt(pay.getPersonToPay())),
-					currentUser, pay.getAmount());
-			Transaction transitoryItem = transactionServices.saveANewTransaction(currentUser, pay,
-					transactionServices.getPersonById(Integer.parseInt(pay.getPersonToPay())));
+			Transaction tempTransac = transactionServices.adjustAccount(pay, currentUser);
 
-
-			currentUser.addTransitoryTransaction(transitoryItem);
-			refreshAndInitializeAllImportantData(session);
-			session.setAttribute("currentUser", currentUser);
-			session.setAttribute("listTransactions", listOfAllTransactions);
-			model.addAttribute("buddy", new BuddiesInConnexion());
-			model.addAttribute("listOfBuddies", listOfBuddies);
-			model.addAttribute("listTransactions", listOfAllTransactions);
-			PaymentData payId = new PaymentData();
-			model.addAttribute("paymentID", payId);
-			model.addAttribute("currentUser", currentUser);
-
-			return "transfer_page";
-
-		} else if (personToPay == null && refreshErrorTrueIfAlreadyBeingPaid) {
-
-			model.addAttribute("ErrorInitializationAccountBuddy", true);
+			currentUser.setTransactionsPayed(transactionServices.setNewTransactionPayed(currentUser, tempTransac));
 
 		} else {
 
-			model.addAttribute("ErrorPayingBuddy", true);
+			theView.addObject("ErrorPayingBuddy", true);
 		}
 
-		model.addAttribute("buddy", new BuddiesInConnexion());
-		model.addAttribute("listOfBuddies", listOfBuddies);
-		model.addAttribute("listTransactions", listOfAllTransactions);
-		PaymentData payId = new PaymentData();
-		model.addAttribute("paymentID", payId);
-		model.addAttribute("currentUser", currentUser);
-
-		return "transfer_page";
+		return theView;
 
 	}
 
 	private void refreshAndInitializeAllImportantData(HttpSession session) {
 
 		currentUser = (Person) session.getAttribute("currentUser");
-
+		logger.info("--------------------- LOL -------------------" + currentUser.getId());
+		ListOfBuddies = (Map<Person, String>) session.getAttribute("listOfBuddies");
 		listOfAllTransactions = currentUser.getAllTransactions();
-		listOfBuddies = transactionServices.getListNoDuplicates(listOfAllTransactions, currentUser);
 
 	}
-
-
 
 }

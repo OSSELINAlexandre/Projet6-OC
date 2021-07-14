@@ -11,9 +11,11 @@ import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.IdentificationData;
 import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.model.BankOperation;
+import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.repository.BankOperationRepository;
+import com.example.paymybuddy.repository.ConnexionBetweenBuddiesRepository;
 import com.example.paymybuddy.repository.PersonRepository;
 
 @Service
@@ -27,6 +29,9 @@ public class UserServices {
 	@Autowired
 	BankOperationRepository operationRepo;
 
+	@Autowired
+	ConnexionBetweenBuddiesRepository connexionRepo;
+
 	public UserServices() {
 	}
 
@@ -37,39 +42,11 @@ public class UserServices {
 
 	public Person getIt(Integer p) {
 
-		for (Person aperson : personRepo.findAll()) {
-
-			if (aperson.getId() == p)
-				return aperson;
-
-		}
-		return null;
+		return personRepo.findById(p).get();
 	}
 
 	public Iterable<Person> getItAll() {
 		return personRepo.findAll();
-	}
-
-	public Map<Integer, String> checkEmailFromBuddy(BuddiesInConnexion bud, Person currentUser) {
-
-		Map<Integer, String> result = new HashMap<>();
-
-		for (Person p : personRepo.findAll()) {
-
-			if (p.geteMail().equals(bud.getEmail()) && !p.geteMail().equals(currentUser.geteMail())) {
-
-				result.put(p.getId(), p.getLastName() + ", " + p.getName());
-
-				return result;
-
-			} else if (p.geteMail().equals(bud.getEmail()) && p.geteMail().equals(currentUser.geteMail())) {
-
-				result.put(0, "BUG");
-			}
-
-		}
-
-		return result;
 	}
 
 	public void saveNewPerson(LoginRegistration person) {
@@ -87,94 +64,45 @@ public class UserServices {
 
 	public boolean checkExistingMail(LoginRegistration person) {
 
-		for (Person p : personRepo.findAll()) {
+		if (personRepo.findByEmail(person.geteMail()) != null) {
 
-			if (p.geteMail().equals(person.geteMail())) {
+			return true;
 
-				return true;
-			}
+		} else {
 
+			return false;
 		}
 
-		return false;
 	}
 
 	public Double getTheAccountBalance(int id) {
 
-		for (Person ba : personRepo.findAll()) {
+		return personRepo.findById(id).get().getAmount();
 
-			if (ba.getId() == id) {
-
-				return ba.getAmount();
-			}
-		}
-
-		return null;
 	}
 
-	public Person findById(IdentificationData person) {
+	public Person findByIdentificationDataLogin(IdentificationData person) {
 
-		for (Person p : personRepo.findAll()) {
+		return personRepo.findByEmailAndPassword(person.getEmail(), person.getPassword());
 
-			if (p.geteMail().equals(person.getEmail()) && (p.getPassword().equals(person.getPassword()))) {
-
-				return p;
-			}
-		}
-
-		return null;
-	}
-
-	public Map<Integer, String> getListNoDuplicates(List<Transaction> listofAllTransaction, Person currentUser) {
-
-		Map<Integer, String> result = new HashMap<>();
-		Boolean flag = true;
-
-		for (Transaction t : listofAllTransaction) {
-
-			if (t.getPayee().getId() != currentUser.getId()) {
-
-				if (!result.isEmpty()) {
-
-					for (Integer Tr : result.keySet()) {
-
-						if (Tr == t.getPayee().getId()) {
-
-							flag = false;
-						}
-
-					}
-
-					if (flag) {
-
-						result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
-					}
-
-					flag = true;
-				} else {
-
-					result.put(t.getPayee().getId(), t.getPayee().getLastName() + ", " + t.getPayee().getName());
-				}
-
-			}
-		}
-
-		return result;
 	}
 
 	public List<BankOperation> getAllOperations(Person currentUser) {
 
-		List<BankOperation> result = new ArrayList<BankOperation>();
+		return (List<BankOperation>) operationRepo.findByholder(currentUser);
 
-		for (BankOperation bo : operationRepo.findAll()) {
+	}
 
-			if (bo.getHolder().getId() == currentUser.getId()) {
+	public Map<Person, String> getListOfBuddiesForThymeleaf(Person currentUser) {
 
-				result.add(bo);
-			}
+		Map<Person, String> result = new HashMap<>();
+
+		for (ConnexionBetweenBuddies ba : currentUser.getListOfBuddies()) {
+
+			Person buddy = personRepo.findById(ba.getBuddyOfACenter()).get();
+			result.put(buddy, buddy.getName() + ", " + buddy.getLastName());
 		}
 
 		return result;
 	}
-
 }

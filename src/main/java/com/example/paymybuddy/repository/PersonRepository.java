@@ -8,4 +8,8 @@ import com.example.paymybuddy.model.Person;
 @Repository
 public interface PersonRepository extends CrudRepository<Person, Integer> {
 
+	Person findByEmail(String email);
+	
+	Person findByEmailAndPassword(String email, String password);
+
 }
