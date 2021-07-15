@@ -85,8 +85,6 @@ public class TransactionsServices {
 
 		currentUser.setAmount(currentUserAmountToSave);
 		theBud.setAmount(buddyPayedAmountToSave);
-		logger.info("IN ADJUSTACCOUNT, class BankAccountService, newUserAmount : " + currentUserNewAmount);
-		logger.info("IN ADJUSTACCOUNT, class BankAccountService, newgonnaBePaidAccount : " + buddyPaidNewAmount);
 
 		saveANewTransaction(currentUser, Data, theBud, session);
 		personRepo.save(currentUser);
@@ -112,7 +110,6 @@ public class TransactionsServices {
 	public Boolean addingABuddyToTheCurrentUser(BuddiesInConnexion bud, Person currentUser, HttpSession session) {
 
 		Person buddyInConnection = personRepo.findByEmail(bud.getEmail());
-		logger.info("===============" + buddyInConnection.getId());
 
 		if (connexionRepo.findByIdOfCenterAndBuddyOfACenter(currentUser.getId(), buddyInConnection.getId()) == null
 				&& buddyInConnection.getId() != currentUser.getId()) {

@@ -16,9 +16,9 @@ import com.example.paymybuddy.repository.PersonRepository;
 
 @Service
 public class OperationOnAccountServices {
-	
-	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(OperationOnAccountServices.class);
 
+	private static final org.apache.logging.log4j.Logger logger = LogManager
+			.getLogger(OperationOnAccountServices.class);
 
 	@Autowired
 	BankOperationRepository bankAccountRepo;
@@ -56,10 +56,8 @@ public class OperationOnAccountServices {
 		bankAccountRepo.save(newBankOperation);
 
 		List<BankOperation> theListInSession = (List<BankOperation>) session.getAttribute("listOfAllOperations");
-		logger.info("==================HEYHEYHEYEHYEYEYEY / " + theListInSession.size());
 
 		theListInSession.add(newBankOperation);
-		logger.info("==================HEYHEYHEYEHYEYEYEY / " + newBankOperation.getAmount());
 		session.setAttribute("listOfAllOperations", theListInSession);
 
 	}
@@ -78,16 +76,16 @@ public class OperationOnAccountServices {
 	}
 
 	public boolean checkIfCurrentUserCanStillDepositToItsAccount(Person currentUser, double amount) {
-		
-		if(currentUser.getAmount() + amount < 9999999) {
-			
+
+		if (currentUser.getAmount() + amount < 9999999) {
+
 			return true;
-			
-		}else {
-			
+
+		} else {
+
 			return false;
 		}
-		
+
 	}
 
 }
