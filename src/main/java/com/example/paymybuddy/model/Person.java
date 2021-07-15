@@ -14,11 +14,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.example.paymybuddy.DTO.BuddiesInConnexion;
+import org.apache.logging.log4j.LogManager;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Table(name = "Person")
+@Transactional
 public class Person {
+
+	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Person.class);
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,18 +51,14 @@ public class Person {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "willbepayedperson", nullable = true)
 	private List<Transaction> transactionsThatWasPayed;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "accountholder", nullable = true)
 	private List<BankOperation> listOfALLOperations;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "center", nullable = true)
 	private List<ConnexionBetweenBuddies> listOfBuddies;
-	
-	
-	
-	
 
 	public Person(int id, String name, String lastName, String email, Double accountfunds, String password,
 			List<Transaction> transactionsPayed, List<Transaction> transactionsThatWasPayed,
@@ -185,7 +185,6 @@ public class Person {
 		this.accountfunds = accountfunds;
 	}
 
-
 	public String getEmail() {
 		return email;
 	}
@@ -202,14 +201,18 @@ public class Person {
 		this.listOfALLOperations = listOfALLOperations;
 	}
 
+	@Transactional
 	public List<ConnexionBetweenBuddies> getListOfBuddies() {
+
+		logger.info(
+				"Lazy Fetch need to be initialize in the transactional context in order to be avaiable in the session (the real list can be given and not just the proxy"
+						+ listOfBuddies.size());
+
 		return listOfBuddies;
 	}
 
 	public void setListOfBuddies(List<ConnexionBetweenBuddies> listOfBuddies) {
 		this.listOfBuddies = listOfBuddies;
 	}
-	
-	
 
 }

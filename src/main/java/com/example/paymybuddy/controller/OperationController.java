@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +23,6 @@ import com.example.paymybuddy.service.UserServices;
 @Controller
 public class OperationController {
 
-	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(OperationController.class);
-
 	@Autowired
 	OperationOnAccountServices bankAccountServices;
 
@@ -33,25 +30,27 @@ public class OperationController {
 	UserServices userServices;
 
 	private Person currentUser;
+	private List<BankOperation> listOfAllOperations;
 
 	@GetMapping("/userHome")
-	public String returnHomePage(@RequestParam("withdrawErrorFlag") Optional<Boolean> WithdrawError, Model model,
+	public String returnHomePage(@RequestParam("withdrawErrorFlag") Optional<Boolean> withdrawError, 
+			@RequestParam("tooMuchMoneyOnYouAccount") Optional<Boolean> tooMuchMoney, Model model,
 			HttpSession session) {
 
-		refreshAndInitializeAllImportantData(session);
+		listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
+		currentUser = (Person) session.getAttribute("currentUser");
 
-		BankAccountWithdrawalDepositInformation depositInfo = new BankAccountWithdrawalDepositInformation();
-		BankAccountWithdrawalDepositInformation withdrawalInfo = new BankAccountWithdrawalDepositInformation();
-		List<BankOperation> listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
+		model.addAttribute("amountAvailable", currentUser.getAmount());
+		model.addAttribute("depositInformation", new BankAccountWithdrawalDepositInformation());
+		model.addAttribute("withdrawalInformation", new BankAccountWithdrawalDepositInformation());
+		model.addAttribute("listOfAllOperations", listOfAllOperations);
 
-		Double amountAvailable = userServices.getTheAccountBalance(currentUser.getId());
-		model.addAttribute("amountAvailable", amountAvailable);
-		model.addAttribute("depositInformation", depositInfo);
-		model.addAttribute("withdrawalInformation", withdrawalInfo);
-		model.addAttribute("listOperations", listOfAllOperations);
-
-		if (WithdrawError.isPresent()) {
-			model.addAttribute("withdrawErrorFlag", WithdrawError);
+		if (withdrawError.isPresent()) {
+			model.addAttribute("withdrawErrorFlag", withdrawError);
+		}
+		if(tooMuchMoney.isPresent()) {
+			
+			model.addAttribute("tooMuchMoney", tooMuchMoney);
 		}
 
 		return "home_page";
@@ -61,17 +60,12 @@ public class OperationController {
 	public ModelAndView withdrawSomeMoney(BankAccountWithdrawalDepositInformation withdrawMoney, Model model,
 			HttpSession session, ModelMap modelmap) {
 
-		ModelAndView theview = new ModelAndView("redirect:http://localhost:8080/userHome");
+		ModelAndView theview = new ModelAndView("redirect:/userHome");
 
-		refreshAndInitializeAllImportantData(session);
+		if (bankAccountServices.checkIfCurrentUserHasNecessaryFunds(currentUser, withdrawMoney.getAmount())) {
 
-		if (bankAccountServices.checkAmounts(currentUser, withdrawMoney.getAmount())) {
+			bankAccountServices.saveForDepositorWithdrawal(currentUser, withdrawMoney.getAmount(), false, session);
 
-			BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser,
-					withdrawMoney.getAmount(), false);
-			bankAccountServices.setTemporaryList(transitoryItem, session);
-			
-			
 		} else {
 
 			theview.addObject("withdrawErrorFlag", true);
@@ -83,21 +77,19 @@ public class OperationController {
 	@PostMapping("/DepositAmount")
 	public ModelAndView depositSomeMoney(BankAccountWithdrawalDepositInformation depositMoney, Model model,
 			HttpSession session) {
-		refreshAndInitializeAllImportantData(session);
 
-		ModelAndView theview = new ModelAndView("redirect:http://localhost:8080/userHome");
+		ModelAndView theview = new ModelAndView("redirect:/userHome");
 
-		BankOperation transitoryItem = bankAccountServices.saveForDepositorWithdrawal(currentUser,
-				depositMoney.getAmount(), true);
-		bankAccountServices.setTemporaryList(transitoryItem, session);
+		if (bankAccountServices.checkIfCurrentUserCanStillDepositToItsAccount(currentUser, depositMoney.getAmount())) {
+
+			bankAccountServices.saveForDepositorWithdrawal(currentUser, depositMoney.getAmount(), true, session);
+
+		} else {
+
+			theview.addObject("tooMuchMoneyOnYouAccount", true);
+		}
 
 		return theview;
-	}
-
-	private void refreshAndInitializeAllImportantData(HttpSession session) {
-
-		currentUser = (Person) session.getAttribute("currentUser");
-
 	}
 
 }

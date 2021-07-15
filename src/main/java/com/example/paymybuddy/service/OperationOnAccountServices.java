@@ -16,32 +16,21 @@ import com.example.paymybuddy.repository.PersonRepository;
 
 @Service
 public class OperationOnAccountServices {
+	
+	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(OperationOnAccountServices.class);
 
-	private static final org.apache.logging.log4j.Logger logger = LogManager
-			.getLogger(OperationOnAccountServices.class);
 
 	@Autowired
 	BankOperationRepository bankAccountRepo;
 
 	@Autowired
-	PersonRepository userServices;
+	PersonRepository userRepo;
 
 	public OperationOnAccountServices() {
 	}
 
-	public void saveIt(BankOperation B) {
-
-		bankAccountRepo.save(B);
-	}
-
-	public Person findById(int id) {
-
-		return userServices.findById(id).get();
-
-	}
-
-	public BankOperation saveForDepositorWithdrawal(Person currentUser, Double depositMoney,
-			boolean depositTrueWithdrawFalse) {
+	public void saveForDepositorWithdrawal(Person currentUser, Double depositMoney, boolean depositTrueWithdrawFalse,
+			HttpSession session) {
 
 		BankOperation newBankOperation = new BankOperation();
 		newBankOperation.setDepositIsTrueWithdrawIsFalse(depositTrueWithdrawFalse);
@@ -63,13 +52,19 @@ public class OperationOnAccountServices {
 		double finalAmountSaved = bd.doubleValue();
 
 		currentUser.setAmount(finalAmountSaved);
-		userServices.save(currentUser);
+		userRepo.save(currentUser);
 		bankAccountRepo.save(newBankOperation);
-		return newBankOperation;
+
+		List<BankOperation> theListInSession = (List<BankOperation>) session.getAttribute("listOfAllOperations");
+		logger.info("==================HEYHEYHEYEHYEYEYEY / " + theListInSession.size());
+
+		theListInSession.add(newBankOperation);
+		logger.info("==================HEYHEYHEYEHYEYEYEY / " + newBankOperation.getAmount());
+		session.setAttribute("listOfAllOperations", theListInSession);
 
 	}
 
-	public boolean checkAmounts(Person currentUser, double d) {
+	public boolean checkIfCurrentUserHasNecessaryFunds(Person currentUser, double d) {
 
 		if (currentUser.getAmount() - d >= 0) {
 
@@ -82,21 +77,17 @@ public class OperationOnAccountServices {
 
 	}
 
-	public List<BankOperation> saveTemporaryListForBankOperation(Person currentUser, BankOperation transitoryItem,
-			HttpSession session) {
-
-		List<BankOperation> resultList = currentUser.getListOfALLOperations();
-		resultList.add(transitoryItem);
-
-		return resultList;
-	}
-
-	public void setTemporaryList(BankOperation transitoryItem, HttpSession session) {
-
-		List<BankOperation> theResult = (List<BankOperation>) session.getAttribute("listOfAllOperations");
-		theResult.add(transitoryItem);
-		session.setAttribute("listOfAllOperations", theResult);
-
+	public boolean checkIfCurrentUserCanStillDepositToItsAccount(Person currentUser, double amount) {
+		
+		if(currentUser.getAmount() + amount < 9999999) {
+			
+			return true;
+			
+		}else {
+			
+			return false;
+		}
+		
 	}
 
 }
