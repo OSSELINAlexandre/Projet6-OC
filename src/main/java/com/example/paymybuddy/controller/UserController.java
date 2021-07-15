@@ -1,26 +1,21 @@
 package com.example.paymybuddy.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.paymybuddy.DTO.BankAccountWithdrawalDepositInformation;
-import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.IdentificationData;
 import com.example.paymybuddy.DTO.LoginRegistration;
-import com.example.paymybuddy.DTO.PaymentData;
 import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
@@ -29,16 +24,14 @@ import com.example.paymybuddy.service.UserServices;
 
 @Controller
 public class UserController {
-	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(UserController.class);
 
 	@Autowired
 	UserServices userServices;
 
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
-	private List<BankOperation> listOfAllOperation;
-	private List<ConnexionBetweenBuddies> listOfAllBuds;
-	private Map<Person, String> ListOfBuddies;
+	private List<BankOperation> listOfAllOperations;
+	private List<ConnexionBetweenBuddies> listOfAllConnexionOfBuddies;
 
 	@GetMapping("/")
 	public String returnMainPage(@RequestParam("errorFlag") Optional<Boolean> errorFlag, Model model) {
@@ -55,7 +48,6 @@ public class UserController {
 
 	@GetMapping("/profileUser")
 	public String returnUserProfile(HttpSession session) {
-		refreshAndInitializeAllImportantData(session);
 
 		return "user_profile";
 	}
@@ -89,29 +81,29 @@ public class UserController {
 	}
 
 	@PostMapping("/process_signin")
+	@Transactional
 	public ModelAndView verifyIdentity(IdentificationData person, Model model, HttpSession session) {
 
-		currentUser = userServices.findByIdentificationDataLogin(person);
+		currentUser = userServices.findByIdentificationDataIfCombinasioExists(person);
 
 		if (currentUser == null) {
 
-			ModelAndView theview = new ModelAndView("redirect:http://localhost:8080/");
+			ModelAndView theview = new ModelAndView("redirect:/");
 			theview.addObject("errorFlag", true);
 			return theview;
 
 		} else {
 
-			ModelAndView theview = new ModelAndView("redirect:http://localhost:8080/userHome");
+			ModelAndView theview = new ModelAndView("redirect:/userHome");
 
 			listOfAllTransactions = currentUser.getAllTransactions();
-			listOfAllOperation = currentUser.getListOfALLOperations();
-			listOfAllBuds = currentUser.getListOfBuddies();
-			ListOfBuddies = userServices.getListOfBuddiesForThymeleaf(currentUser);
+			listOfAllOperations = currentUser.getListOfALLOperations();
+			listOfAllConnexionOfBuddies = currentUser.getListOfBuddies();
 
-			session.setAttribute("listOfBuddies", ListOfBuddies);
 			session.setAttribute("currentUser", currentUser);
-			session.setAttribute("listTransactions", listOfAllTransactions);
-			session.setAttribute("listOfAllOperations", listOfAllOperation);
+			session.setAttribute("listOfAllConnexionOfBuddies", listOfAllConnexionOfBuddies);
+			session.setAttribute("listOfAllTransactions", listOfAllTransactions);
+			session.setAttribute("listOfAllOperations", listOfAllOperations);
 
 			return theview;
 
@@ -122,34 +114,26 @@ public class UserController {
 	@PostMapping("/process_register")
 	public ModelAndView processRegistration(LoginRegistration person, HttpSession session, Model model) {
 
-		if (userServices.checkExistingMail(person)) {
+		if (userServices.checkIfTheEmailExistsInTheDB(person)) {
 
-			ModelAndView theView = new ModelAndView("redirect:http://localhost:8080/register");
+			ModelAndView theView = new ModelAndView("redirect:/register");
 			theView.addObject("existingmail", true);
 			return theView;
 
 		} else if (!person.getPassword().equals(person.getSecondTestPassword())) {
 
-			ModelAndView theView = new ModelAndView("redirect:http://localhost:8080/register");
+			ModelAndView theView = new ModelAndView("redirect:/register");
 			theView.addObject("passwordmatch", true);
 			return theView;
 
 		} else {
 
-			ModelAndView theView = new ModelAndView("redirect:http://localhost:8080/registersucessfully");
-			userServices.saveNewPerson(person);
+			ModelAndView theView = new ModelAndView("redirect:/registersucessfully");
+			userServices.saveANewPersonInTheDB(person);
 
 			return theView;
 
 		}
-
-	}
-
-	private void refreshAndInitializeAllImportantData(HttpSession session) {
-
-		currentUser = (Person) session.getAttribute("currentUser");
-		listOfAllTransactions = currentUser.getAllTransactions();
-		listOfAllOperation = userServices.getAllOperations(currentUser);
 
 	}
 

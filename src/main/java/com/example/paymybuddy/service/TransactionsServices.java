@@ -1,20 +1,21 @@
 package com.example.paymybuddy.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.transaction.Transactional;
+
+import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.PaymentData;
 import com.example.paymybuddy.constant.Fees;
-import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
-import com.example.paymybuddy.repository.BankOperationRepository;
 import com.example.paymybuddy.repository.ConnexionBetweenBuddiesRepository;
 import com.example.paymybuddy.repository.PersonRepository;
 import com.example.paymybuddy.repository.TransactionRepository;
@@ -29,9 +30,6 @@ public class TransactionsServices {
 	PersonRepository personRepo;
 
 	@Autowired
-	BankOperationRepository bankAccountRepo;
-
-	@Autowired
 	ConnexionBetweenBuddiesRepository connexionRepo;
 
 	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(TransactionsServices.class);
@@ -39,21 +37,24 @@ public class TransactionsServices {
 	public TransactionsServices() {
 	}
 
-	public void saveIt(Transaction t) {
+	public boolean checkIfCurrentUserHasSufficientAmounts(Person currentUser, double d) {
 
-		transacRepo.save(t);
+		if (currentUser.getAmount() - d >= 0) {
+
+			return true;
+
+		} else {
+
+			return false;
+		}
+
 	}
 
-	public Transaction getIt(int id) {
+	public boolean checkIfGoingToBePayedBuddyDoesNotHaveTooMuchMoney(String id, double d) {
 
-		return transacRepo.findById(id).get();
-	}
+		Person buddy = personRepo.findById(Integer.parseInt(id)).get();
 
-	public boolean checkAmounts(Person currentUser, double d) {
-
-		Person person = personRepo.findById(currentUser.getId()).get();
-
-		if (person.getAmount() - d >= 0) {
+		if (buddy.getAmount() + d < 9999999) {
 
 			return true;
 
@@ -69,68 +70,70 @@ public class TransactionsServices {
 		return personRepo.findByEmail(email);
 	}
 
-	public BankOperation findBankOperationById(int id) {
-
-		return bankAccountRepo.findById(id).get();
-
-	}
-
-	public Transaction adjustAccount(PaymentData Data, Person currentUser) {
+	public void adjustAccount(PaymentData Data, Person currentUser, HttpSession session) {
 
 		Person theBud = personRepo.findById(Integer.parseInt(Data.getPersonToPay())).get();
+
 		Double currentUserNewAmount = currentUser.getAmount() - (Data.getAmount() * (1 + Fees.CLASSIC_FEE_APP));
 		Double buddyPaidNewAmount = theBud.getAmount() + Data.getAmount();
-		currentUser.setAmount(currentUserNewAmount);
-		theBud.setAmount(buddyPaidNewAmount);
+
+		BigDecimal currentUserAmountRounded = new BigDecimal(currentUserNewAmount).setScale(2, RoundingMode.HALF_UP);
+		double currentUserAmountToSave = currentUserAmountRounded.doubleValue();
+
+		BigDecimal buddyPayedRoundedAmount = new BigDecimal(buddyPaidNewAmount).setScale(2, RoundingMode.HALF_UP);
+		double buddyPayedAmountToSave = buddyPayedRoundedAmount.doubleValue();
+
+		currentUser.setAmount(currentUserAmountToSave);
+		theBud.setAmount(buddyPayedAmountToSave);
 		logger.info("IN ADJUSTACCOUNT, class BankAccountService, newUserAmount : " + currentUserNewAmount);
 		logger.info("IN ADJUSTACCOUNT, class BankAccountService, newgonnaBePaidAccount : " + buddyPaidNewAmount);
 
-		Transaction tempTransac = saveANewTransaction(currentUser, Data, theBud);
+		saveANewTransaction(currentUser, Data, theBud, session);
 		personRepo.save(currentUser);
 		personRepo.save(theBud);
 
-		return tempTransac;
-
 	}
 
-	public Person getPersonById(Integer p) {
-
-		return personRepo.findById(p).get();
-	}
-
-	@Transactional
-	public Transaction saveANewTransaction(Person currentUser, PaymentData pay, Person it) {
+	public void saveANewTransaction(Person currentUser, PaymentData pay, Person it, HttpSession session) {
 
 		Transaction newItem = new Transaction();
 		newItem.setAmount(pay.getAmount());
 		newItem.setCommentaire(pay.getDescription());
 		newItem.setPayee(it);
 		newItem.setPayeur(currentUser);
-
 		transacRepo.save(newItem);
-		return newItem;
+
+		List<Transaction> temporaryListOfTransaction = (List<Transaction>) session
+				.getAttribute("listOfAllTransactions");
+		temporaryListOfTransaction.add(newItem);
+		session.setAttribute("listOfAllTransactions", temporaryListOfTransaction);
 	}
 
-	public ConnexionBetweenBuddies addingABuddyToTheCurrentUser(BuddiesInConnexion bud, Person currentUser) {
+	public Boolean addingABuddyToTheCurrentUser(BuddiesInConnexion bud, Person currentUser, HttpSession session) {
 
 		Person buddyInConnection = personRepo.findByEmail(bud.getEmail());
-		ConnexionBetweenBuddies newConnexion = null;
+		logger.info("===============" + buddyInConnection.getId());
 
 		if (connexionRepo.findByIdOfCenterAndBuddyOfACenter(currentUser.getId(), buddyInConnection.getId()) == null
 				&& buddyInConnection.getId() != currentUser.getId()) {
 
-			newConnexion = new ConnexionBetweenBuddies();
+			ConnexionBetweenBuddies newConnexion = new ConnexionBetweenBuddies();
 			newConnexion.setIdOfCenter(currentUser.getId());
 			newConnexion.setBuddyOfACenter(buddyInConnection.getId());
 			connexionRepo.save(newConnexion);
+			List<ConnexionBetweenBuddies> theResult = (List<ConnexionBetweenBuddies>) session
+					.getAttribute("listOfAllConnexionOfBuddies");
+			theResult.add(newConnexion);
+			session.setAttribute("listOfAllConnexionOfBuddies", theResult);
+			return true;
 
 		}
 
-		return newConnexion;
+		return false;
 
 	}
 
-	public boolean checkIfBuddyExists(BuddiesInConnexion bud) {
+	public boolean checkIfThisPersonExistsInTheDB(BuddiesInConnexion bud) {
 
 		if (personRepo.findByEmail(bud.getEmail()) != null) {
 
@@ -144,24 +147,19 @@ public class TransactionsServices {
 
 	}
 
-	public Map<Person, String> addTemporaryConnexion(ConnexionBetweenBuddies temporaryConnexion) {
+	public Map<Person, String> createTheListOfBuddyForTransaction(
+			List<ConnexionBetweenBuddies> listOfConnexionOfBuddies) {
 
-		Map<Person, String> temporaryResult = new HashMap<>();
+		Map<Person, String> resultSet = new HashMap<>();
 
-		Person tempBuddy = personRepo.findById(temporaryConnexion.getBuddyOfACenter()).get();
+		for (ConnexionBetweenBuddies CB : listOfConnexionOfBuddies) {
 
-		temporaryResult.put(tempBuddy, tempBuddy.getName() + ", " + tempBuddy.getLastName());
+			Person tempBuddy = personRepo.findById(CB.getBuddyOfACenter()).get();
+			resultSet.put(tempBuddy, tempBuddy.getName() + ", " + tempBuddy.getLastName());
 
-		return temporaryResult;
+		}
 
-	}
-
-	public List<Transaction> setNewTransactionPayed(Person currentUser, Transaction tempTransac) {
-
-		List<Transaction> temporary = currentUser.getTransactionsPayed();
-		temporary.add(tempTransac);
-
-		return temporary;
+		return resultSet;
 	}
 
 }
