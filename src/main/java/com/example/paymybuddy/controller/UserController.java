@@ -54,7 +54,7 @@ public class UserController {
 	}
 
 	@GetMapping("/profileUser")
-	public String returnUserProfil(HttpSession session) {
+	public String returnUserProfile(HttpSession session) {
 		refreshAndInitializeAllImportantData(session);
 
 		return "user_profile";
