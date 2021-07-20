@@ -1,6 +1,8 @@
 package com.example.paymybuddy.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,12 +17,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.logging.log4j.LogManager;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Table(name = "Person")
 @Transactional
-public class Person {
+public class Person implements Serializable, UserDetails {
 
 	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(Person.class);
 
@@ -213,6 +217,36 @@ public class Person {
 
 	public void setListOfBuddies(List<ConnexionBetweenBuddies> listOfBuddies) {
 		this.listOfBuddies = listOfBuddies;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 
 }

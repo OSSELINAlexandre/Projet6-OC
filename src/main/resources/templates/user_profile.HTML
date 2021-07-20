@@ -45,7 +45,10 @@
 		<li class="nav-item"><a th:href="@{/transfer}" class="nav-link">Transfer</a></li>
 		<li class="nav-item"><a href="#" class="nav-link  active" aria-current="page">Profile</a></li>
 		<li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
-		<li class="nav-item"><a th:href="@{/Logoff}" class="nav-link">Log Off</a></li>
+		
+		<form name="logoutForm" th:action="@{/logout}" method="post">
+		<li class="nav-item"><button type="submit" class="nav-link">log Out</button></li>
+		</form>
 	</ul>
 </header>
 

@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -33,15 +35,39 @@ public class UserController {
 	private List<BankOperation> listOfAllOperations;
 	private List<ConnexionBetweenBuddies> listOfAllConnexionOfBuddies;
 
-	@GetMapping("/")
+	
+	@GetMapping("/setToken")
+	public ModelAndView setAllTheData(HttpSession session) {
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		currentUser = userServices.getThePersonAfterAuthentication(authentication.getName());
+
+		ModelAndView theview = new ModelAndView("redirect:/userHome");
+
+		listOfAllTransactions = currentUser.getAllTransactions();
+		listOfAllOperations = currentUser.getListOfALLOperations();
+		listOfAllConnexionOfBuddies = currentUser.getListOfBuddies();
+
+		session.setAttribute("currentUser", currentUser);
+		session.setAttribute("listOfAllConnexionOfBuddies", listOfAllConnexionOfBuddies);
+		session.setAttribute("listOfAllTransactions", listOfAllTransactions);
+		session.setAttribute("listOfAllOperations", listOfAllOperations);
+
+		return theview;
+
+		
+	}
+	
+	
+	@GetMapping("/login")
 	public String returnMainPage(@RequestParam("errorFlag") Optional<Boolean> errorFlag, Model model) {
-
-		model.addAttribute("comingUser", new IdentificationData());
-
-		if (errorFlag.isPresent()) {
-
-			model.addAttribute("errorFlag", true);
-		}
+//
+//		model.addAttribute("comingUser", new IdentificationData());
+//
+//		if (errorFlag.isPresent()) {
+//
+//			model.addAttribute("errorFlag", true);
+//		}
 
 		return "login";
 	}
