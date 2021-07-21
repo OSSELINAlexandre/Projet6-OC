@@ -110,20 +110,24 @@ public class TransactionsServices {
 	public Boolean addingABuddyToTheCurrentUser(BuddiesInConnexion bud, Person currentUser, HttpSession session) {
 
 		Person buddyInConnection = personRepo.findByEmail(bud.getEmail());
+		
+		if(buddyInConnection != null) {
 
-		if (connexionRepo.findByIdOfCenterAndBuddyOfACenter(currentUser.getId(), buddyInConnection.getId()) == null
-				&& buddyInConnection.getId() != currentUser.getId()) {
-
-			ConnexionBetweenBuddies newConnexion = new ConnexionBetweenBuddies();
-			newConnexion.setIdOfCenter(currentUser.getId());
-			newConnexion.setBuddyOfACenter(buddyInConnection.getId());
-			connexionRepo.save(newConnexion);
-			List<ConnexionBetweenBuddies> theResult = (List<ConnexionBetweenBuddies>) session
-					.getAttribute("listOfAllConnexionOfBuddies");
-			theResult.add(newConnexion);
-			session.setAttribute("listOfAllConnexionOfBuddies", theResult);
-			return true;
-
+			if (connexionRepo.findByIdOfCenterAndBuddyOfACenter(currentUser.getId(), buddyInConnection.getId()) == null
+					&& buddyInConnection.getId() != currentUser.getId()) {
+	
+				ConnexionBetweenBuddies newConnexion = new ConnexionBetweenBuddies();
+				newConnexion.setIdOfCenter(currentUser.getId());
+				newConnexion.setBuddyOfACenter(buddyInConnection.getId());
+				connexionRepo.save(newConnexion);
+				List<ConnexionBetweenBuddies> theResult = (List<ConnexionBetweenBuddies>) session
+						.getAttribute("listOfAllConnexionOfBuddies");
+				theResult.add(newConnexion);
+				session.setAttribute("listOfAllConnexionOfBuddies", theResult);
+				return true;
+	
+			}
+		
 		}
 
 		return false;
@@ -158,5 +162,39 @@ public class TransactionsServices {
 
 		return resultSet;
 	}
+
+	//Getters and Setters of repository solely needed for testing purposes. Once the app is validated, and for security reasons, these getters and setters 
+	//can be deleted
+	public PersonRepository getPersonRepo() {
+		return personRepo;
+	}
+
+	public void setPersonRepo(PersonRepository personRepo) {
+		this.personRepo = personRepo;
+	}
+
+	public TransactionRepository getTransacRepo() {
+		return transacRepo;
+	}
+
+	public void setTransacRepo(TransactionRepository transacRepo) {
+		this.transacRepo = transacRepo;
+	}
+
+	public ConnexionBetweenBuddiesRepository getConnexionRepo() {
+		return connexionRepo;
+	}
+
+	public void setConnexionRepo(ConnexionBetweenBuddiesRepository connexionRepo) {
+		this.connexionRepo = connexionRepo;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

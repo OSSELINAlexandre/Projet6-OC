@@ -49,7 +49,9 @@
 			<li class="nav-item"><a th:href="@{/transfer}" class="nav-link">Transfer</a></li>
 			<li class="nav-item"><a th:href="@{/profileUser}" class="nav-link">Profile</a></li>
 			<li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
-			<li class="nav-item"><a th:href="@{/Logoff}" class="nav-link">Log Off</a></li>
+			<form name="logoutForm" th:action="@{/logout}" method="post">
+				<li class="nav-item"><button type="submit" class="nav-link">log Out</button></li>
+			</form>
 		</ul>
 	</header>
 
@@ -77,8 +79,7 @@
 				<p>Error withdrawing the money, you don't have the sufficient ressources to do so</p>
 			</div>
 
-			<div class=" dangerFrame bg-danger text-white fw-bold rounded FrameShadow"
-				th:if="${tooMuchMoney != null }">
+			<div class=" dangerFrame bg-danger text-white fw-bold rounded FrameShadow" th:if="${tooMuchMoney != null }">
 				<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor"
 					class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
 					<path
@@ -86,7 +87,8 @@
 					<path
 						d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z" />
 				</svg>
-				<p>Error depositing the money, you have reached the maximum amount possible on your account on PMBuddy</p>
+				<p>Error depositing the money, you have reached the maximum amount possible on your account on PMBuddy
+				</p>
 			</div>
 
 
