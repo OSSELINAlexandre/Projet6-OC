@@ -11,7 +11,9 @@ Projet 6 for the Java Software Development track from OpenClassrooms.
 * Maven 4.0.
 
 ## Framework used
-* Spring Boot (Starter web, JPA, Thymeleaf).
+* Spring Boot 
+* Spring Data
+* Spring Security
 * Bootstrap 5.
 * JavaScript librairies (Datatable.js).
 
