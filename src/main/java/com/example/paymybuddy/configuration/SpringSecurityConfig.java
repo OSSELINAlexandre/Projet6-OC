@@ -46,7 +46,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.
-		authorizeRequests().antMatchers("/register", "/bootstrap/**","/signin.css", "/registering.css", "/generalProperties.css").permitAll().anyRequest().authenticated()
+		authorizeRequests().antMatchers("/register", "/registersucessfully", "/process_register","/bootstrap/**","/signin.css", "/registering.css", "/generalProperties.css").permitAll().anyRequest().authenticated()
 				.and().formLogin().loginPage("/login").usernameParameter("username").passwordParameter("password")
 				.defaultSuccessUrl("/setToken", true).permitAll().and().logout().permitAll();
 
