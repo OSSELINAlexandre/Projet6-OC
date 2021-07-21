@@ -79,4 +79,19 @@ public class UserServices implements UserDetailsService {
 		return new BCryptPasswordEncoder();
 	}
 
+	// Getter and setter of repository solely present for testing purposes. Can be deleted once the application is deployed. 
+
+	
+	public PersonRepository getPersonRepo() {
+		return personRepo;
+	}
+
+	public void setPersonRepo(PersonRepository personRepo) {
+		this.personRepo = personRepo;
+	}
+	
+	
+	
+	
+
 }
