@@ -14,7 +14,7 @@ Projet 6 for the Java Software Development track from OpenClassrooms.
 * Spring Boot 
 * Spring Data
 * Spring Security
-* Bootstrap 5.
+* Bootstrap 5
 * JavaScript librairies (Datatable.js).
 
 
