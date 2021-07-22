@@ -27,6 +27,7 @@ Projet 6 for the Java Software Development track from OpenClassrooms.
 *  Create a DataBase named accordingly.
 * Copy the SQL Schema from the 'ressources' repository and apply it to your database.
 * Run the application.
+* You can use the username (Abraham.Lincoln@gmail.com , Benjamin.Franklin@gmail.com or Barack.Obama@gmail.com ) with password 'test'.
 
 You can now use PayMyBuddy application. 
 
