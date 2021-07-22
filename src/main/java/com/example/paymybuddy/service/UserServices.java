@@ -52,7 +52,6 @@ public class UserServices implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		logger.info("=================" + username);
 		return personRepo.findByEmail(username);
 	}
 
@@ -67,9 +66,10 @@ public class UserServices implements UserDetailsService {
 		return new BCryptPasswordEncoder();
 	}
 
-	//====== Getters and Setters of repository solely needed for testing purposes. 
-	//====== Once the app is validated, and for security reasons, these getters and setters 
-	//====== can be deleted
+	// ====== Getters and Setters of repository solely needed for testing purposes.
+	// ====== Once the app is validated, and for security reasons, these getters and
+	// setters
+	// ====== can be deleted
 
 	public PersonRepository getPersonRepo() {
 		return personRepo;
