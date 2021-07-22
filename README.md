@@ -22,7 +22,8 @@ Projet 6 for the Java Software Development track from OpenClassrooms.
 
 ## Usage 
 
-* Go in application.properties file, in the resources repository. Change = " spring.datasource.url= [URL]" to your specific database URL. Change the username and password corresponding to your database. 
+* If you use want to use an IDE and that hard coding username and password isn't an issue for you, go in application.properties and change : the URL of your database, 'spring.datasource.username' & 'spring.datasource.password' with the corresponding items.
+* If hardcoding these informations is an issue to you, go in your system variables and add spring.datasource.username' & 'spring.datasource.password' with the corresponding results.
 *  Create a DataBase named accordingly.
 * Copy the SQL Schema from the 'ressources' repository and apply it to your database.
 * Run the application.
