@@ -87,5 +87,32 @@ public class OperationOnAccountServices {
 		}
 
 	}
+	
+	//====== Getters and Setters of repository solely needed for testing purposes. 
+	//====== Once the app is validated, and for security reasons, these getters and setters 
+	//====== can be deleted
+	
+	
+
+	public BankOperationRepository getBankAccountRepo() {
+		return bankAccountRepo;
+	}
+
+	public void setBankAccountRepo(BankOperationRepository bankAccountRepo) {
+		this.bankAccountRepo = bankAccountRepo;
+	}
+
+	public PersonRepository getUserRepo() {
+		return userRepo;
+	}
+
+	public void setUserRepo(PersonRepository userRepo) {
+		this.userRepo = userRepo;
+	}
+	
+
+	
+	
+	
 
 }
