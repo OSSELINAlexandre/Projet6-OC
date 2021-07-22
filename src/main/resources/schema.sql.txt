@@ -3,8 +3,8 @@ CREATE TABLE Person (
                 id_person INT AUTO_INCREMENT NOT NULL,
                 name VARCHAR(50) NOT NULL,
                 surname VARCHAR(50) NOT NULL,
-                email VARCHAR(50) NOT NULL,
-                password VARCHAR(264) NOT NULL,
+                email VARCHAR(64) NOT NULL,
+                password VARCHAR(64) NOT NULL,
                 accountfunds DECIMAL(11,2) NOT NULL,
                 PRIMARY KEY (id_person)
 );

@@ -1,7 +1,6 @@
 package com.example.paymybuddy.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 import com.example.paymybuddy.model.Person;
@@ -10,8 +9,7 @@ import com.example.paymybuddy.model.Person;
 public interface PersonRepository extends CrudRepository<Person, Integer> {
 
 	Person findByEmail(String email);
-	
+
 	Person findByEmailAndPassword(String email, String password);
-	
 
 }
