@@ -65,7 +65,7 @@ public class servicesTests {
 
 	@Mock
 	ConnexionBetweenBuddiesRepository connexionRepo;
-	
+
 	@Mock
 	BankOperationRepository bankAccountRepo;
 
@@ -78,13 +78,11 @@ public class servicesTests {
 			.forClass(ConnexionBetweenBuddies.class);
 
 	final ArgumentCaptor<Person> personCaptor = ArgumentCaptor.forClass(Person.class);
-	
-	
+
 	final ArgumentCaptor<BankOperation> bankOperationCaptor = ArgumentCaptor.forClass(BankOperation.class);
 
 	final ArgumentCaptor<Person> personCaptorTwo = ArgumentCaptor.forClass(Person.class);
 
-	
 	@BeforeEach
 	public void init() {
 
@@ -92,7 +90,7 @@ public class servicesTests {
 		currentUser.setId(1);
 		currentUser.setName("Brad");
 		currentUser.setLastName("Pitt");
-		currentUser.setAccountfunds(150.00);
+		currentUser.setAccountFunds(150.00);
 		currentUser.setEmail("brad.pitt@gmail.com");
 		currentUser.setPassword("imbradpitt");
 
@@ -100,65 +98,53 @@ public class servicesTests {
 		buddyUser.setId(2);
 		buddyUser.setName("Jean");
 		buddyUser.setLastName("Valjean");
-		buddyUser.setAccountfunds(350.00);
+		buddyUser.setAccountFunds(350.00);
 		buddyUser.setEmail("galere.lumiere@gmail.com");
 		buddyUser.setPassword("imvaljean");
 
 	}
-	
-	
+
 // =========================================================================================
 // ================	            TESTS FOR OperationOnAccountServices        ================	
 // =========================================================================================
 
-
 	@Test
 	public void TestsaveForDeposit_ShouldCallAllRepository() {
-		
+
 		operationServices.setUserRepo(personRepo);
 		operationServices.setBankAccountRepo(bankAccountRepo);
 		when(session.getAttribute("listOfAllOperations")).thenReturn(new ArrayList<BankOperation>());
-		
+
 		operationServices.saveForDepositorWithdrawal(currentUser, 150.00, true, session);
-		
+
 		verify(personRepo, times(1)).save(personCaptorTwo.capture());
 		verify(bankAccountRepo, times(1)).save(bankOperationCaptor.capture());
 		BankOperation actualOperation = bankOperationCaptor.getValue();
 		Person actualPerson = personCaptorTwo.getValue();
 
-		
-		assertTrue(currentUser.getAmount() == actualPerson.getAmount());
+		assertTrue(currentUser.getAccountFunds() == actualPerson.getAccountFunds());
 		assertTrue(actualOperation.getHolder().getId() == currentUser.getId() && actualOperation.getAmount() == 150.00);
-		
-		
-		
+
 	}
-	
+
 	@Test
 	public void TestsaveForWithdrawal_ShouldCallAllRepository() {
-		
+
 		operationServices.setUserRepo(personRepo);
 		operationServices.setBankAccountRepo(bankAccountRepo);
 		when(session.getAttribute("listOfAllOperations")).thenReturn(new ArrayList<BankOperation>());
-		
+
 		operationServices.saveForDepositorWithdrawal(currentUser, 125.00, false, session);
-		
+
 		verify(personRepo, times(1)).save(personCaptorTwo.capture());
 		verify(bankAccountRepo, times(1)).save(bankOperationCaptor.capture());
 		BankOperation actualOperation = bankOperationCaptor.getValue();
 		Person actualPerson = personCaptorTwo.getValue();
 
-		
-		assertTrue(currentUser.getAmount() == actualPerson.getAmount());
+		assertTrue(currentUser.getAccountFunds() == actualPerson.getAccountFunds());
 		assertTrue(actualOperation.getHolder().getId() == currentUser.getId() && actualOperation.getAmount() == 125.00);
-		
-		
-		
+
 	}
-	
-	
-	
-	
 
 	@Test
 	public void checkIfCurrentUserHasNecessaryFunds_ShouldReturnTrue_IfNecessaryFunds() {
@@ -355,14 +341,11 @@ public class servicesTests {
 		verify(personRepo, times(1)).save(personCaptor.capture());
 		Person actual = personCaptor.getValue();
 
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();  
-		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
 		assertTrue(!actual.getPassword().equals("YHW"));
 		assertTrue(encoder.matches("YHW", actual.getPassword()));
 
 	}
-	
-
-	
 
 }

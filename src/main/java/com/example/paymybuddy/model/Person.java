@@ -48,6 +48,12 @@ public class Person implements Serializable, UserDetails {
 	@Column(name = "password")
 	private String password;
 
+	@Column(name = "autorisation")
+	private String authority;
+
+	@Column(name = "totalamountpayedfee")
+	private Double totalamountpayedfee;
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "willpayperson", nullable = true)
 	private List<Transaction> transactionsPayed;
@@ -125,24 +131,8 @@ public class Person implements Serializable, UserDetails {
 		this.lastName = lastName;
 	}
 
-	public String geteMail() {
-		return email;
-	}
-
-	public void seteMail(String eMail) {
-		this.email = eMail;
-	}
-
 	public String getPassword() {
 		return password;
-	}
-
-	public Double getAmount() {
-		return accountFunds;
-	}
-
-	public void setAmount(Double amount) {
-		this.accountFunds = amount;
 	}
 
 	public void setPassword(String password) {
@@ -165,6 +155,30 @@ public class Person implements Serializable, UserDetails {
 		this.transactionsThatWasPayed = transactionsThatWasPayed;
 	}
 
+	public Double getTotalamountpayedfee() {
+		return totalamountpayedfee;
+	}
+
+	public void setTotalamountpayedfee(Double d) {
+		this.totalamountpayedfee = d;
+	}
+
+	public Double getAccountFunds() {
+		return accountFunds;
+	}
+
+	public void setAccountFunds(Double accountFunds) {
+		this.accountFunds = accountFunds;
+	}
+
+	public String getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(String authority) {
+		this.authority = authority;
+	}
+
 	public List<Transaction> getAllTransactions() {
 
 		List<Transaction> result = new ArrayList<Transaction>();
@@ -179,14 +193,6 @@ public class Person implements Serializable, UserDetails {
 		transactionsPayed.add(transitoryItem);
 		return getAllTransactions();
 
-	}
-
-	public Double getAccountfunds() {
-		return accountFunds;
-	}
-
-	public void setAccountfunds(Double accountfunds) {
-		this.accountFunds = accountfunds;
 	}
 
 	public String getEmail() {

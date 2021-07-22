@@ -1,5 +1,6 @@
 package com.example.paymybuddy.configuration;
 
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,12 +12,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.service.UserServices;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	
+	
+
+	
 	@Autowired
 	private UserServices userServ;
 
@@ -46,9 +52,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.
-		authorizeRequests().antMatchers("/register", "/registersucessfully", "/process_register","/bootstrap/**","/signin.css", "/registering.css", "/generalProperties.css").permitAll().anyRequest().authenticated()
-				.and().formLogin().loginPage("/login").usernameParameter("username").passwordParameter("password")
-				.defaultSuccessUrl("/setuserattributes", true).permitAll().and().logout().permitAll();
+		authorizeRequests()
+		.antMatchers("/register", "/registersucessfully", "/process_register","/bootstrap/**","/signin.css", "/registering.css", "/generalProperties.css").permitAll()
+		.antMatchers("/dashboard").hasAuthority("ADMIN")
+		.anyRequest().authenticated()
+		.and().formLogin().loginPage("/login").usernameParameter("username").passwordParameter("password")
+		.defaultSuccessUrl("/setuserattributes", true).permitAll().and().logout().permitAll();
 
 	}
 	

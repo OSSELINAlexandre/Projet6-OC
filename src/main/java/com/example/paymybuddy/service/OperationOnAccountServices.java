@@ -36,7 +36,7 @@ public class OperationOnAccountServices {
 		newBankOperation.setDepositIsTrueWithdrawIsFalse(depositTrueWithdrawFalse);
 		newBankOperation.setHolder(currentUser);
 		newBankOperation.setAmount(depositMoney);
-		Double oldAmout = currentUser.getAmount();
+		Double oldAmout = currentUser.getAccountFunds();
 		Double newAmount = 0.0;
 
 		if (depositTrueWithdrawFalse) {
@@ -51,7 +51,7 @@ public class OperationOnAccountServices {
 		BigDecimal bd = new BigDecimal(newAmount).setScale(2, RoundingMode.HALF_UP);
 		double finalAmountSaved = bd.doubleValue();
 
-		currentUser.setAmount(finalAmountSaved);
+		currentUser.setAccountFunds(finalAmountSaved);
 		userRepo.save(currentUser);
 		bankAccountRepo.save(newBankOperation);
 
@@ -64,7 +64,7 @@ public class OperationOnAccountServices {
 
 	public boolean checkIfCurrentUserHasNecessaryFunds(Person currentUser, double d) {
 
-		if (currentUser.getAmount() - d >= 0) {
+		if (currentUser.getAccountFunds() - d >= 0) {
 
 			return true;
 
@@ -77,7 +77,7 @@ public class OperationOnAccountServices {
 
 	public boolean checkIfCurrentUserCanStillDepositToItsAccount(Person currentUser, double amount) {
 
-		if (currentUser.getAmount() + amount < 9999999) {
+		if (currentUser.getAccountFunds() + amount < 9999999) {
 
 			return true;
 
@@ -87,12 +87,11 @@ public class OperationOnAccountServices {
 		}
 
 	}
-	
-	//====== Getters and Setters of repository solely needed for testing purposes. 
-	//====== Once the app is validated, and for security reasons, these getters and setters 
-	//====== can be deleted
-	
-	
+
+	// ====== Getters and Setters of repository solely needed for testing purposes.
+	// ====== Once the app is validated, and for security reasons, these getters and
+	// setters
+	// ====== can be deleted
 
 	public BankOperationRepository getBankAccountRepo() {
 		return bankAccountRepo;
@@ -109,10 +108,5 @@ public class OperationOnAccountServices {
 	public void setUserRepo(PersonRepository userRepo) {
 		this.userRepo = userRepo;
 	}
-	
-
-	
-	
-	
 
 }

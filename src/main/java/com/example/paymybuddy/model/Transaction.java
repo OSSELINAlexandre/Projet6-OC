@@ -24,6 +24,9 @@ public class Transaction {
 	@Column(name = "amount")
 	private Double amount;
 
+	@Column(name = "feeontransaction")
+	private Double feeontransaction;
+
 	@OneToOne
 	@JoinColumn(name = "willpayperson", referencedColumnName = "id_person")
 	private Person payeur;
@@ -81,5 +84,16 @@ public class Transaction {
 	public void setPayee(Person payee) {
 		this.payee = payee;
 	}
+
+	public Double getFeeontransaction() {
+		return feeontransaction;
+	}
+
+	public void setFeeontransaction(Double feeontransaction) {
+		this.feeontransaction = feeontransaction;
+	}
+	
+	
+	
 
 }

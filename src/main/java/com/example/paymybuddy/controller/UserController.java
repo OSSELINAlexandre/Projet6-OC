@@ -3,8 +3,10 @@ package com.example.paymybuddy.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.example.paymybuddy.DTO.AdminDataForDashboard;
 import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.ConnexionBetweenBuddies;
@@ -25,6 +28,11 @@ import com.example.paymybuddy.service.UserServices;
 @Controller
 public class UserController {
 
+	
+	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(UserController.class);
+
+	
+	
 	@Autowired
 	UserServices userServices;
 
@@ -37,6 +45,7 @@ public class UserController {
 	public ModelAndView setAllTheData(HttpSession session) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		logger.info("================================================||||||||||||||||||||||" + authentication.getAuthorities().toString());
 		currentUser = userServices.getThePersonAfterAuthentication(authentication.getName());
 
 		ModelAndView theview = new ModelAndView("redirect:/userHome");
@@ -53,6 +62,8 @@ public class UserController {
 		return theview;
 
 	}
+	
+	
 
 	@GetMapping("/login")
 	public String returnMainPage(@RequestParam("errorFlag") Optional<Boolean> errorFlag, Model model) {

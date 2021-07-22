@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+	<meta name="theme-color" content="#7952b3">
+	<link href="generalProperties.css" rel="stylesheet">
+	<link href="dashboard.css" rel="stylesheet">
+
+</head>
+
+<body class="d-flex flex-column justify-content-center">
+
+	<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+		<a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+			<div
+				class="Logo-Background w-120 text-white pb-2 pt-2 pl-2 pr-2  align-self-center rounded RemeberMeFontSize fw-bold">
+				Pay My Buddy
+			</div>
+		</a>
+
+		<H1>Admin Dashboard Page&nbsp;&nbsp;&nbsp;&nbsp;</H1>
+	</header>
+	<main class="container">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th scope="col">First Name</th>
+					<th scope="col">Last Name</th>
+					<th scope="col">Number of transactions ever done</th>
+					<th scope="col">Total Amount payed</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="font-weight-bold" th:each="transac : ${administrativeList}">
+					<td th:text="${transac.name}"></td>
+					<td th:text="${transac.lastName}"></td>
+					<td th:text="${transac.numberOfTransac}"></td>
+					<td th:text="${transac.feePayed}"></td>
+				</tr>
+			</tbody>
+		</table>
+
+	</main>
+</body>
+
+</html>

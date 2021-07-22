@@ -5,7 +5,9 @@ CREATE TABLE Person (
                 surname VARCHAR(50) NOT NULL,
                 email VARCHAR(64) NOT NULL,
                 password VARCHAR(264) NOT NULL,
+                autorisation VARCHAR(50) NOT NULL,
                 accountfunds DECIMAL(11,2) NOT NULL,
+                totalamountpayedfee DECIMAL(11,2) NOT NULL,
                 PRIMARY KEY (id_person)
 );
 
@@ -22,6 +24,7 @@ CREATE TABLE Transaction (
                 id_transactions INT AUTO_INCREMENT NOT NULL,
                 commentaire VARCHAR(256) NOT NULL,
                 amount DECIMAL(11,2) NOT NULL,
+                feeontransaction DECIMAL(11,2) NOT NULL,
                 willpayperson INT NOT NULL,
                 willbepayedperson INT NOT NULL,
                 PRIMARY KEY (id_transactions)
@@ -67,11 +70,11 @@ REFERENCES Person (id_person)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
-INSERT INTO Person VALUES(1, 'Abraham', 'Lincoln', 'Abraham.Lincoln@gmail.com', '$2y$10$5rjk8fTus0ehUSFmvSvYg.6kh6CLk7Vh.Al5dZQlBKmAPUZ54Cg52', 150.00);
-INSERT INTO Person VALUES(2, 'Benjamin', 'Franklin', 'Benjamin.Franklin@gmail.com', '$2y$10$pN2gcTALKjQPOSSowJWu2e8kCDgpIjm4I5trIpYl1TfvMpehK/1VK', 250.00);
-INSERT INTO Person VALUES(3, 'Barack', 'Obama', 'Barack.Obama@gmail.com', '$2y$10$.jwK0eJXiQz/8xCOe/ThXuKar89iGTM6ZxpZVWKX6R871DN2Ctsr.', 350.00);
+INSERT INTO Person VALUES(1, 'Abraham', 'Lincoln', 'Abraham.Lincoln@gmail.com', '$2y$10$5rjk8fTus0ehUSFmvSvYg.6kh6CLk7Vh.Al5dZQlBKmAPUZ54Cg52', 'USER', 150.00, 0.00);
+INSERT INTO Person VALUES(2, 'Benjamin', 'Franklin', 'Benjamin.Franklin@gmail.com', '$2y$10$pN2gcTALKjQPOSSowJWu2e8kCDgpIjm4I5trIpYl1TfvMpehK/1VK', 'USER', 250.00, 0.00);
+INSERT INTO Person VALUES(3, 'Barack', 'Obama', 'Barack.Obama@gmail.com', '$2y$10$.jwK0eJXiQz/8xCOe/ThXuKar89iGTM6ZxpZVWKX6R871DN2Ctsr.', 'ADMIN', 350.00, 1.00);
 INSERT INTO Buddiesconnexion VALUES(1 , 1 , 3);
 INSERT INTO Buddiesconnexion VALUES(2 , 1 , 2);
 INSERT INTO Buddiesconnexion VALUES(3 , 2 , 3);
-INSERT INTO Transaction VALUES(1 , 'Thank you for the White House ! It is a delight to live in !', 55.0, 3, 2);
-INSERT INTO Transaction VALUES(2 , 'Thank you for this incredible revolution !Was completely worth it', 77.0, 3, 1);
+INSERT INTO Transaction VALUES(1 , 'Thank you for the White House ! It is a delight to live in !', 55.0, 0.50, 3, 2);
+INSERT INTO Transaction VALUES(2 , 'Thank you for this incredible revolution !Was completely worth it', 77.0, 0.50, 3, 1);

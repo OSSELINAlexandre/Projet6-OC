@@ -39,7 +39,7 @@ public class TransactionsServices {
 
 	public boolean checkIfCurrentUserHasSufficientAmounts(Person currentUser, double d) {
 
-		if (currentUser.getAmount() - d >= 0) {
+		if (currentUser.getAccountFunds() - d >= 0) {
 
 			return true;
 
@@ -54,7 +54,7 @@ public class TransactionsServices {
 
 		Person buddy = personRepo.findById(Integer.parseInt(id)).get();
 
-		if (buddy.getAmount() + d < 9999999) {
+		if (buddy.getAccountFunds() + d < 9999999) {
 
 			return true;
 
@@ -74,8 +74,10 @@ public class TransactionsServices {
 
 		Person theBud = personRepo.findById(Integer.parseInt(Data.getPersonToPay())).get();
 
-		Double currentUserNewAmount = currentUser.getAmount() - (Data.getAmount() * (1 + Fees.CLASSIC_FEE_APP));
-		Double buddyPaidNewAmount = theBud.getAmount() + Data.getAmount();
+		Double feePayedForThisTransaction = (Data.getAmount() * (Fees.CLASSIC_FEE_APP));
+
+		Double currentUserNewAmount = currentUser.getAccountFunds() - (Data.getAmount() * (1 + Fees.CLASSIC_FEE_APP));
+		Double buddyPaidNewAmount = theBud.getAccountFunds() + Data.getAmount();
 
 		BigDecimal currentUserAmountRounded = new BigDecimal(currentUserNewAmount).setScale(2, RoundingMode.HALF_UP);
 		double currentUserAmountToSave = currentUserAmountRounded.doubleValue();
@@ -83,22 +85,31 @@ public class TransactionsServices {
 		BigDecimal buddyPayedRoundedAmount = new BigDecimal(buddyPaidNewAmount).setScale(2, RoundingMode.HALF_UP);
 		double buddyPayedAmountToSave = buddyPayedRoundedAmount.doubleValue();
 
-		currentUser.setAmount(currentUserAmountToSave);
-		theBud.setAmount(buddyPayedAmountToSave);
+		BigDecimal feePayedAmountRounded = new BigDecimal(feePayedForThisTransaction).setScale(2, RoundingMode.HALF_UP);
+		double roundedFeePayedForThisTransaction = feePayedAmountRounded.doubleValue();
 
-		saveANewTransaction(currentUser, Data, theBud, session);
+		currentUser.setAccountFunds(currentUserAmountToSave);
+
+		double pastFeePayed = currentUser.getTotalamountpayedfee();
+		currentUser.setTotalamountpayedfee(pastFeePayed + roundedFeePayedForThisTransaction);
+
+		theBud.setAccountFunds(buddyPayedAmountToSave);
+
+		saveANewTransaction(currentUser, Data, theBud, session, roundedFeePayedForThisTransaction);
 		personRepo.save(currentUser);
 		personRepo.save(theBud);
 
 	}
 
-	public void saveANewTransaction(Person currentUser, PaymentData pay, Person it, HttpSession session) {
+	public void saveANewTransaction(Person currentUser, PaymentData pay, Person it, HttpSession session,
+			double roundedFeePayedForThisTransaction) {
 
 		Transaction newItem = new Transaction();
 		newItem.setAmount(pay.getAmount());
 		newItem.setCommentaire(pay.getDescription());
 		newItem.setPayee(it);
 		newItem.setPayeur(currentUser);
+		newItem.setFeeontransaction(roundedFeePayedForThisTransaction);
 		transacRepo.save(newItem);
 
 		List<Transaction> temporaryListOfTransaction = (List<Transaction>) session
@@ -110,12 +121,12 @@ public class TransactionsServices {
 	public Boolean addingABuddyToTheCurrentUser(BuddiesInConnexion bud, Person currentUser, HttpSession session) {
 
 		Person buddyInConnection = personRepo.findByEmail(bud.getEmail());
-		
-		if(buddyInConnection != null) {
+
+		if (buddyInConnection != null) {
 
 			if (connexionRepo.findByIdOfCenterAndBuddyOfACenter(currentUser.getId(), buddyInConnection.getId()) == null
 					&& buddyInConnection.getId() != currentUser.getId()) {
-	
+
 				ConnexionBetweenBuddies newConnexion = new ConnexionBetweenBuddies();
 				newConnexion.setIdOfCenter(currentUser.getId());
 				newConnexion.setBuddyOfACenter(buddyInConnection.getId());
@@ -125,9 +136,9 @@ public class TransactionsServices {
 				theResult.add(newConnexion);
 				session.setAttribute("listOfAllConnexionOfBuddies", theResult);
 				return true;
-	
+
 			}
-		
+
 		}
 
 		return false;
@@ -163,9 +174,10 @@ public class TransactionsServices {
 		return resultSet;
 	}
 
-	//====== Getters and Setters of repository solely needed for testing purposes. 
-	//====== Once the app is validated, and for security reasons, these getters and setters 
-	//====== can be deleted
+	// ====== Getters and Setters of repository solely needed for testing purposes.
+	// ====== Once the app is validated, and for security reasons, these getters and
+	// setters
+	// ====== can be deleted
 	public PersonRepository getPersonRepo() {
 		return personRepo;
 	}
@@ -189,13 +201,5 @@ public class TransactionsServices {
 	public void setConnexionRepo(ConnexionBetweenBuddiesRepository connexionRepo) {
 		this.connexionRepo = connexionRepo;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 
 }
