@@ -43,7 +43,7 @@ public class Person implements Serializable, UserDetails {
 	private String email;
 
 	@Column(name = "accountfunds")
-	private Double accountfunds;
+	private Double accountFunds;
 
 	@Column(name = "password")
 	private String password;
@@ -72,7 +72,7 @@ public class Person implements Serializable, UserDetails {
 		this.name = name;
 		this.lastName = lastName;
 		this.email = email;
-		this.accountfunds = accountfunds;
+		this.accountFunds = accountfunds;
 		this.password = password;
 		this.transactionsPayed = transactionsPayed;
 		this.transactionsThatWasPayed = transactionsThatWasPayed;
@@ -86,7 +86,7 @@ public class Person implements Serializable, UserDetails {
 		this.lastName = lastName;
 		this.email = eMail;
 		this.password = password;
-		this.accountfunds = amount;
+		this.accountFunds = amount;
 	}
 
 	public Person(int id, String name, String lastName, String eMail, String password) {
@@ -95,7 +95,7 @@ public class Person implements Serializable, UserDetails {
 		this.lastName = lastName;
 		this.email = eMail;
 		this.password = password;
-		this.accountfunds = 0.0;
+		this.accountFunds = 0.0;
 	}
 
 	public Person() {
@@ -138,11 +138,11 @@ public class Person implements Serializable, UserDetails {
 	}
 
 	public Double getAmount() {
-		return accountfunds;
+		return accountFunds;
 	}
 
 	public void setAmount(Double amount) {
-		this.accountfunds = amount;
+		this.accountFunds = amount;
 	}
 
 	public void setPassword(String password) {
@@ -182,11 +182,11 @@ public class Person implements Serializable, UserDetails {
 	}
 
 	public Double getAccountfunds() {
-		return accountfunds;
+		return accountFunds;
 	}
 
 	public void setAccountfunds(Double accountfunds) {
-		this.accountfunds = accountfunds;
+		this.accountFunds = accountfunds;
 	}
 
 	public String getEmail() {
@@ -209,7 +209,7 @@ public class Person implements Serializable, UserDetails {
 	public List<ConnexionBetweenBuddies> getListOfBuddies() {
 
 		logger.info(
-				"Lazy Fetch need to be initialize in the transactional context in order to be avaiable in the session (the real list can be given and not just the proxy"
+				"Lazy Fetch need to be initialize in the transactional context in order to be avaiable in the session as an attribute (the real list can be given and not just the proxy)"
 						+ listOfBuddies.size());
 
 		return listOfBuddies;

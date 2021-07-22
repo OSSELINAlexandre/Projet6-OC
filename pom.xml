@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>premierbrouillonapplication</artifactId>
+	<artifactId>PayMyBuddyApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>premierbrouillonapplication</name>
-	<description>Mon premier brouillon pour le projet 6</description>
+	<name>PayMyBuddyApp</name>
+	<description>My solution for project 6 for OpenClassrooms Java Developer Track</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

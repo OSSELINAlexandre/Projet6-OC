@@ -9,14 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.paymybuddy.DTO.IdentificationData;
 import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.ConnexionBetweenBuddies;
@@ -35,10 +33,9 @@ public class UserController {
 	private List<BankOperation> listOfAllOperations;
 	private List<ConnexionBetweenBuddies> listOfAllConnexionOfBuddies;
 
-	
-	@GetMapping("/setToken")
+	@GetMapping("/setuserattributes")
 	public ModelAndView setAllTheData(HttpSession session) {
-		
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		currentUser = userServices.getThePersonAfterAuthentication(authentication.getName());
 
@@ -55,19 +52,10 @@ public class UserController {
 
 		return theview;
 
-		
 	}
-	
-	
+
 	@GetMapping("/login")
 	public String returnMainPage(@RequestParam("errorFlag") Optional<Boolean> errorFlag, Model model) {
-//
-//		model.addAttribute("comingUser", new IdentificationData());
-//
-//		if (errorFlag.isPresent()) {
-//
-//			model.addAttribute("errorFlag", true);
-//		}
 
 		return "login";
 	}
@@ -78,11 +66,6 @@ public class UserController {
 		return "user_profile";
 	}
 
-	@GetMapping("/Logoff")
-	public String logOfftheAccount() {
-
-		return "log_off";
-	}
 
 	@GetMapping("/register")
 	public String registeringNewPerson(@RequestParam("passwordmatch") Optional<Boolean> passwordmatch,
@@ -104,37 +87,6 @@ public class UserController {
 	public String registerIsASucess() {
 
 		return "register_successfully";
-	}
-
-	@PostMapping("/process_signin")
-	@Transactional
-	public ModelAndView verifyIdentity(IdentificationData person, Model model, HttpSession session) {
-
-		currentUser = userServices.findByIdentificationDataIfCombinasioExists(person);
-
-		if (currentUser == null) {
-
-			ModelAndView theview = new ModelAndView("redirect:/");
-			theview.addObject("errorFlag", true);
-			return theview;
-
-		} else {
-
-			ModelAndView theview = new ModelAndView("redirect:/userHome");
-
-			listOfAllTransactions = currentUser.getAllTransactions();
-			listOfAllOperations = currentUser.getListOfALLOperations();
-			listOfAllConnexionOfBuddies = currentUser.getListOfBuddies();
-
-			session.setAttribute("currentUser", currentUser);
-			session.setAttribute("listOfAllConnexionOfBuddies", listOfAllConnexionOfBuddies);
-			session.setAttribute("listOfAllTransactions", listOfAllTransactions);
-			session.setAttribute("listOfAllOperations", listOfAllOperations);
-
-			return theview;
-
-		}
-
 	}
 
 	@PostMapping("/process_register")

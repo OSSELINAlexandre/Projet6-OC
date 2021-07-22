@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.example.paymybuddy.DTO.IdentificationData;
 import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.repository.PersonRepository;
@@ -16,11 +15,8 @@ import com.example.paymybuddy.repository.PersonRepository;
 @Service
 public class UserServices implements UserDetailsService {
 
-	
 	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(UserServices.class);
 
-	
-	
 	@Autowired
 	PersonRepository personRepo;
 
@@ -53,25 +49,17 @@ public class UserServices implements UserDetailsService {
 
 	}
 
-	public Person findByIdentificationDataIfCombinasioExists(IdentificationData person) {
-
-		return personRepo.findByEmailAndPassword(person.getEmail(), person.getPassword());
-
-	}
-
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		logger.info("=================" + username);
 		return personRepo.findByEmail(username);
 	}
-	
-	
+
 	public Person getThePersonAfterAuthentication(String email) {
-		
+
 		return personRepo.findByEmail(email);
 	}
-	
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoderSecond() {
@@ -79,9 +67,10 @@ public class UserServices implements UserDetailsService {
 		return new BCryptPasswordEncoder();
 	}
 
-	// Getter and setter of repository solely present for testing purposes. Can be deleted once the application is deployed. 
+	//====== Getters and Setters of repository solely needed for testing purposes. 
+	//====== Once the app is validated, and for security reasons, these getters and setters 
+	//====== can be deleted
 
-	
 	public PersonRepository getPersonRepo() {
 		return personRepo;
 	}
@@ -89,9 +78,5 @@ public class UserServices implements UserDetailsService {
 	public void setPersonRepo(PersonRepository personRepo) {
 		this.personRepo = personRepo;
 	}
-	
-	
-	
-	
 
 }

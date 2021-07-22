@@ -163,8 +163,9 @@ public class TransactionsServices {
 		return resultSet;
 	}
 
-	//Getters and Setters of repository solely needed for testing purposes. Once the app is validated, and for security reasons, these getters and setters 
-	//can be deleted
+	//====== Getters and Setters of repository solely needed for testing purposes. 
+	//====== Once the app is validated, and for security reasons, these getters and setters 
+	//====== can be deleted
 	public PersonRepository getPersonRepo() {
 		return personRepo;
 	}

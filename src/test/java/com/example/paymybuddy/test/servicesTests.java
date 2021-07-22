@@ -20,9 +20,11 @@ import org.junit.jupiter.api.BeforeEach;
 import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.DTO.PaymentData;
+import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
+import com.example.paymybuddy.repository.BankOperationRepository;
 import com.example.paymybuddy.repository.ConnexionBetweenBuddiesRepository;
 import com.example.paymybuddy.repository.PersonRepository;
 import com.example.paymybuddy.repository.TransactionRepository;
@@ -63,6 +65,9 @@ public class servicesTests {
 
 	@Mock
 	ConnexionBetweenBuddiesRepository connexionRepo;
+	
+	@Mock
+	BankOperationRepository bankAccountRepo;
 
 	@Mock
 	HttpSession session;
@@ -73,11 +78,13 @@ public class servicesTests {
 			.forClass(ConnexionBetweenBuddies.class);
 
 	final ArgumentCaptor<Person> personCaptor = ArgumentCaptor.forClass(Person.class);
+	
+	
+	final ArgumentCaptor<BankOperation> bankOperationCaptor = ArgumentCaptor.forClass(BankOperation.class);
 
-// =========================================================================================
-// ================	            TESTS FOR OperationOnAccountServices        ================	
-// =========================================================================================
+	final ArgumentCaptor<Person> personCaptorTwo = ArgumentCaptor.forClass(Person.class);
 
+	
 	@BeforeEach
 	public void init() {
 
@@ -98,6 +105,60 @@ public class servicesTests {
 		buddyUser.setPassword("imvaljean");
 
 	}
+	
+	
+// =========================================================================================
+// ================	            TESTS FOR OperationOnAccountServices        ================	
+// =========================================================================================
+
+
+	@Test
+	public void TestsaveForDeposit_ShouldCallAllRepository() {
+		
+		operationServices.setUserRepo(personRepo);
+		operationServices.setBankAccountRepo(bankAccountRepo);
+		when(session.getAttribute("listOfAllOperations")).thenReturn(new ArrayList<BankOperation>());
+		
+		operationServices.saveForDepositorWithdrawal(currentUser, 150.00, true, session);
+		
+		verify(personRepo, times(1)).save(personCaptorTwo.capture());
+		verify(bankAccountRepo, times(1)).save(bankOperationCaptor.capture());
+		BankOperation actualOperation = bankOperationCaptor.getValue();
+		Person actualPerson = personCaptorTwo.getValue();
+
+		
+		assertTrue(currentUser.getAmount() == actualPerson.getAmount());
+		assertTrue(actualOperation.getHolder().getId() == currentUser.getId() && actualOperation.getAmount() == 150.00);
+		
+		
+		
+	}
+	
+	@Test
+	public void TestsaveForWithdrawal_ShouldCallAllRepository() {
+		
+		operationServices.setUserRepo(personRepo);
+		operationServices.setBankAccountRepo(bankAccountRepo);
+		when(session.getAttribute("listOfAllOperations")).thenReturn(new ArrayList<BankOperation>());
+		
+		operationServices.saveForDepositorWithdrawal(currentUser, 125.00, false, session);
+		
+		verify(personRepo, times(1)).save(personCaptorTwo.capture());
+		verify(bankAccountRepo, times(1)).save(bankOperationCaptor.capture());
+		BankOperation actualOperation = bankOperationCaptor.getValue();
+		Person actualPerson = personCaptorTwo.getValue();
+
+		
+		assertTrue(currentUser.getAmount() == actualPerson.getAmount());
+		assertTrue(actualOperation.getHolder().getId() == currentUser.getId() && actualOperation.getAmount() == 125.00);
+		
+		
+		
+	}
+	
+	
+	
+	
 
 	@Test
 	public void checkIfCurrentUserHasNecessaryFunds_ShouldReturnTrue_IfNecessaryFunds() {
