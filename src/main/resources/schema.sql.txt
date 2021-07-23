@@ -78,3 +78,4 @@ INSERT INTO Buddiesconnexion VALUES(2 , 1 , 2);
 INSERT INTO Buddiesconnexion VALUES(3 , 2 , 3);
 INSERT INTO Transaction VALUES(1 , 'Thank you for the White House ! It is a delight to live in !', 55.0, 0.50, 3, 2);
 INSERT INTO Transaction VALUES(2 , 'Thank you for this incredible revolution !Was completely worth it', 77.0, 0.50, 3, 1);
+
