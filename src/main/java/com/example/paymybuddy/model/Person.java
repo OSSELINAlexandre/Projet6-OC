@@ -60,7 +60,7 @@ public class Person implements Serializable, UserDetails {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "willbepayedperson", nullable = true)
-	private List<Transaction> transactionsThatWasPayed;
+	private List<Transaction> transactionsThatWerePayed;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "accountholder", nullable = true)
@@ -70,39 +70,6 @@ public class Person implements Serializable, UserDetails {
 	@JoinColumn(name = "center", nullable = true)
 	private List<ConnexionBetweenBuddies> listOfBuddies;
 
-	public Person(int id, String name, String lastName, String email, Double accountfunds, String password,
-			List<Transaction> transactionsPayed, List<Transaction> transactionsThatWasPayed,
-			List<BankOperation> listOfALLOperations, List<ConnexionBetweenBuddies> listOfBuddies) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.lastName = lastName;
-		this.email = email;
-		this.accountFunds = accountfunds;
-		this.password = password;
-		this.transactionsPayed = transactionsPayed;
-		this.transactionsThatWasPayed = transactionsThatWasPayed;
-		this.listOfALLOperations = listOfALLOperations;
-		this.listOfBuddies = listOfBuddies;
-	}
-
-	public Person(int id, String name, String lastName, String eMail, String password, Double amount) {
-		this.id = id;
-		this.name = name;
-		this.lastName = lastName;
-		this.email = eMail;
-		this.password = password;
-		this.accountFunds = amount;
-	}
-
-	public Person(int id, String name, String lastName, String eMail, String password) {
-		this.id = id;
-		this.name = name;
-		this.lastName = lastName;
-		this.email = eMail;
-		this.password = password;
-		this.accountFunds = 0.0;
-	}
 
 	public Person() {
 	}
@@ -147,12 +114,12 @@ public class Person implements Serializable, UserDetails {
 		this.transactionsPayed = transactionsPayed;
 	}
 
-	public List<Transaction> getTransactionsThatWasPayed() {
-		return transactionsThatWasPayed;
+	public List<Transaction> getTransactionsThatWerePayed() {
+		return transactionsThatWerePayed;
 	}
 
-	public void setTransactionsThatWasPayed(List<Transaction> transactionsThatWasPayed) {
-		this.transactionsThatWasPayed = transactionsThatWasPayed;
+	public void setTransactionsThatWerePayed(List<Transaction> transactionsThatWerePayed) {
+		this.transactionsThatWerePayed = transactionsThatWerePayed;
 	}
 
 	public Double getTotalamountpayedfee() {
@@ -182,7 +149,7 @@ public class Person implements Serializable, UserDetails {
 	public List<Transaction> getAllTransactions() {
 
 		List<Transaction> result = new ArrayList<Transaction>();
-		result.addAll(transactionsThatWasPayed);
+		result.addAll(transactionsThatWerePayed);
 		result.addAll(transactionsPayed);
 		return result;
 

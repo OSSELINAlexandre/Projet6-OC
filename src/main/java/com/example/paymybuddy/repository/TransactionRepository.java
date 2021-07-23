@@ -9,6 +9,6 @@ import com.example.paymybuddy.model.Transaction;
 
 public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
 
-	List<Transaction> findByPayeur(Person id);
+	List<Transaction> findByPayer(Person id);
 
 }

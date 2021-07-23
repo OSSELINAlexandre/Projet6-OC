@@ -87,7 +87,7 @@ public class TransferController {
 	}
 
 	@PostMapping("/transfer_validation")
-	public ModelAndView verificationOfBuddy(BuddiesInConnexion bud, HttpSession session, Model model,
+	public ModelAndView verificationOfExistenceOfBuddyForTransfer(BuddiesInConnexion bud, HttpSession session, Model model,
 			ModelMap modelmap) {
 
 		ModelAndView theView = new ModelAndView("redirect:/transfer");
@@ -117,7 +117,7 @@ public class TransferController {
 	}
 
 	@PostMapping("/processingPayment")
-	public ModelAndView processPayment(PaymentData pay, Model model, HttpSession session, ModelMap modelmap) {
+	public ModelAndView processThePaymentBetweenBuddies(PaymentData pay, Model model, HttpSession session, ModelMap modelmap) {
 
 		ModelAndView theView = new ModelAndView("redirect:/transfer");
 
@@ -126,7 +126,7 @@ public class TransferController {
 
 			if (transactionServices.checkIfGoingToBePayedBuddyDoesNotHaveTooMuchMoney(pay.getPersonToPay(),
 					pay.getAmount())) {
-				transactionServices.adjustAccount(pay, currentUser, session);
+				transactionServices.adjustTheAccountsBetweenBuddies(pay, currentUser, session);
 			} else {
 
 				theView.addObject("yourBuddyHasTooMuchMoney", true);

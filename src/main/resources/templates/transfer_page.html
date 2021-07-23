@@ -242,7 +242,7 @@
 				</thead>
 				<tbody>
 					<tr class="font-weight-bold" th:each="transac : ${listOfAllTransactions}">
-						<td th:text="${transac.payee.id == currentUser.id ? transac.payeur.name : transac.payee.name}">
+						<td th:text="${transac.payee.id == currentUser.id ? transac.payer.name : transac.payee.name}">
 						</td>
 						<td th:text="${transac.commentaire}"></td>
 						<td th:text="${transac.amount}"

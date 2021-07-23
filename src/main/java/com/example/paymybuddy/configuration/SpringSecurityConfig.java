@@ -1,18 +1,14 @@
 package com.example.paymybuddy.configuration;
 
-import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.service.UserServices;
 
 @Configuration
@@ -24,7 +20,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	
 	@Autowired
-	private UserServices userServ;
+	private UserServices userServices;
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -36,7 +32,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	public DaoAuthenticationProvider daoAuthenticationProvider() {
 
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(userServ);
+		authProvider.setUserDetailsService(userServices);
 		authProvider.setPasswordEncoder(passwordEncoder());
 
 		return authProvider;

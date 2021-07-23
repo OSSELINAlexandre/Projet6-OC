@@ -2,7 +2,7 @@ package com.example.paymybuddy.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,12 +16,12 @@ import com.example.paymybuddy.service.AdminServices;
 public class AdminDashBoardController {
 
 	@Autowired
-	AdminServices adminService;
+	AdminServices adminServices;
 
 	@GetMapping("/dashboard")
 	public String getTheDashBoardForAdmin(Model model) {
 
-		List<AdminDataForDashboard> resultItem = adminService.generateDashBoard();
+		List<AdminDataForDashboard> resultItem = adminServices.generateDashBoard();
 		model.addAttribute("administrativeList", resultItem);
 
 		return "dashboard";

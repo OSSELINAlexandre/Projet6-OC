@@ -18,18 +18,18 @@ import com.example.paymybuddy.repository.TransactionRepository;
 public class AdminServices {
 
 	@Autowired
-	PersonRepository personRepo;
+	PersonRepository personRepository;
 
 	@Autowired
-	TransactionRepository transactionRepo;
+	TransactionRepository transactionRepository;
 
 	public List<AdminDataForDashboard> generateDashBoard() {
 
 		List<AdminDataForDashboard> adminDashList = new ArrayList<>();
 
-		for (Person p : personRepo.findAll()) {
+		for (Person p : personRepository.findAll()) {
 
-			List<Transaction> result = transactionRepo.findByPayeur(p);
+			List<Transaction> result = transactionRepository.findByPayer(p);
 			int numberOfTransac = result.size();
 			
 			if(numberOfTransac > 0 ) {
@@ -46,26 +46,20 @@ public class AdminServices {
 		return adminDashList;
 	}
 	
-	// ====== Getters and Setters of repository solely needed for testing purposes.
-	// ====== Once the app is validated, and for security reasons, these getters and
-	// setters
+	// ====== Setters of repository solely needed for testing purposes.
+	// ====== Once the app is validated, and for security reasons, these setters
 	// ====== can be deleted
-	
 
-	public PersonRepository getPersonRepo() {
-		return personRepo;
-	}
+
 
 	public void setPersonRepo(PersonRepository personRepo) {
-		this.personRepo = personRepo;
+		this.personRepository = personRepo;
 	}
 
-	public TransactionRepository getTransactionRepo() {
-		return transactionRepo;
-	}
+
 
 	public void setTransactionRepo(TransactionRepository transactionRepo) {
-		this.transactionRepo = transactionRepo;
+		this.transactionRepository = transactionRepo;
 	}
 	
 

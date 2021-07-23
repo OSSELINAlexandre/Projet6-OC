@@ -244,7 +244,7 @@ public class servicesTests {
 		testItem.setId(1); // Je suis pas sûr pour celle-ci.
 		testItem.setCommentaire("Testing the service");
 		testItem.setAmount(10.00);
-		testItem.setPayeur(currentUser);
+		testItem.setPayer(currentUser);
 		testItem.setPayee(buddyUser);
 
 		when(session.getAttribute("listOfAllTransactions")).thenReturn(new ArrayList<Transaction>());
@@ -253,13 +253,13 @@ public class servicesTests {
 		newItem.setAmount(pay.getAmount());
 		newItem.setCommentaire(pay.getDescription());
 		newItem.setPayee(buddyUser);
-		newItem.setPayeur(currentUser);
+		newItem.setPayer(currentUser);
 		Optional<Person> buddyOfUser = Optional.of(buddyUser);
 		when(personRepo.findById(2)).thenReturn(buddyOfUser);
 		transacServices.setPersonRepo(personRepo);
 		transacServices.setTransacRepo(transacRepo);
 
-		transacServices.adjustAccount(pay, currentUser, session);
+		transacServices.adjustTheAccountsBetweenBuddies(pay, currentUser, session);
 
 		verify(personRepo).save(buddyUser);
 		verify(personRepo).save(currentUser);
@@ -390,7 +390,7 @@ public class servicesTests {
 		Iterable<Person> testingItem = listingIt;
 				
 		when(personRepo.findAll()).thenReturn(testingItem);
-		when(transacRepo.findByPayeur(currentUser)).thenReturn(testItem);
+		when(transacRepo.findByPayer(currentUser)).thenReturn(testItem);
 		
 
 		List<AdminDataForDashboard> actual = adminServices.generateDashBoard();

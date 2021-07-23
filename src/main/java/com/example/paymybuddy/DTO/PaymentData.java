@@ -9,11 +9,7 @@ public class PaymentData {
 	public PaymentData() {
 	}
 
-	public PaymentData(String personToPay, Double amount, String description) {
-		this.personToPay = personToPay;
-		this.amount = amount;
-		this.description = description;
-	}
+
 
 	public String getPersonToPay() {
 		return personToPay;

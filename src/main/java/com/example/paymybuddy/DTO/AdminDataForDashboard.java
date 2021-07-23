@@ -14,13 +14,6 @@ public class AdminDataForDashboard {
 		super();
 	}
 
-	public AdminDataForDashboard(String name, String lastName, Integer numberOfTransac, Double feePayed) {
-		super();
-		this.name = name;
-		this.lastName = lastName;
-		this.numberOfTransac = numberOfTransac;
-		this.feePayed = feePayed;
-	}
 
 	public String getName() {
 		return name;

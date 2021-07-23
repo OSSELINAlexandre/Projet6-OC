@@ -21,10 +21,10 @@ public class OperationOnAccountServices {
 			.getLogger(OperationOnAccountServices.class);
 
 	@Autowired
-	BankOperationRepository bankAccountRepo;
+	BankOperationRepository bankAccountRepository;
 
 	@Autowired
-	PersonRepository userRepo;
+	PersonRepository userRepository;
 
 	public OperationOnAccountServices() {
 	}
@@ -52,8 +52,8 @@ public class OperationOnAccountServices {
 		double finalAmountSaved = bd.doubleValue();
 
 		currentUser.setAccountFunds(finalAmountSaved);
-		userRepo.save(currentUser);
-		bankAccountRepo.save(newBankOperation);
+		userRepository.save(currentUser);
+		bankAccountRepository.save(newBankOperation);
 
 		List<BankOperation> theListInSession = (List<BankOperation>) session.getAttribute("listOfAllOperations");
 
@@ -88,25 +88,19 @@ public class OperationOnAccountServices {
 
 	}
 
-	// ====== Getters and Setters of repository solely needed for testing purposes.
-	// ====== Once the app is validated, and for security reasons, these getters and
-	// setters
+	// ====== Setters of repository solely needed for testing purposes.
+	// ====== Once the app is validated, and for security reasons, these setters
 	// ====== can be deleted
 
-	public BankOperationRepository getBankAccountRepo() {
-		return bankAccountRepo;
-	}
 
 	public void setBankAccountRepo(BankOperationRepository bankAccountRepo) {
-		this.bankAccountRepo = bankAccountRepo;
+		this.bankAccountRepository = bankAccountRepo;
 	}
 
-	public PersonRepository getUserRepo() {
-		return userRepo;
-	}
+
 
 	public void setUserRepo(PersonRepository userRepo) {
-		this.userRepo = userRepo;
+		this.userRepository = userRepo;
 	}
 
 }

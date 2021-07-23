@@ -31,18 +31,7 @@ public class BankOperation {
 	public BankOperation() {
 	}
 
-	public BankOperation(int id, Double amount, boolean depositIsTrueWithdrawIsFalse, Person holder) {
-		this.id = id;
-		this.amount = amount;
-		this.depositIsTrueWithdrawIsFalse = depositIsTrueWithdrawIsFalse;
-		this.holder = holder;
-	}
 
-	public BankOperation(int id, Double amount) {
-		this.id = id;
-		this.amount = amount;
-
-	}
 
 	public int getId() {
 		return id;

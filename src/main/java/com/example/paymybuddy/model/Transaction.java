@@ -25,11 +25,11 @@ public class Transaction {
 	private Double amount;
 
 	@Column(name = "feeontransaction")
-	private Double feeontransaction;
+	private Double feeOnTransaction;
 
 	@OneToOne
 	@JoinColumn(name = "willpayperson", referencedColumnName = "id_person")
-	private Person payeur;
+	private Person payer;
 
 	@OneToOne
 	@JoinColumn(name = "willbepayedperson", referencedColumnName = "id_person")
@@ -38,12 +38,6 @@ public class Transaction {
 	public Transaction() {
 	}
 
-	public Transaction(String commentaire, Double amount, Person payeur, Person payee) {
-		this.commentaire = commentaire;
-		this.amount = amount;
-		this.payeur = payeur;
-		this.payee = payee;
-	}
 
 	public int getId() {
 		return id;
@@ -69,12 +63,12 @@ public class Transaction {
 		this.amount = integer;
 	}
 
-	public Person getPayeur() {
-		return payeur;
+	public Person getPayer() {
+		return payer;
 	}
 
-	public void setPayeur(Person payeur) {
-		this.payeur = payeur;
+	public void setPayer(Person payeur) {
+		this.payer = payeur;
 	}
 
 	public Person getPayee() {
@@ -84,13 +78,14 @@ public class Transaction {
 	public void setPayee(Person payee) {
 		this.payee = payee;
 	}
+	
 
-	public Double getFeeontransaction() {
-		return feeontransaction;
+	public Double getFeeOnTransaction() {
+		return feeOnTransaction;
 	}
 
-	public void setFeeontransaction(Double feeontransaction) {
-		this.feeontransaction = feeontransaction;
+	public void setFeeOnTransaction(Double feeontransaction) {
+		this.feeOnTransaction = feeontransaction;
 	}
 	
 	

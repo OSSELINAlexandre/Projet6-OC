@@ -24,13 +24,13 @@ import com.example.paymybuddy.repository.TransactionRepository;
 public class TransactionsServices {
 
 	@Autowired
-	TransactionRepository transacRepo;
+	TransactionRepository transacRepository;
 
 	@Autowired
-	PersonRepository personRepo;
+	PersonRepository personRepository;
 
 	@Autowired
-	ConnexionBetweenBuddiesRepository connexionRepo;
+	ConnexionBetweenBuddiesRepository connexionRepository;
 
 	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(TransactionsServices.class);
 
@@ -52,7 +52,7 @@ public class TransactionsServices {
 
 	public boolean checkIfGoingToBePayedBuddyDoesNotHaveTooMuchMoney(String id, double d) {
 
-		Person buddy = personRepo.findById(Integer.parseInt(id)).get();
+		Person buddy = personRepository.findById(Integer.parseInt(id)).get();
 
 		if (buddy.getAccountFunds() + d < 9999999) {
 
@@ -67,12 +67,12 @@ public class TransactionsServices {
 
 	public Person findByEmailFromRepo(String email) {
 
-		return personRepo.findByEmail(email);
+		return personRepository.findByEmail(email);
 	}
 
-	public void adjustAccount(PaymentData Data, Person currentUser, HttpSession session) {
+	public void adjustTheAccountsBetweenBuddies(PaymentData Data, Person currentUser, HttpSession session) {
 
-		Person theBud = personRepo.findById(Integer.parseInt(Data.getPersonToPay())).get();
+		Person theBud = personRepository.findById(Integer.parseInt(Data.getPersonToPay())).get();
 
 		Double feePayedForThisTransaction = (Data.getAmount() * (Fees.CLASSIC_FEE_APP));
 
@@ -96,8 +96,8 @@ public class TransactionsServices {
 		theBud.setAccountFunds(buddyPayedAmountToSave);
 
 		saveANewTransaction(currentUser, Data, theBud, session, roundedFeePayedForThisTransaction);
-		personRepo.save(currentUser);
-		personRepo.save(theBud);
+		personRepository.save(currentUser);
+		personRepository.save(theBud);
 
 	}
 
@@ -108,9 +108,9 @@ public class TransactionsServices {
 		newItem.setAmount(pay.getAmount());
 		newItem.setCommentaire(pay.getDescription());
 		newItem.setPayee(it);
-		newItem.setPayeur(currentUser);
-		newItem.setFeeontransaction(roundedFeePayedForThisTransaction);
-		transacRepo.save(newItem);
+		newItem.setPayer(currentUser);
+		newItem.setFeeOnTransaction(roundedFeePayedForThisTransaction);
+		transacRepository.save(newItem);
 
 		List<Transaction> temporaryListOfTransaction = (List<Transaction>) session
 				.getAttribute("listOfAllTransactions");
@@ -120,17 +120,17 @@ public class TransactionsServices {
 
 	public Boolean addingABuddyToTheCurrentUser(BuddiesInConnexion bud, Person currentUser, HttpSession session) {
 
-		Person buddyInConnection = personRepo.findByEmail(bud.getEmail());
+		Person buddyInConnection = personRepository.findByEmail(bud.getEmail());
 
 		if (buddyInConnection != null) {
 
-			if (connexionRepo.findByIdOfCenterAndBuddyOfACenter(currentUser.getId(), buddyInConnection.getId()) == null
+			if (connexionRepository.findByIdOfCenterAndBuddyOfACenter(currentUser.getId(), buddyInConnection.getId()) == null
 					&& buddyInConnection.getId() != currentUser.getId()) {
 
 				ConnexionBetweenBuddies newConnexion = new ConnexionBetweenBuddies();
 				newConnexion.setIdOfCenter(currentUser.getId());
 				newConnexion.setBuddyOfACenter(buddyInConnection.getId());
-				connexionRepo.save(newConnexion);
+				connexionRepository.save(newConnexion);
 				List<ConnexionBetweenBuddies> theResult = (List<ConnexionBetweenBuddies>) session
 						.getAttribute("listOfAllConnexionOfBuddies");
 				theResult.add(newConnexion);
@@ -147,7 +147,7 @@ public class TransactionsServices {
 
 	public boolean checkIfThisPersonExistsInTheDB(BuddiesInConnexion bud) {
 
-		if (personRepo.findByEmail(bud.getEmail()) != null) {
+		if (personRepository.findByEmail(bud.getEmail()) != null) {
 
 			return true;
 
@@ -166,7 +166,7 @@ public class TransactionsServices {
 
 		for (ConnexionBetweenBuddies CB : listOfConnexionOfBuddies) {
 
-			Person tempBuddy = personRepo.findById(CB.getBuddyOfACenter()).get();
+			Person tempBuddy = personRepository.findById(CB.getBuddyOfACenter()).get();
 			resultSet.put(tempBuddy, tempBuddy.getName() + ", " + tempBuddy.getLastName());
 
 		}
@@ -174,32 +174,21 @@ public class TransactionsServices {
 		return resultSet;
 	}
 
-	// ====== Getters and Setters of repository solely needed for testing purposes.
-	// ====== Once the app is validated, and for security reasons, these getters and
-	// setters
+	// ====== Setters of repository solely needed for testing purposes.
+	// ====== Once the app is validated, and for security reasons, these setters
 	// ====== can be deleted
-	public PersonRepository getPersonRepo() {
-		return personRepo;
-	}
 
 	public void setPersonRepo(PersonRepository personRepo) {
-		this.personRepo = personRepo;
+		this.personRepository = personRepo;
 	}
 
-	public TransactionRepository getTransacRepo() {
-		return transacRepo;
-	}
 
 	public void setTransacRepo(TransactionRepository transacRepo) {
-		this.transacRepo = transacRepo;
-	}
-
-	public ConnexionBetweenBuddiesRepository getConnexionRepo() {
-		return connexionRepo;
+		this.transacRepository = transacRepo;
 	}
 
 	public void setConnexionRepo(ConnexionBetweenBuddiesRepository connexionRepo) {
-		this.connexionRepo = connexionRepo;
+		this.connexionRepository = connexionRepo;
 	}
 
 }

@@ -20,7 +20,7 @@ public class UserServices implements UserDetailsService {
 	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(UserServices.class);
 
 	@Autowired
-	PersonRepository personRepo;
+	PersonRepository personRepository;
 
 	public UserServices() {
 	}
@@ -36,13 +36,13 @@ public class UserServices implements UserDetailsService {
 		newItem.setTotalamountpayedfee(0.00);
 		newItem.setAuthority("USER");
 
-		personRepo.save(newItem);
+		personRepository.save(newItem);
 
 	}
 
 	public boolean checkIfTheEmailExistsInTheDB(LoginRegistration person) {
 
-		if (personRepo.findByEmail(person.geteMail()) != null) {
+		if (personRepository.findByEmail(person.geteMail()) != null) {
 
 			return true;
 
@@ -56,7 +56,7 @@ public class UserServices implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		Person triesToAuthenticate = personRepo.findByEmail(username);
+		Person triesToAuthenticate = personRepository.findByEmail(username);
 
 		if (triesToAuthenticate == null) {
 
@@ -67,13 +67,12 @@ public class UserServices implements UserDetailsService {
 		UserDetails user = User.withUsername(triesToAuthenticate.getEmail()).password(triesToAuthenticate.getPassword())
 				.authorities(triesToAuthenticate.getAuthority()).build();
 
-		logger.info("=============" + triesToAuthenticate.getAuthority());
 		return user;
 	}
 
 	public Person getThePersonAfterAuthentication(String email) {
 
-		return personRepo.findByEmail(email);
+		return personRepository.findByEmail(email);
 	}
 
 	@Bean
@@ -82,17 +81,13 @@ public class UserServices implements UserDetailsService {
 		return new BCryptPasswordEncoder();
 	}
 
-	// ====== Getters and Setters of repository solely needed for testing purposes.
-	// ====== Once the app is validated, and for security reasons, these getters and
-	// setters
+	// ====== Setters of repository solely needed for testing purposes.
+	// ====== Once the app is validated, and for security reasons, these setters
 	// ====== can be deleted
 
-	public PersonRepository getPersonRepo() {
-		return personRepo;
-	}
 
 	public void setPersonRepo(PersonRepository personRepo) {
-		this.personRepo = personRepo;
+		this.personRepository = personRepo;
 	}
 
 }
