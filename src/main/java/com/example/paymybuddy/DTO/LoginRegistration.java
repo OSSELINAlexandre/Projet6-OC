@@ -15,13 +15,7 @@ public class LoginRegistration {
 	public LoginRegistration() {
 	}
 
-	public LoginRegistration(String name, String lastName, String eMail, String password, String secondTestPassword) {
-		this.name = name;
-		this.lastName = lastName;
-		this.email = eMail;
-		this.password = password;
-		this.secondTestPassword = secondTestPassword;
-	}
+
 
 	public String getName() {
 		return name;

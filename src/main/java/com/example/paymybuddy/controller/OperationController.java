@@ -33,14 +33,14 @@ public class OperationController {
 	private List<BankOperation> listOfAllOperations;
 
 	@GetMapping("/userHome")
-	public String returnHomePage(@RequestParam("withdrawErrorFlag") Optional<Boolean> withdrawError, 
+	public String returnHomePage(@RequestParam("withdrawErrorFlag") Optional<Boolean> withdrawError,
 			@RequestParam("tooMuchMoneyOnYouAccount") Optional<Boolean> tooMuchMoney, Model model,
 			HttpSession session) {
 
 		listOfAllOperations = (List<BankOperation>) session.getAttribute("listOfAllOperations");
 		currentUser = (Person) session.getAttribute("currentUser");
 
-		model.addAttribute("amountAvailable", currentUser.getAmount());
+		model.addAttribute("amountAvailable", currentUser.getAccountFunds());
 		model.addAttribute("depositInformation", new BankAccountWithdrawalDepositInformation());
 		model.addAttribute("withdrawalInformation", new BankAccountWithdrawalDepositInformation());
 		model.addAttribute("listOfAllOperations", listOfAllOperations);
@@ -48,8 +48,8 @@ public class OperationController {
 		if (withdrawError.isPresent()) {
 			model.addAttribute("withdrawErrorFlag", withdrawError);
 		}
-		if(tooMuchMoney.isPresent()) {
-			
+		if (tooMuchMoney.isPresent()) {
+
 			model.addAttribute("tooMuchMoney", tooMuchMoney);
 		}
 

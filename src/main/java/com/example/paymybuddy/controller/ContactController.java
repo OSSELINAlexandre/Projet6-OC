@@ -18,7 +18,7 @@ public class ContactController {
 	 */
 
 	@GetMapping("/contact")
-	public String returnContactPages(HttpSession session) {
+	public String returnContactPage(HttpSession session) {
 
 		return "contact";
 	}

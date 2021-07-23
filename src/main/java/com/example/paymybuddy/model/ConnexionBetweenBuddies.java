@@ -26,12 +26,6 @@ public class ConnexionBetweenBuddies {
 		super();
 	}
 
-	public ConnexionBetweenBuddies(int id, int idOfCenter, int buddyOfACenter) {
-		super();
-		this.id = id;
-		this.idOfCenter = idOfCenter;
-		this.buddyOfACenter = buddyOfACenter;
-	}
 
 	public int getId() {
 		return id;

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import com.example.paymybuddy.DTO.AdminDataForDashboard;
 import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.DTO.PaymentData;
@@ -28,6 +29,7 @@ import com.example.paymybuddy.repository.BankOperationRepository;
 import com.example.paymybuddy.repository.ConnexionBetweenBuddiesRepository;
 import com.example.paymybuddy.repository.PersonRepository;
 import com.example.paymybuddy.repository.TransactionRepository;
+import com.example.paymybuddy.service.AdminServices;
 import com.example.paymybuddy.service.OperationOnAccountServices;
 import com.example.paymybuddy.service.TransactionsServices;
 import com.example.paymybuddy.service.UserServices;
@@ -53,6 +55,9 @@ public class servicesTests {
 
 	@Autowired
 	UserServices userServices;
+	
+	@Autowired
+	AdminServices adminServices;
 
 	public Person currentUser;
 	public Person buddyUser;
@@ -65,7 +70,7 @@ public class servicesTests {
 
 	@Mock
 	ConnexionBetweenBuddiesRepository connexionRepo;
-	
+
 	@Mock
 	BankOperationRepository bankAccountRepo;
 
@@ -78,13 +83,11 @@ public class servicesTests {
 			.forClass(ConnexionBetweenBuddies.class);
 
 	final ArgumentCaptor<Person> personCaptor = ArgumentCaptor.forClass(Person.class);
-	
-	
+
 	final ArgumentCaptor<BankOperation> bankOperationCaptor = ArgumentCaptor.forClass(BankOperation.class);
 
 	final ArgumentCaptor<Person> personCaptorTwo = ArgumentCaptor.forClass(Person.class);
 
-	
 	@BeforeEach
 	public void init() {
 
@@ -92,73 +95,68 @@ public class servicesTests {
 		currentUser.setId(1);
 		currentUser.setName("Brad");
 		currentUser.setLastName("Pitt");
-		currentUser.setAccountfunds(150.00);
+		currentUser.setAccountFunds(150.00);
 		currentUser.setEmail("brad.pitt@gmail.com");
 		currentUser.setPassword("imbradpitt");
+		currentUser.setAuthority("USER");
+		currentUser.setTotalamountpayedfee(150.00);
 
+		
 		buddyUser = new Person();
 		buddyUser.setId(2);
 		buddyUser.setName("Jean");
 		buddyUser.setLastName("Valjean");
-		buddyUser.setAccountfunds(350.00);
+		buddyUser.setAccountFunds(350.00);
 		buddyUser.setEmail("galere.lumiere@gmail.com");
 		buddyUser.setPassword("imvaljean");
+		buddyUser.setAuthority("USER");
+		buddyUser.setTotalamountpayedfee(750.00);
+
+
 
 	}
-	
-	
+
 // =========================================================================================
 // ================	            TESTS FOR OperationOnAccountServices        ================	
 // =========================================================================================
 
-
 	@Test
 	public void TestsaveForDeposit_ShouldCallAllRepository() {
-		
+
 		operationServices.setUserRepo(personRepo);
 		operationServices.setBankAccountRepo(bankAccountRepo);
 		when(session.getAttribute("listOfAllOperations")).thenReturn(new ArrayList<BankOperation>());
-		
+
 		operationServices.saveForDepositorWithdrawal(currentUser, 150.00, true, session);
-		
+
 		verify(personRepo, times(1)).save(personCaptorTwo.capture());
 		verify(bankAccountRepo, times(1)).save(bankOperationCaptor.capture());
 		BankOperation actualOperation = bankOperationCaptor.getValue();
 		Person actualPerson = personCaptorTwo.getValue();
 
-		
-		assertTrue(currentUser.getAmount() == actualPerson.getAmount());
+		assertTrue(currentUser.getAccountFunds() == actualPerson.getAccountFunds());
 		assertTrue(actualOperation.getHolder().getId() == currentUser.getId() && actualOperation.getAmount() == 150.00);
-		
-		
-		
+
 	}
-	
+
 	@Test
 	public void TestsaveForWithdrawal_ShouldCallAllRepository() {
-		
+
 		operationServices.setUserRepo(personRepo);
 		operationServices.setBankAccountRepo(bankAccountRepo);
 		when(session.getAttribute("listOfAllOperations")).thenReturn(new ArrayList<BankOperation>());
-		
+
 		operationServices.saveForDepositorWithdrawal(currentUser, 125.00, false, session);
-		
+
 		verify(personRepo, times(1)).save(personCaptorTwo.capture());
 		verify(bankAccountRepo, times(1)).save(bankOperationCaptor.capture());
 		BankOperation actualOperation = bankOperationCaptor.getValue();
 		Person actualPerson = personCaptorTwo.getValue();
 
-		
-		assertTrue(currentUser.getAmount() == actualPerson.getAmount());
+		assertTrue(currentUser.getAccountFunds() == actualPerson.getAccountFunds());
 		assertTrue(actualOperation.getHolder().getId() == currentUser.getId() && actualOperation.getAmount() == 125.00);
-		
-		
-		
+
 	}
-	
-	
-	
-	
 
 	@Test
 	public void checkIfCurrentUserHasNecessaryFunds_ShouldReturnTrue_IfNecessaryFunds() {
@@ -246,7 +244,7 @@ public class servicesTests {
 		testItem.setId(1); // Je suis pas sûr pour celle-ci.
 		testItem.setCommentaire("Testing the service");
 		testItem.setAmount(10.00);
-		testItem.setPayeur(currentUser);
+		testItem.setPayer(currentUser);
 		testItem.setPayee(buddyUser);
 
 		when(session.getAttribute("listOfAllTransactions")).thenReturn(new ArrayList<Transaction>());
@@ -255,13 +253,13 @@ public class servicesTests {
 		newItem.setAmount(pay.getAmount());
 		newItem.setCommentaire(pay.getDescription());
 		newItem.setPayee(buddyUser);
-		newItem.setPayeur(currentUser);
+		newItem.setPayer(currentUser);
 		Optional<Person> buddyOfUser = Optional.of(buddyUser);
 		when(personRepo.findById(2)).thenReturn(buddyOfUser);
 		transacServices.setPersonRepo(personRepo);
 		transacServices.setTransacRepo(transacRepo);
 
-		transacServices.adjustAccount(pay, currentUser, session);
+		transacServices.adjustTheAccountsBetweenBuddies(pay, currentUser, session);
 
 		verify(personRepo).save(buddyUser);
 		verify(personRepo).save(currentUser);
@@ -355,14 +353,51 @@ public class servicesTests {
 		verify(personRepo, times(1)).save(personCaptor.capture());
 		Person actual = personCaptor.getValue();
 
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();  
-		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
 		assertTrue(!actual.getPassword().equals("YHW"));
 		assertTrue(encoder.matches("YHW", actual.getPassword()));
 
 	}
 	
-
 	
+// =========================================================================================
+// ====================	             TESTS FOR AdminServices          ======================	
+// =========================================================================================
+	
+	
+	@Test 
+	public void testinggenerateDashBoard_ShouldReturnAdequateReusult() {
+		
+		
+		adminServices.setPersonRepo(personRepo);
+		adminServices.setTransactionRepo(transacRepo);
+		
+		
+		Transaction transac1 = new Transaction();
+		Transaction transac2 = new Transaction();
+		Transaction transac3 = new Transaction();
+		Transaction transac4 = new Transaction();
+		
+		List<Transaction> testItem = new ArrayList<>();
+		testItem.add(transac4);
+		testItem.add(transac3);
+		testItem.add(transac2);
+		testItem.add(transac1);
+
+		ArrayList<Person> listingIt = new ArrayList<Person>();
+		listingIt.add(currentUser);
+		Iterable<Person> testingItem = listingIt;
+				
+		when(personRepo.findAll()).thenReturn(testingItem);
+		when(transacRepo.findByPayer(currentUser)).thenReturn(testItem);
+		
+
+		List<AdminDataForDashboard> actual = adminServices.generateDashBoard();
+
+		assertTrue(actual.get(0).getFeePayed().equals(150.00) && actual.get(0).getNumberOfTransac() == 4);
+		
+	}
+
 
 }
