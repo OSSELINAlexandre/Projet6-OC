@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import com.example.paymybuddy.DTO.AdminDataForDashboard;
 import com.example.paymybuddy.DTO.BuddiesInConnexion;
 import com.example.paymybuddy.DTO.LoginRegistration;
 import com.example.paymybuddy.DTO.PaymentData;
@@ -28,6 +29,7 @@ import com.example.paymybuddy.repository.BankOperationRepository;
 import com.example.paymybuddy.repository.ConnexionBetweenBuddiesRepository;
 import com.example.paymybuddy.repository.PersonRepository;
 import com.example.paymybuddy.repository.TransactionRepository;
+import com.example.paymybuddy.service.AdminServices;
 import com.example.paymybuddy.service.OperationOnAccountServices;
 import com.example.paymybuddy.service.TransactionsServices;
 import com.example.paymybuddy.service.UserServices;
@@ -53,6 +55,9 @@ public class servicesTests {
 
 	@Autowired
 	UserServices userServices;
+	
+	@Autowired
+	AdminServices adminServices;
 
 	public Person currentUser;
 	public Person buddyUser;
@@ -93,7 +98,10 @@ public class servicesTests {
 		currentUser.setAccountFunds(150.00);
 		currentUser.setEmail("brad.pitt@gmail.com");
 		currentUser.setPassword("imbradpitt");
+		currentUser.setAuthority("USER");
+		currentUser.setTotalamountpayedfee(150.00);
 
+		
 		buddyUser = new Person();
 		buddyUser.setId(2);
 		buddyUser.setName("Jean");
@@ -101,6 +109,10 @@ public class servicesTests {
 		buddyUser.setAccountFunds(350.00);
 		buddyUser.setEmail("galere.lumiere@gmail.com");
 		buddyUser.setPassword("imvaljean");
+		buddyUser.setAuthority("USER");
+		buddyUser.setTotalamountpayedfee(750.00);
+
+
 
 	}
 
@@ -347,5 +359,45 @@ public class servicesTests {
 		assertTrue(encoder.matches("YHW", actual.getPassword()));
 
 	}
+	
+	
+// =========================================================================================
+// ====================	             TESTS FOR AdminServices          ======================	
+// =========================================================================================
+	
+	
+	@Test 
+	public void testinggenerateDashBoard_ShouldReturnAdequateReusult() {
+		
+		
+		adminServices.setPersonRepo(personRepo);
+		adminServices.setTransactionRepo(transacRepo);
+		
+		
+		Transaction transac1 = new Transaction();
+		Transaction transac2 = new Transaction();
+		Transaction transac3 = new Transaction();
+		Transaction transac4 = new Transaction();
+		
+		List<Transaction> testItem = new ArrayList<>();
+		testItem.add(transac4);
+		testItem.add(transac3);
+		testItem.add(transac2);
+		testItem.add(transac1);
+
+		ArrayList<Person> listingIt = new ArrayList<Person>();
+		listingIt.add(currentUser);
+		Iterable<Person> testingItem = listingIt;
+				
+		when(personRepo.findAll()).thenReturn(testingItem);
+		when(transacRepo.findByPayeur(currentUser)).thenReturn(testItem);
+		
+
+		List<AdminDataForDashboard> actual = adminServices.generateDashBoard();
+
+		assertTrue(actual.get(0).getFeePayed().equals(150.00) && actual.get(0).getNumberOfTransac() == 4);
+		
+	}
+
 
 }

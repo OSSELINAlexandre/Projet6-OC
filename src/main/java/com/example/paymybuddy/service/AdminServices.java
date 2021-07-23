@@ -45,5 +45,30 @@ public class AdminServices {
 
 		return adminDashList;
 	}
+	
+	// ====== Getters and Setters of repository solely needed for testing purposes.
+	// ====== Once the app is validated, and for security reasons, these getters and
+	// setters
+	// ====== can be deleted
+	
+
+	public PersonRepository getPersonRepo() {
+		return personRepo;
+	}
+
+	public void setPersonRepo(PersonRepository personRepo) {
+		this.personRepo = personRepo;
+	}
+
+	public TransactionRepository getTransactionRepo() {
+		return transactionRepo;
+	}
+
+	public void setTransactionRepo(TransactionRepository transactionRepo) {
+		this.transactionRepo = transactionRepo;
+	}
+	
+
+	
 
 }
