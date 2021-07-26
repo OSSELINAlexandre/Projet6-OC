@@ -32,7 +32,7 @@ Projet 6 for the Java Software Development track from OpenClassrooms.
 You can now use PayMyBuddy application. 
 
 
-## Architecture
+## Architecture - Controllers [See UML]
 
 * For this project, we used the MVC architecture in order to rationalize the code. 
 * Each domain has its own controller. For instance, every method related to transfering funds from an user to a buddy is centralized in the same controller (if any mehtod is necessary in order to check the feasability, it will be done in the given controller.)
@@ -43,7 +43,20 @@ You can now use PayMyBuddy application.
 * ContractController is a mock controller to show how any new functionality would be implemented (this business domain wasn't in the requirement, solely in the design frame given to us).
 * AdminDashBoardController which centralize all needed admin functionality asked (in our case, solely a dashboard was asked).
 
+## Architecture - Services
 
+* A controller (that centralize all logic relating to a business domain) only instantiate a single service. 
+* We pushed as much as we could all data treatment and business logic inside the service, so that the controller only has a direction role.
+* Depending on the DTO needed, services can instantiate multiple repository.
+
+## Architecture - Repository
+
+* We created a repository based on our dabatabse architecture, by implementing CrudRepository provide thanks to Spring Data. 
+
+## DataBase - Architecture [See DBDomain]
+
+* We created four distinct tables for this project : 'Person', 'Buddiesconnexion', 'transaction', 'Account_operation'. 
+* All theses tables are linked to 'Person' thanks to foreign keys. 
 
 
 ## License
