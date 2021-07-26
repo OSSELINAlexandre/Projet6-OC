@@ -31,5 +31,20 @@ Projet 6 for the Java Software Development track from OpenClassrooms.
 
 You can now use PayMyBuddy application. 
 
+
+## Architecture
+
+* For this project, we used the MVC architecture in order to rationalize the code. 
+* Each domain has its own controller. For instance, every method related to transfering funds from an user to a buddy is centralized in the same controller (if any mehtod is necessary in order to check the feasability, it will be done in the given controller.)
+* We have, in this project, 5 business domains ( AdminDashBoardController, ContactController, OperationController, TransferController, UserController).
+* UserController centralize the authentication and registration processes.
+* TransferController centralize all methods related to transfering funds
+* OperataionController centralize all methods related to withdrawing or depositing money to an account
+* ContractController is a mock controller to show how any new functionality would be implemented (this business domain wasn't in the requirement, solely in the design frame given to us).
+* AdminDashBoardController which centralize all needed admin functionality asked (in our case, solely a dashboard was asked).
+
+
+
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
