@@ -61,5 +61,9 @@ You can now use PayMyBuddy application.
 * The 'acount_operation' table keep track of money flowing in and out of the application. * All these tables are linked to 'Person' thanks to foreign keys. 
 
 
+## UML
+
+![alt text](https://github.com/OSSELINAlexandre/Projet6-OC/blob/master/UML_PayMyBuddyApp.png?raw=true)
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
