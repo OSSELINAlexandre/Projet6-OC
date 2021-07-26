@@ -10,7 +10,7 @@ Projet 6 for the Java Software Development track from OpenClassrooms.
 * MySql 8.
 * Maven 4.0.
 
-## Framework used
+## Frameworks used
 * Spring Boot 
 * Spring Data
 * Spring Security
