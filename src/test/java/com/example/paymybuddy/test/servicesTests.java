@@ -17,10 +17,10 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import com.example.paymybuddy.DTO.AdminDataForDashboard;
-import com.example.paymybuddy.DTO.BuddiesInConnexion;
-import com.example.paymybuddy.DTO.LoginRegistration;
-import com.example.paymybuddy.DTO.PaymentData;
+import com.example.paymybuddy.dto.AdminDataForDashboard;
+import com.example.paymybuddy.dto.BuddiesInConnexion;
+import com.example.paymybuddy.dto.LoginRegistration;
+import com.example.paymybuddy.dto.PaymentData;
 import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;

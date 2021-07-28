@@ -1,4 +1,4 @@
-package com.example.paymybuddy.DTO;
+package com.example.paymybuddy.dto;
 
 public class BuddiesInConnexion {
 

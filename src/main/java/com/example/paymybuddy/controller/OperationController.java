@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.paymybuddy.DTO.BankAccountWithdrawalDepositInformation;
+import com.example.paymybuddy.dto.BankAccountWithdrawalDepositInformation;
 import com.example.paymybuddy.model.BankOperation;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.service.OperationOnAccountServices;
@@ -25,9 +25,6 @@ public class OperationController {
 
 	@Autowired
 	OperationOnAccountServices bankAccountServices;
-
-	@Autowired
-	UserServices userServices;
 
 	private Person currentUser;
 	private List<BankOperation> listOfAllOperations;
@@ -58,7 +55,7 @@ public class OperationController {
 
 	@PostMapping("/withDrawPayment")
 	public ModelAndView withdrawSomeMoney(BankAccountWithdrawalDepositInformation withdrawMoney, Model model,
-			HttpSession session, ModelMap modelmap) {
+			HttpSession session) {
 
 		ModelAndView theview = new ModelAndView("redirect:/userHome");
 
@@ -90,6 +87,23 @@ public class OperationController {
 		}
 
 		return theview;
+	}
+
+	///////////////////////////////////////////////////// SETTER FOR TESTING
+	///////////////////////////////////////////////////// PURPOSES, CAN BE DELETED
+	///////////////////////////////////////////////////// AFTERWARDS
+	///////////////////////////////////////////////////// //////////////////////////////
+
+	public void setBankAccountServices(OperationOnAccountServices bankAccountServices) {
+		this.bankAccountServices = bankAccountServices;
+	}
+
+	public void setCurrentUser(Person currentUser) {
+		this.currentUser = currentUser;
+	}
+
+	public void setListOfAllOperations(List<BankOperation> listOfAllOperations) {
+		this.listOfAllOperations = listOfAllOperations;
 	}
 
 }

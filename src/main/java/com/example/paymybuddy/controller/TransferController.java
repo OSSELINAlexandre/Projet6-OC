@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.paymybuddy.DTO.BuddiesInConnexion;
-import com.example.paymybuddy.DTO.PaymentData;
 import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.constant.*;
+import com.example.paymybuddy.dto.BuddiesInConnexion;
+import com.example.paymybuddy.dto.PaymentData;
 import com.example.paymybuddy.service.TransactionsServices;
 
 @Controller
@@ -87,8 +87,8 @@ public class TransferController {
 	}
 
 	@PostMapping("/transfer_validation")
-	public ModelAndView verificationOfExistenceOfBuddyForTransfer(BuddiesInConnexion bud, HttpSession session, Model model,
-			ModelMap modelmap) {
+	public ModelAndView verificationOfExistenceOfBuddyForTransfer(BuddiesInConnexion bud, HttpSession session,
+			Model model) {
 
 		ModelAndView theView = new ModelAndView("redirect:/transfer");
 		Boolean aBuddyHasBeenAddedToTheCurrentUser = transactionServices.addingABuddyToTheCurrentUser(bud, currentUser,
@@ -117,7 +117,7 @@ public class TransferController {
 	}
 
 	@PostMapping("/processingPayment")
-	public ModelAndView processThePaymentBetweenBuddies(PaymentData pay, Model model, HttpSession session, ModelMap modelmap) {
+	public ModelAndView processThePaymentBetweenBuddies(PaymentData pay, Model model, HttpSession session) {
 
 		ModelAndView theView = new ModelAndView("redirect:/transfer");
 
@@ -139,6 +139,25 @@ public class TransferController {
 
 		return theView;
 
+	}
+
+	///////////////////////////////////////////////////// SETTER FOR TESTING PURPOSES, CAN BE DELETED AFTERWARDS //////////////////////////////
+
+
+	public void setTransactionServices(TransactionsServices transactionServices) {
+		this.transactionServices = transactionServices;
+	}
+
+	public void setCurrentUser(Person currentUser) {
+		this.currentUser = currentUser;
+	}
+
+	public void setListOfAllTransactions(List<Transaction> listOfAllTransactions) {
+		this.listOfAllTransactions = listOfAllTransactions;
+	}
+
+	public void setListOfAllConnexionOfBuddies(List<ConnexionBetweenBuddies> listOfAllConnexionOfBuddies) {
+		this.listOfAllConnexionOfBuddies = listOfAllConnexionOfBuddies;
 	}
 
 }

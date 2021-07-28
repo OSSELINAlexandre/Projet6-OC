@@ -10,9 +10,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.paymybuddy.DTO.BuddiesInConnexion;
-import com.example.paymybuddy.DTO.PaymentData;
+
 import com.example.paymybuddy.constant.Fees;
+import com.example.paymybuddy.dto.BuddiesInConnexion;
+import com.example.paymybuddy.dto.PaymentData;
 import com.example.paymybuddy.model.ConnexionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
