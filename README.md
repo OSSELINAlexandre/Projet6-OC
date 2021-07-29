@@ -68,7 +68,7 @@ You can now use PayMyBuddy application.
 
 ## Database Architecture
 
-![alt text](https://github.com/OSSELINAlexandre/Projet6-OC/blob/master/DB_Domain.PNG?raw=true)
+![alt text](https://github.com/OSSELINAlexandre/Projet6-OC/blob/master/DBDomain.PNG?raw=true)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
