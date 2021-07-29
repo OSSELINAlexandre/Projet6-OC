@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
-public class controllerTests {
+public class ControllerTests {
 
 	@Autowired
 	private MockMvc mockMvc;
