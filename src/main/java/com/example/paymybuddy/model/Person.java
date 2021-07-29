@@ -41,15 +41,18 @@ public class Person implements Serializable, UserDetails {
 
 	@Column(name = "email")
 	private String email;
+	
+	@Column(name = "password")
+	private String password;
+	
+
+	@Column(name = "authorization")
+	private String authority;
+	
 
 	@Column(name = "accountfunds")
 	private Double accountFunds;
 
-	@Column(name = "password")
-	private String password;
-
-	@Column(name = "autorisation")
-	private String authority;
 
 	@Column(name = "totalamountpayedfee")
 	private Double totalamountpayedfee;
@@ -67,9 +70,12 @@ public class Person implements Serializable, UserDetails {
 	private List<BankOperation> listOfALLOperations;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "center", nullable = true)
-	private List<ConnexionBetweenBuddies> listOfBuddies;
+	@JoinColumn(name = "user", nullable = true)
+	private List<ConnectionBetweenBuddies> listOfBuddies;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "accountowner", nullable = true)
+	private List<ExternalBankAccount> listOfAllBankAccountOwned;
 
 	public Person() {
 	}
@@ -179,7 +185,7 @@ public class Person implements Serializable, UserDetails {
 	}
 
 	@Transactional
-	public List<ConnexionBetweenBuddies> getListOfBuddies() {
+	public List<ConnectionBetweenBuddies> getListOfBuddies() {
 
 		logger.info(
 				"Lazy Fetch need to be initialize in the transactional context in order to be avaiable in the session as an attribute (the real list can be given and not just the proxy)"
@@ -188,8 +194,23 @@ public class Person implements Serializable, UserDetails {
 		return listOfBuddies;
 	}
 
-	public void setListOfBuddies(List<ConnexionBetweenBuddies> listOfBuddies) {
+	public void setListOfBuddies(List<ConnectionBetweenBuddies> listOfBuddies) {
 		this.listOfBuddies = listOfBuddies;
+	}
+
+	
+	
+	public List<ExternalBankAccount> getListOfAllBankAccountOwned() {
+		
+		logger.info(
+				"Test List size"
+						+ listOfAllBankAccountOwned.size());
+		
+		return listOfAllBankAccountOwned;
+	}
+
+	public void setListOfAllBankAccountOwned(List<ExternalBankAccount> listOfAllBankAccountOwned) {
+		this.listOfAllBankAccountOwned = listOfAllBankAccountOwned;
 	}
 
 	@Override

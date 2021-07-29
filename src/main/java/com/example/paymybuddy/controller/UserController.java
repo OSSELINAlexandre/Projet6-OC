@@ -18,7 +18,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.paymybuddy.dto.LoginRegistration;
 import com.example.paymybuddy.model.BankOperation;
-import com.example.paymybuddy.model.ConnexionBetweenBuddies;
+import com.example.paymybuddy.model.ConnectionBetweenBuddies;
+import com.example.paymybuddy.model.ExternalBankAccount;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.service.UserServices;
@@ -34,7 +35,8 @@ public class UserController {
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
 	private List<BankOperation> listOfAllOperations;
-	private List<ConnexionBetweenBuddies> listOfAllConnexionOfBuddies;
+	private List<ConnectionBetweenBuddies> listOfAllConnexionOfBuddies;
+	private List<ExternalBankAccount> listOfAllBankAccountOwned;
 	
 	
 	
@@ -52,11 +54,13 @@ public class UserController {
 		listOfAllTransactions = currentUser.getAllTransactions();
 		listOfAllOperations = currentUser.getListOfALLOperations();
 		listOfAllConnexionOfBuddies = currentUser.getListOfBuddies();
+		listOfAllBankAccountOwned = currentUser.getListOfAllBankAccountOwned();
 
 		session.setAttribute("currentUser", currentUser);
 		session.setAttribute("listOfAllConnexionOfBuddies", listOfAllConnexionOfBuddies);
 		session.setAttribute("listOfAllTransactions", listOfAllTransactions);
 		session.setAttribute("listOfAllOperations", listOfAllOperations);
+		session.setAttribute("listOfAllBankAccountOwned", listOfAllBankAccountOwned);
 
 		return theview;
 
@@ -143,9 +147,15 @@ public class UserController {
 		this.listOfAllOperations = listOfAllOperations;
 	}
 
-	public void setListOfAllConnexionOfBuddies(List<ConnexionBetweenBuddies> listOfAllConnexionOfBuddies) {
+	public void setListOfAllConnexionOfBuddies(List<ConnectionBetweenBuddies> listOfAllConnexionOfBuddies) {
 		this.listOfAllConnexionOfBuddies = listOfAllConnexionOfBuddies;
 	}
+
+	public void setListOfAllBankAccountOwned(List<ExternalBankAccount> listOfAllBankAccountOwned) {
+		this.listOfAllBankAccountOwned = listOfAllBankAccountOwned;
+	}
+	
+	
 	
 	
 

@@ -18,15 +18,18 @@ import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 
 import com.example.paymybuddy.dto.AdminDataForDashboard;
+import com.example.paymybuddy.dto.BankAccountWithdrawalDepositInformation;
 import com.example.paymybuddy.dto.BuddiesInConnexion;
 import com.example.paymybuddy.dto.LoginRegistration;
 import com.example.paymybuddy.dto.PaymentData;
 import com.example.paymybuddy.model.BankOperation;
-import com.example.paymybuddy.model.ConnexionBetweenBuddies;
+import com.example.paymybuddy.model.ConnectionBetweenBuddies;
+import com.example.paymybuddy.model.ExternalBankAccount;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.repository.BankOperationRepository;
 import com.example.paymybuddy.repository.ConnexionBetweenBuddiesRepository;
+import com.example.paymybuddy.repository.ExternalBankRepository;
 import com.example.paymybuddy.repository.PersonRepository;
 import com.example.paymybuddy.repository.TransactionRepository;
 import com.example.paymybuddy.service.AdminServices;
@@ -61,6 +64,7 @@ public class servicesTests {
 
 	public Person currentUser;
 	public Person buddyUser;
+	public ExternalBankAccount externalAccount;
 
 	@Mock
 	PersonRepository personRepo;
@@ -73,14 +77,17 @@ public class servicesTests {
 
 	@Mock
 	BankOperationRepository bankAccountRepo;
+	
+	@Mock
+	ExternalBankRepository externalAccountRepo;
 
 	@Mock
 	HttpSession session;
 
 	final ArgumentCaptor<Transaction> transactionCaptor = ArgumentCaptor.forClass(Transaction.class);
 
-	final ArgumentCaptor<ConnexionBetweenBuddies> connexionCaptor = ArgumentCaptor
-			.forClass(ConnexionBetweenBuddies.class);
+	final ArgumentCaptor<ConnectionBetweenBuddies> connexionCaptor = ArgumentCaptor
+			.forClass(ConnectionBetweenBuddies.class);
 
 	final ArgumentCaptor<Person> personCaptor = ArgumentCaptor.forClass(Person.class);
 
@@ -111,7 +118,16 @@ public class servicesTests {
 		buddyUser.setPassword("imvaljean");
 		buddyUser.setAuthority("USER");
 		buddyUser.setTotalamountpayedfee(750.00);
-
+		
+		
+		externalAccount = new ExternalBankAccount();
+		externalAccount.setAccountOwner(currentUser);
+		externalAccount.setBiccode("ABC");
+		externalAccount.setCurrency("EURO");
+		externalAccount.setIban("FRG");
+		externalAccount.setId(1);
+		externalAccount.setListOfOperationDoneOnThisAccount(new ArrayList<BankOperation>());
+		externalAccount.setLocation("Avignon");
 
 
 	}
@@ -125,9 +141,18 @@ public class servicesTests {
 
 		operationServices.setUserRepo(personRepo);
 		operationServices.setBankAccountRepo(bankAccountRepo);
+		operationServices.setExternalBankRepository(externalAccountRepo);
+		
+		BankAccountWithdrawalDepositInformation testItem = new BankAccountWithdrawalDepositInformation();
+		testItem.setAmount(150.00);
+		testItem.setBankAccountToDoOperationID("1");
+		
+		Optional<ExternalBankAccount> testingItem = Optional.of(externalAccount);
 		when(session.getAttribute("listOfAllOperations")).thenReturn(new ArrayList<BankOperation>());
+		when(externalAccountRepo.findById(1)).thenReturn(testingItem);
 
-		operationServices.saveForDepositorWithdrawal(currentUser, 150.00, true, session);
+
+		operationServices.saveForDepositorWithdrawal(currentUser, testItem, true, session);
 
 		verify(personRepo, times(1)).save(personCaptorTwo.capture());
 		verify(bankAccountRepo, times(1)).save(bankOperationCaptor.capture());
@@ -145,8 +170,13 @@ public class servicesTests {
 		operationServices.setUserRepo(personRepo);
 		operationServices.setBankAccountRepo(bankAccountRepo);
 		when(session.getAttribute("listOfAllOperations")).thenReturn(new ArrayList<BankOperation>());
+		BankAccountWithdrawalDepositInformation testItem = new BankAccountWithdrawalDepositInformation();
+		testItem.setAmount(150.00);
+		testItem.setBankAccountToDoOperationID("1");
 
-		operationServices.saveForDepositorWithdrawal(currentUser, 125.00, false, session);
+		
+		
+		operationServices.saveForDepositorWithdrawal(currentUser, testItem, false, session);
 
 		verify(personRepo, times(1)).save(personCaptorTwo.capture());
 		verify(bankAccountRepo, times(1)).save(bankOperationCaptor.capture());
@@ -154,7 +184,7 @@ public class servicesTests {
 		Person actualPerson = personCaptorTwo.getValue();
 
 		assertTrue(currentUser.getAccountFunds() == actualPerson.getAccountFunds());
-		assertTrue(actualOperation.getHolder().getId() == currentUser.getId() && actualOperation.getAmount() == 125.00);
+		assertTrue(actualOperation.getHolder().getId() == currentUser.getId() && actualOperation.getAmount() == 150.00);
 
 	}
 
@@ -296,12 +326,12 @@ public class servicesTests {
 		when(personRepo.findByEmail("galere.lumiere@gmail.com")).thenReturn(buddyUser);
 		when(connexionRepo.findByIdOfCenterAndBuddyOfACenter(1, 2)).thenReturn(null);
 
-		when(session.getAttribute("listOfAllConnexionOfBuddies")).thenReturn(new ArrayList<ConnexionBetweenBuddies>());
+		when(session.getAttribute("listOfAllConnexionOfBuddies")).thenReturn(new ArrayList<ConnectionBetweenBuddies>());
 
 		Boolean actualResult = transacServices.addingABuddyToTheCurrentUser(testBuddy, currentUser, session);
 
 		verify(connexionRepo, times(1)).save(connexionCaptor.capture());
-		ConnexionBetweenBuddies actual = connexionCaptor.getValue();
+		ConnectionBetweenBuddies actual = connexionCaptor.getValue();
 
 		assertTrue(actual.getIdOfCenter() == 1);
 		assertTrue(actual.getBuddyOfACenter() == 2);
@@ -314,8 +344,8 @@ public class servicesTests {
 
 		transacServices.setPersonRepo(personRepo);
 
-		List<ConnexionBetweenBuddies> testList = new ArrayList<ConnexionBetweenBuddies>();
-		ConnexionBetweenBuddies connexTest = new ConnexionBetweenBuddies();
+		List<ConnectionBetweenBuddies> testList = new ArrayList<ConnectionBetweenBuddies>();
+		ConnectionBetweenBuddies connexTest = new ConnectionBetweenBuddies();
 		connexTest.setBuddyOfACenter(2);
 		connexTest.setId(1);
 		connexTest.setIdOfCenter(1);

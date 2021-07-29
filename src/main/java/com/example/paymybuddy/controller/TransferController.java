@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.paymybuddy.model.ConnexionBetweenBuddies;
+import com.example.paymybuddy.model.ConnectionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.constant.*;
@@ -31,7 +31,7 @@ public class TransferController {
 
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
-	private List<ConnexionBetweenBuddies> listOfAllConnexionOfBuddies;
+	private List<ConnectionBetweenBuddies> listOfAllConnexionOfBuddies;
 
 	@GetMapping("/transfer")
 	@Transactional
@@ -45,7 +45,7 @@ public class TransferController {
 		currentUser = (Person) session.getAttribute("currentUser");
 
 		listOfAllTransactions = (List<Transaction>) session.getAttribute("listOfAllTransactions");
-		listOfAllConnexionOfBuddies = (List<ConnexionBetweenBuddies>) session
+		listOfAllConnexionOfBuddies = (List<ConnectionBetweenBuddies>) session
 				.getAttribute("listOfAllConnexionOfBuddies");
 
 		model.addAttribute("listTransactions", listOfAllTransactions);
@@ -156,7 +156,7 @@ public class TransferController {
 		this.listOfAllTransactions = listOfAllTransactions;
 	}
 
-	public void setListOfAllConnexionOfBuddies(List<ConnexionBetweenBuddies> listOfAllConnexionOfBuddies) {
+	public void setListOfAllConnexionOfBuddies(List<ConnectionBetweenBuddies> listOfAllConnexionOfBuddies) {
 		this.listOfAllConnexionOfBuddies = listOfAllConnexionOfBuddies;
 	}
 

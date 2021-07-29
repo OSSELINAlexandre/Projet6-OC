@@ -1,5 +1,7 @@
 package com.example.paymybuddy.service;
 
+import javax.transaction.Transactional;
+
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +27,7 @@ public class UserServices implements UserDetailsService {
 	public UserServices() {
 	}
 
+	@Transactional
 	public void saveANewPersonInTheDB(LoginRegistration person) {
 
 		Person newItem = new Person();
@@ -84,7 +87,6 @@ public class UserServices implements UserDetailsService {
 	// ====== Setters of repository solely needed for testing purposes.
 	// ====== Once the app is validated, and for security reasons, these setters
 	// ====== can be deleted
-
 
 	public void setPersonRepo(PersonRepository personRepo) {
 		this.personRepository = personRepo;

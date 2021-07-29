@@ -8,21 +8,21 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "buddiesconnexion")
-public class ConnexionBetweenBuddies {
+@Table(name = "Buddiesconnection")
+public class ConnectionBetweenBuddies {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_connexion")
 	private int id;
 
-	@Column(name = "center")
+	@Column(name = "user")
 	private int idOfCenter;
 
-	@Column(name = "buddyofcenter")
+	@Column(name = "buddyofuser")
 	private int buddyOfACenter;
 
-	public ConnexionBetweenBuddies() {
+	public ConnectionBetweenBuddies() {
 		super();
 	}
 

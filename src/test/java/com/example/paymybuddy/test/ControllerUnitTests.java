@@ -39,7 +39,8 @@ import com.example.paymybuddy.dto.BuddiesInConnexion;
 import com.example.paymybuddy.dto.LoginRegistration;
 import com.example.paymybuddy.dto.PaymentData;
 import com.example.paymybuddy.model.BankOperation;
-import com.example.paymybuddy.model.ConnexionBetweenBuddies;
+import com.example.paymybuddy.model.ConnectionBetweenBuddies;
+import com.example.paymybuddy.model.ExternalBankAccount;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.repository.ConnexionBetweenBuddiesRepository;
@@ -89,7 +90,8 @@ public class ControllerUnitTests {
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
 	private List<BankOperation> listOfAllOperations;
-	private List<ConnexionBetweenBuddies> listOfAllConnexionOfBuddies;
+	private List<ConnectionBetweenBuddies> listOfAllConnexionOfBuddies;
+	private List<ExternalBankAccount> listOfAllBankAccountOwned;
 
 	@BeforeEach
 	public void init() {
@@ -106,17 +108,20 @@ public class ControllerUnitTests {
 
 		listOfAllTransactions = new ArrayList<Transaction>();
 		listOfAllOperations = new ArrayList<BankOperation>();
-		listOfAllConnexionOfBuddies = new ArrayList<ConnexionBetweenBuddies>();
+		listOfAllConnexionOfBuddies = new ArrayList<ConnectionBetweenBuddies>();
+		listOfAllBankAccountOwned = new ArrayList<ExternalBankAccount>();
 
 		currentUser.setListOfALLOperations(listOfAllOperations);
 		currentUser.setListOfBuddies(listOfAllConnexionOfBuddies);
 		currentUser.setTransactionsThatWerePayed(listOfAllTransactions);
 		currentUser.setTransactionsPayed(listOfAllTransactions);
+		currentUser.setListOfAllBankAccountOwned(listOfAllBankAccountOwned);
 
 		userController.setCurrentUser(currentUser);
 		userController.setListOfAllConnexionOfBuddies(listOfAllConnexionOfBuddies);
 		userController.setListOfAllOperations(listOfAllOperations);
 		userController.setListOfAllTransactions(listOfAllTransactions);
+		userController.setListOfAllBankAccountOwned(listOfAllBankAccountOwned);
 		userController.setUserServices(userServices);
 
 		transferController.setCurrentUser(currentUser);
@@ -393,7 +398,7 @@ public class ControllerUnitTests {
 		ModelAndView theView = operationController.withdrawSomeMoney(testItem, model, session);
 		
 		
-		verify(operationOnAccountServices, times(1)).saveForDepositorWithdrawal(currentUser, testItem.getAmount(), false, session);
+		verify(operationOnAccountServices, times(1)).saveForDepositorWithdrawal(currentUser, testItem, false, session);
 
 
 		assertTrue(theView.getViewName().toString().equals("redirect:/userHome"));
@@ -428,7 +433,7 @@ public class ControllerUnitTests {
 		ModelAndView theView = operationController.depositSomeMoney(testItem, model, session);
 		
 		
-		verify(operationOnAccountServices, times(1)).saveForDepositorWithdrawal(currentUser, testItem.getAmount(), true, session);
+		verify(operationOnAccountServices, times(1)).saveForDepositorWithdrawal(currentUser, testItem, true, session);
 
 
 		assertTrue(theView.getViewName().toString().equals("redirect:/userHome"));
