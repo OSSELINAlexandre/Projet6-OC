@@ -9,4 +9,5 @@ import com.example.paymybuddy.model.BankOperation;
 public interface BankOperationRepository extends CrudRepository<BankOperation, Integer> {
 
 
+	
 }

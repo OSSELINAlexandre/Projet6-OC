@@ -3,11 +3,10 @@ package com.example.paymybuddy.service;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.paymybuddy.DTO.AdminDataForDashboard;
+import com.example.paymybuddy.dto.AdminDataForDashboard;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 
@@ -31,38 +30,31 @@ public class AdminServices {
 
 			List<Transaction> result = transactionRepository.findByPayer(p);
 			int numberOfTransac = result.size();
-			
-			if(numberOfTransac > 0 ) {
-			AdminDataForDashboard newItem = new AdminDataForDashboard();
-			newItem.setFeePayed(p.getTotalamountpayedfee());
-			newItem.setLastName(p.getLastName());
-			newItem.setName(p.getName());
-			newItem.setNumberOfTransac(numberOfTransac);
-			adminDashList.add(newItem);
+
+			if (numberOfTransac > 0) {
+				AdminDataForDashboard newItem = new AdminDataForDashboard();
+				newItem.setFeePayed(p.getTotalamountpayedfee());
+				newItem.setLastName(p.getLastName());
+				newItem.setName(p.getName());
+				newItem.setNumberOfTransac(numberOfTransac);
+				adminDashList.add(newItem);
 			}
 
 		}
 
 		return adminDashList;
 	}
-	
+
 	// ====== Setters of repository solely needed for testing purposes.
 	// ====== Once the app is validated, and for security reasons, these setters
 	// ====== can be deleted
-
-
 
 	public void setPersonRepo(PersonRepository personRepo) {
 		this.personRepository = personRepo;
 	}
 
-
-
 	public void setTransactionRepo(TransactionRepository transactionRepo) {
 		this.transactionRepository = transactionRepo;
 	}
-	
-
-	
 
 }

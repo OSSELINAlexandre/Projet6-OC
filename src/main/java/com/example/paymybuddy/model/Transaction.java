@@ -1,5 +1,7 @@
 package com.example.paymybuddy.model;
 
+import java.sql.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,11 +20,12 @@ public class Transaction {
 	@Column(name = "id_transactions")
 	private int id;
 
-	@Column(name = "commentaire")
+	@Column(name = "commentary")
 	private String commentaire;
 
 	@Column(name = "amount")
 	private Double amount;
+
 
 	@Column(name = "feeontransaction")
 	private Double feeOnTransaction;
@@ -35,9 +38,9 @@ public class Transaction {
 	@JoinColumn(name = "willbepayedperson", referencedColumnName = "id_person")
 	private Person payee;
 
+
 	public Transaction() {
 	}
-
 
 	public int getId() {
 		return id;
@@ -78,7 +81,6 @@ public class Transaction {
 	public void setPayee(Person payee) {
 		this.payee = payee;
 	}
-	
 
 	public Double getFeeOnTransaction() {
 		return feeOnTransaction;
@@ -87,8 +89,5 @@ public class Transaction {
 	public void setFeeOnTransaction(Double feeontransaction) {
 		this.feeOnTransaction = feeontransaction;
 	}
-	
-	
-	
 
 }

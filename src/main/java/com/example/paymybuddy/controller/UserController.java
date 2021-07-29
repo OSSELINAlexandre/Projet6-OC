@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.paymybuddy.DTO.LoginRegistration;
+import com.example.paymybuddy.dto.LoginRegistration;
 import com.example.paymybuddy.model.BankOperation;
-import com.example.paymybuddy.model.ConnexionBetweenBuddies;
+import com.example.paymybuddy.model.ConnectionBetweenBuddies;
+import com.example.paymybuddy.model.ExternalBankAccount;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.service.UserServices;
@@ -34,13 +35,17 @@ public class UserController {
 	private Person currentUser;
 	private List<Transaction> listOfAllTransactions;
 	private List<BankOperation> listOfAllOperations;
-	private List<ConnexionBetweenBuddies> listOfAllConnexionOfBuddies;
+	private List<ConnectionBetweenBuddies> listOfAllConnexionOfBuddies;
+	private List<ExternalBankAccount> listOfAllBankAccountOwned;
+	
+	
+	
 
 	@GetMapping("/setuserattributes")
 	public ModelAndView setAllTheDataFromAuthenticatedUser(HttpSession session) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		logger.info("================================================||||||||||||||||||||||"
+		logger.info("="
 				+ authentication.getAuthorities().toString());
 		currentUser = userServices.getThePersonAfterAuthentication(authentication.getName());
 
@@ -49,11 +54,13 @@ public class UserController {
 		listOfAllTransactions = currentUser.getAllTransactions();
 		listOfAllOperations = currentUser.getListOfALLOperations();
 		listOfAllConnexionOfBuddies = currentUser.getListOfBuddies();
+		listOfAllBankAccountOwned = currentUser.getListOfAllBankAccountOwned();
 
 		session.setAttribute("currentUser", currentUser);
 		session.setAttribute("listOfAllConnexionOfBuddies", listOfAllConnexionOfBuddies);
 		session.setAttribute("listOfAllTransactions", listOfAllTransactions);
 		session.setAttribute("listOfAllOperations", listOfAllOperations);
+		session.setAttribute("listOfAllBankAccountOwned", listOfAllBankAccountOwned);
 
 		return theview;
 
@@ -118,5 +125,38 @@ public class UserController {
 		}
 
 	}
+	
+	
+	
+	///////////////////////////////////////////////////// SETTER FOR TESTING PURPOSES, CAN BE DELETED AFTERWARDS //////////////////////////////
+	
+
+	public void setUserServices(UserServices userServices) {
+		this.userServices = userServices;
+	}
+
+	public void setCurrentUser(Person currentUser) {
+		this.currentUser = currentUser;
+	}
+
+	public void setListOfAllTransactions(List<Transaction> listOfAllTransactions) {
+		this.listOfAllTransactions = listOfAllTransactions;
+	}
+
+	public void setListOfAllOperations(List<BankOperation> listOfAllOperations) {
+		this.listOfAllOperations = listOfAllOperations;
+	}
+
+	public void setListOfAllConnexionOfBuddies(List<ConnectionBetweenBuddies> listOfAllConnexionOfBuddies) {
+		this.listOfAllConnexionOfBuddies = listOfAllConnexionOfBuddies;
+	}
+
+	public void setListOfAllBankAccountOwned(List<ExternalBankAccount> listOfAllBankAccountOwned) {
+		this.listOfAllBankAccountOwned = listOfAllBankAccountOwned;
+	}
+	
+	
+	
+	
 
 }

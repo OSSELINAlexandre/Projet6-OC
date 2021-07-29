@@ -7,13 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.paymybuddy.DTO.BuddiesInConnexion;
-import com.example.paymybuddy.DTO.PaymentData;
+
 import com.example.paymybuddy.constant.Fees;
-import com.example.paymybuddy.model.ConnexionBetweenBuddies;
+import com.example.paymybuddy.dto.BuddiesInConnexion;
+import com.example.paymybuddy.dto.PaymentData;
+import com.example.paymybuddy.model.ConnectionBetweenBuddies;
 import com.example.paymybuddy.model.Person;
 import com.example.paymybuddy.model.Transaction;
 import com.example.paymybuddy.repository.ConnexionBetweenBuddiesRepository;
@@ -70,6 +73,7 @@ public class TransactionsServices {
 		return personRepository.findByEmail(email);
 	}
 
+	@Transactional
 	public void adjustTheAccountsBetweenBuddies(PaymentData Data, Person currentUser, HttpSession session) {
 
 		Person theBud = personRepository.findById(Integer.parseInt(Data.getPersonToPay())).get();
@@ -101,6 +105,7 @@ public class TransactionsServices {
 
 	}
 
+	@Transactional
 	public void saveANewTransaction(Person currentUser, PaymentData pay, Person it, HttpSession session,
 			double roundedFeePayedForThisTransaction) {
 
@@ -118,20 +123,21 @@ public class TransactionsServices {
 		session.setAttribute("listOfAllTransactions", temporaryListOfTransaction);
 	}
 
+	@Transactional
 	public Boolean addingABuddyToTheCurrentUser(BuddiesInConnexion bud, Person currentUser, HttpSession session) {
 
 		Person buddyInConnection = personRepository.findByEmail(bud.getEmail());
 
 		if (buddyInConnection != null) {
 
-			if (connexionRepository.findByIdOfCenterAndBuddyOfACenter(currentUser.getId(), buddyInConnection.getId()) == null
-					&& buddyInConnection.getId() != currentUser.getId()) {
+			if (connexionRepository.findByIdOfCenterAndBuddyOfACenter(currentUser.getId(),
+					buddyInConnection.getId()) == null && buddyInConnection.getId() != currentUser.getId()) {
 
-				ConnexionBetweenBuddies newConnexion = new ConnexionBetweenBuddies();
+				ConnectionBetweenBuddies newConnexion = new ConnectionBetweenBuddies();
 				newConnexion.setIdOfCenter(currentUser.getId());
 				newConnexion.setBuddyOfACenter(buddyInConnection.getId());
 				connexionRepository.save(newConnexion);
-				List<ConnexionBetweenBuddies> theResult = (List<ConnexionBetweenBuddies>) session
+				List<ConnectionBetweenBuddies> theResult = (List<ConnectionBetweenBuddies>) session
 						.getAttribute("listOfAllConnexionOfBuddies");
 				theResult.add(newConnexion);
 				session.setAttribute("listOfAllConnexionOfBuddies", theResult);
@@ -160,11 +166,11 @@ public class TransactionsServices {
 	}
 
 	public Map<Person, String> createTheListOfBuddyForTransaction(
-			List<ConnexionBetweenBuddies> listOfConnexionOfBuddies) {
+			List<ConnectionBetweenBuddies> listOfConnexionOfBuddies) {
 
 		Map<Person, String> resultSet = new HashMap<>();
 
-		for (ConnexionBetweenBuddies CB : listOfConnexionOfBuddies) {
+		for (ConnectionBetweenBuddies CB : listOfConnexionOfBuddies) {
 
 			Person tempBuddy = personRepository.findById(CB.getBuddyOfACenter()).get();
 			resultSet.put(tempBuddy, tempBuddy.getName() + ", " + tempBuddy.getLastName());
@@ -181,7 +187,6 @@ public class TransactionsServices {
 	public void setPersonRepo(PersonRepository personRepo) {
 		this.personRepository = personRepo;
 	}
-
 
 	public void setTransacRepo(TransactionRepository transacRepo) {
 		this.transacRepository = transacRepo;
