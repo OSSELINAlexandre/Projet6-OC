@@ -64,7 +64,7 @@ You can now use PayMyBuddy application.
 
 ## UML
 
-![alt text](https://github.com/OSSELINAlexandre/Projet6-OC/blob/master/UML_PayMyBuddyApp.png?raw=true)
+![alt text](https://github.com/OSSELINAlexandre/Projet6-OC/blob/master/UML.png?raw=true)
 
 ## Database Architecture
 
