@@ -45,7 +45,7 @@ public class UserController {
 	public ModelAndView setAllTheDataFromAuthenticatedUser(HttpSession session) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		logger.info("================================================||||||||||||||||||||||"
+		logger.info("="
 				+ authentication.getAuthorities().toString());
 		currentUser = userServices.getThePersonAfterAuthentication(authentication.getName());
 

@@ -5,24 +5,36 @@ CREATE TABLE Person (
                 surname VARCHAR(50) NOT NULL,
                 email VARCHAR(64) NOT NULL,
                 password VARCHAR(264) NOT NULL,
-                autorisation VARCHAR(50) NOT NULL,
+                authorization VARCHAR(50) NOT NULL,
                 accountfunds DECIMAL(11,2) NOT NULL,
                 totalamountpayedfee DECIMAL(11,2) NOT NULL,
                 PRIMARY KEY (id_person)
 );
 
 
-CREATE TABLE Buddiesconnexion (
+CREATE TABLE externalbankaccount (
+                id_bankaccount INT AUTO_INCREMENT NOT NULL,
+		bankname VARCHAR(64) NOT NULL,
+                location VARCHAR(64) NOT NULL,
+                iban VARCHAR(64) NOT NULL,
+                biccode VARCHAR(64) NOT NULL,
+                currency VARCHAR(25) NOT NULL,
+                accountowner INT NOT NULL,
+                PRIMARY KEY (id_bankaccount)
+);
+
+
+CREATE TABLE Buddiesconnection (
                 id_connexion INT AUTO_INCREMENT NOT NULL,
-                center INT NOT NULL,
-                buddyofcenter INT NOT NULL,
+                user INT NOT NULL,
+                buddyofuser INT NOT NULL,
                 PRIMARY KEY (id_connexion)
 );
 
 
 CREATE TABLE Transaction (
                 id_transactions INT AUTO_INCREMENT NOT NULL,
-                commentaire VARCHAR(256) NOT NULL,
+                commentary VARCHAR(256) NOT NULL,
                 amount DECIMAL(11,2) NOT NULL,
                 feeontransaction DECIMAL(11,2) NOT NULL,
                 willpayperson INT NOT NULL,
@@ -33,8 +45,10 @@ CREATE TABLE Transaction (
 
 CREATE TABLE Account_operation (
                 id_operation INT AUTO_INCREMENT NOT NULL,
+           	transactiondate DATE NOT NULL,
                 typeoftransaction BOOLEAN NOT NULL,
                 amount DECIMAL(11,2) NOT NULL,
+                originbankaccount INT NOT NULL,
                 accountholder INT NOT NULL,
                 PRIMARY KEY (id_operation)
 );
@@ -58,23 +72,49 @@ REFERENCES Person (id_person)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
-ALTER TABLE Buddiesconnexion ADD CONSTRAINT person_buddiesconnexion_fk
-FOREIGN KEY (center)
+ALTER TABLE Buddiesconnection ADD CONSTRAINT person_buddiesconnexion_fk
+FOREIGN KEY (user)
 REFERENCES Person (id_person)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
 
-ALTER TABLE Buddiesconnexion ADD CONSTRAINT person_buddiesconnexion_fk1
-FOREIGN KEY (buddyofcenter)
+ALTER TABLE Buddiesconnection ADD CONSTRAINT person_buddiesconnexion_fk1
+FOREIGN KEY (buddyofuser)
 REFERENCES Person (id_person)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
+
+ALTER TABLE externalbankaccount ADD CONSTRAINT person_externalbankaccount_fk
+FOREIGN KEY (accountowner)
+REFERENCES Person (id_person)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE Account_operation ADD CONSTRAINT externalbankaccount_transaction_fk
+FOREIGN KEY (originbankaccount)
+REFERENCES externalbankaccount (id_bankaccount)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+
 
 INSERT INTO Person VALUES(1, 'Abraham', 'Lincoln', 'Abraham.Lincoln@gmail.com', '$2y$10$5rjk8fTus0ehUSFmvSvYg.6kh6CLk7Vh.Al5dZQlBKmAPUZ54Cg52', 'USER', 150.00, 0.00);
 INSERT INTO Person VALUES(2, 'Benjamin', 'Franklin', 'Benjamin.Franklin@gmail.com', '$2y$10$pN2gcTALKjQPOSSowJWu2e8kCDgpIjm4I5trIpYl1TfvMpehK/1VK', 'USER', 250.00, 0.00);
 INSERT INTO Person VALUES(3, 'Barack', 'Obama', 'Barack.Obama@gmail.com', '$2y$10$.jwK0eJXiQz/8xCOe/ThXuKar89iGTM6ZxpZVWKX6R871DN2Ctsr.', 'ADMIN', 350.00, 1.00);
-INSERT INTO Buddiesconnexion VALUES(1 , 1 , 3);
-INSERT INTO Buddiesconnexion VALUES(2 , 1 , 2);
-INSERT INTO Buddiesconnexion VALUES(3 , 2 , 3);
+
+INSERT INTO externalbankaccount VALUES(1, 'GoldmanSachs','New-York', 'ABCD' , 'BCE1' , 'Euro', 1 );
+INSERT INTO externalbankaccount VALUES(2, 'SocieteGenerale','Los-Angeles', 'EFGH' , 'BCE2' , 'Dollars', 1 );
+INSERT INTO externalbankaccount VALUES(3, 'CreditMutuel','Philapelphia', 'IJKL' , 'BCE3' , 'SwissFranc', 2 );
+INSERT INTO externalbankaccount VALUES(4, 'CreditAgricole','Miami', 'MNOP' , 'BCE4' , 'Roupie', 2 );
+INSERT INTO externalbankaccount VALUES(5, 'MerrylLynch','Austin', 'QRST' , 'BCE5' , 'SingaporianDollar', 3 );
+INSERT INTO externalbankaccount VALUES(6, 'BankOfAmerica','Minneapolis', 'UVW' , 'BCE6' , 'CanadianDollar', 3 );
+
+
+
+INSERT INTO Buddiesconnection VALUES(1 , 1 , 3);
+INSERT INTO Buddiesconnection VALUES(2 , 1 , 2);
+INSERT INTO Buddiesconnection VALUES(3 , 2 , 3);
+
+
 INSERT INTO Transaction VALUES(1 , 'Thank you for the White House ! It is a delight to live in !', 55.0, 0.50, 3, 2);
 INSERT INTO Transaction VALUES(2 , 'Thank you for this incredible revolution !Was completely worth it', 77.0, 0.50, 3, 1);

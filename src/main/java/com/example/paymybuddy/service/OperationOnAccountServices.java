@@ -43,20 +43,17 @@ public class OperationOnAccountServices {
 	}
 
 	@Transactional
-	public void saveForDepositorWithdrawal(Person currentUser, BankAccountWithdrawalDepositInformation withdrawMoney, boolean depositTrueWithdrawFalse,
-			HttpSession session) {
+	public void saveForDepositorWithdrawal(Person currentUser, BankAccountWithdrawalDepositInformation withdrawMoney,
+			boolean depositTrueWithdrawFalse, HttpSession session) {
 
 		BankOperation newBankOperation = new BankOperation();
 		newBankOperation.setDepositIsTrueWithdrawIsFalse(depositTrueWithdrawFalse);
 		newBankOperation.setHolder(currentUser);
 		newBankOperation.setAmount(withdrawMoney.getAmount());
-		ExternalBankAccount itemToSave = externalBankRepository.findById(Integer.parseInt(withdrawMoney.getBankAccountToDoOperationID())).get();
-		
-		
-		
-		logger.info("|||||C||||| TEST A in withdepot  " + itemToSave);
-		
-		
+		ExternalBankAccount itemToSave = externalBankRepository
+				.findById(Integer.parseInt(withdrawMoney.getBankAccountToDoOperationID())).get();
+
+		logger.info("|" + itemToSave);
 
 		newBankOperation.setLinkedAccount(itemToSave);
 		newBankOperation.setTransactionDate(new Date(System.currentTimeMillis()));
@@ -77,17 +74,15 @@ public class OperationOnAccountServices {
 
 		currentUser.setAccountFunds(finalAmountSaved);
 		userRepository.save(currentUser);
-		
+
 		BankOperation newItemBankOp = bankAccountRepository.save(newBankOperation);
-		
+
 		List<BankOperation> listing = itemToSave.getListOfOperationDoneOnThisAccount();
-		
+
 		listing.add(newItemBankOp);
-			
+
 		itemToSave.setListOfOperationDoneOnThisAccount(listing);
 		externalBankRepository.save(itemToSave);
-		
-		
 
 		List<BankOperation> theListInSession = (List<BankOperation>) session.getAttribute("listOfAllOperations");
 
@@ -124,8 +119,8 @@ public class OperationOnAccountServices {
 
 	public boolean checkIfCurrentBankExistsInTheAttribute(Person currentUser, BankInformation bankInformation) {
 
-		if (externalBankRepository.findByIbanAndBiccode(bankInformation.getIban(),
-				bankInformation.getBicCode()) == null) {
+		if (externalBankRepository.findByIbanAndBiccodeAndBankname(bankInformation.getIban(),
+				bankInformation.getBicCode(), bankInformation.getBankName()) == null) {
 
 			return false;
 
@@ -139,48 +134,38 @@ public class OperationOnAccountServices {
 	public void saveANewBankForCurrentUser(Person currentUser, BankInformation bankInformation, HttpSession session) {
 
 		ExternalBankAccount newItem = new ExternalBankAccount();
+
 		newItem.setBiccode(bankInformation.getBicCode());
+		newItem.setBankname(bankInformation.getBankName());
 		newItem.setIban(bankInformation.getIban());
 		newItem.setLocation(bankInformation.getLocation());
 		newItem.setAccountOwner(currentUser);
 		newItem.setCurrency("EURO");
 		newItem.setListOfOperationDoneOnThisAccount(new ArrayList<BankOperation>());
 
-		logger.info("|||||A||||| TEST A in SAVE A NEW BANK BEFORE findbyId " + newItem);
-		
-		
-		
-		ExternalBankAccount testItem  = externalBankRepository.save(newItem);
-		
-		
-		
-		logger.info("|||||B||||| TEST A in SAVE A NEW BANK AFTER findbyId " + testItem);
+		ExternalBankAccount testItem = externalBankRepository.save(newItem);
 
-		List<ExternalBankAccount> theListInSession = (List<ExternalBankAccount>) session.getAttribute("listOfAllBankAccountOwned");
+		List<ExternalBankAccount> theListInSession = (List<ExternalBankAccount>) session
+				.getAttribute("listOfAllBankAccountOwned");
 
 		theListInSession.add(testItem);
+
 		session.setAttribute("listOfAllBankAccountOwned", theListInSession);
 
 	}
-	
+
 	public Map<Integer, String> createTheListForUIOperation(List<ExternalBankAccount> listOfAllBankAccountOwned) {
-	
-		
+
 		Map<Integer, String> result = new HashMap<>();
-		
-		for(ExternalBankAccount eba : listOfAllBankAccountOwned) {
-			
-			
-			result.put(eba.getId(), "BANKLocation : " + eba.getLocation() + ", IBAN : " + eba.getIban());
-			
+
+		for (ExternalBankAccount eba : listOfAllBankAccountOwned) {
+
+			result.put(eba.getId(), "BANK Name : " + eba.getBankname() + ", IBAN : " + eba.getIban());
+
 		}
-		
-		
+
 		return result;
 	}
-
-	
-	
 
 	// ====== Setters of repository solely needed for testing purposes.
 	// ====== Once the app is validated, and for security reasons, these setters
@@ -197,7 +182,5 @@ public class OperationOnAccountServices {
 	public void setExternalBankRepository(ExternalBankRepository externalBankRepository) {
 		this.externalBankRepository = externalBankRepository;
 	}
-
-	
 
 }

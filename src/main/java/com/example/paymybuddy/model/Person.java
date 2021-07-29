@@ -188,7 +188,7 @@ public class Person implements Serializable, UserDetails {
 	public List<ConnectionBetweenBuddies> getListOfBuddies() {
 
 		logger.info(
-				"Lazy Fetch need to be initialize in the transactional context in order to be avaiable in the session as an attribute (the real list can be given and not just the proxy)"
+				"Lazy Fetch need to be initialize to send something else than a proxy in the session"
 						+ listOfBuddies.size());
 
 		return listOfBuddies;
@@ -203,7 +203,7 @@ public class Person implements Serializable, UserDetails {
 	public List<ExternalBankAccount> getListOfAllBankAccountOwned() {
 		
 		logger.info(
-				"Test List size"
+				"Lazy Fetch need to be initialize to send something else than a proxy in the session"
 						+ listOfAllBankAccountOwned.size());
 		
 		return listOfAllBankAccountOwned;

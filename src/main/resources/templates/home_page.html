@@ -139,13 +139,15 @@
 										aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
-									<inputtype="text" class="form-control commonSize" placeholder="Your bank name"
-										aria-label="Input group example" aria-describedby="basic-addon1"
-										th:field="*{bankName}" required>
-										<input type="text" class="form-control commonSize"
+				
+										
+										<input type="text" class="form-control commonSize mb-1" placeholder="Bank Name"
+											aria-label="Input group example" aria-describedby="basic-addon1"
+											th:field="*{bankName}" required>							
+										<input type="text" class="form-control commonSize mb-1"
 											placeholder="The Bank localization" aria-label="Input group example"
 											aria-describedby="basic-addon1" th:field="*{location}" required>
-										<input type="text" class="form-control commonSize" placeholder="Your BIC Code"
+										<input type="text" class="form-control commonSize mb-1" placeholder="Your BIC Code"
 											aria-label="Input group example" aria-describedby="basic-addon1"
 											th:field="*{bicCode}" required>
 										<input type="text" class="form-control commonSize" placeholder="Your IBAN"
@@ -232,7 +234,7 @@
 								</div>
 								<div class="modal-body">
 
-									<select th:field="*{bankAccountToDoOperationID}" required>
+									<select class="form-select form-select-sm mb-2" th:field="*{bankAccountToDoOperationID}" required>
 										<option th:each="bud : ${listOfAllBankAccountOwned}" th:value="${bud.key}"
 											th:text="${bud.value}" />
 									</select>
@@ -269,7 +271,7 @@
 								</div>
 								<div class="modal-body">
 
-									<select th:field="*{bankAccountToDoOperationID}" required>
+									<select class="form-select form-select-sm mb-2" th:field="*{bankAccountToDoOperationID}" required>
 										<option th:each="bud : ${listOfAllBankAccountOwned}" th:value="${bud.key}"
 											th:text="${bud.value}" />
 									</select>

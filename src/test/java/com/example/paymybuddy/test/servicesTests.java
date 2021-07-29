@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import com.example.paymybuddy.dto.AdminDataForDashboard;
 import com.example.paymybuddy.dto.BankAccountWithdrawalDepositInformation;
+import com.example.paymybuddy.dto.BankInformation;
 import com.example.paymybuddy.dto.BuddiesInConnexion;
 import com.example.paymybuddy.dto.LoginRegistration;
 import com.example.paymybuddy.dto.PaymentData;
@@ -39,11 +40,13 @@ import com.example.paymybuddy.service.UserServices;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootTest
@@ -94,6 +97,10 @@ public class servicesTests {
 	final ArgumentCaptor<BankOperation> bankOperationCaptor = ArgumentCaptor.forClass(BankOperation.class);
 
 	final ArgumentCaptor<Person> personCaptorTwo = ArgumentCaptor.forClass(Person.class);
+	
+	
+	final ArgumentCaptor<ExternalBankAccount> externalAccountCaptor = ArgumentCaptor.forClass(ExternalBankAccount.class);
+	final ArgumentCaptor<String> externalAccountStringCaptor = ArgumentCaptor.forClass(String.class);
 
 	@BeforeEach
 	public void init() {
@@ -218,6 +225,49 @@ public class servicesTests {
 		Boolean actual = operationServices.checkIfCurrentUserCanStillDepositToItsAccount(currentUser, 999999999999.99);
 		assertEquals(actual, false);
 
+	}
+	
+	@Test
+	public void test_saveANewBankForCurrentUser(){
+		
+		operationServices.setExternalBankRepository(externalAccountRepo);
+		BankInformation bankInfo = new BankInformation();
+		bankInfo.setBankName("Agricole Credit");
+		bankInfo.setBicCode("DEF");
+		bankInfo.setIban("ABCDEF");
+		bankInfo.setLocation("Paris");
+		
+		ExternalBankAccount testItem = new ExternalBankAccount();
+		testItem.setAccountOwner(buddyUser);
+		testItem.setBankname("Agricole Credit");
+		testItem.setBiccode("DEF");
+		testItem.setCurrency("EURO");
+		testItem.setIban("ABCDEF");
+		testItem.setId(1);
+		testItem.setListOfOperationDoneOnThisAccount(new ArrayList<BankOperation>());
+		testItem.setLocation("Paris");
+		
+		ExternalBankAccount testItemII = new ExternalBankAccount();
+		testItemII.setAccountOwner(buddyUser);
+		testItemII.setBankname("Agricole Credit");
+		testItemII.setBiccode("DEF");
+		testItemII.setCurrency("EURO");
+		testItemII.setIban("ABCDEF");
+		testItemII.setListOfOperationDoneOnThisAccount(new ArrayList<BankOperation>());
+		testItemII.setLocation("Paris");
+		
+		
+		List<ExternalBankAccount> testIngList = new ArrayList<ExternalBankAccount>();
+		when(session.getAttribute("listOfAllBankAccountOwned")).thenReturn(testIngList);
+		
+		operationServices.saveANewBankForCurrentUser(currentUser, bankInfo, session);
+		
+		verify(session, times(1)).setAttribute(externalAccountStringCaptor.capture(), externalAccountCaptor.capture());
+		
+		List<ExternalBankAccount> actual = externalAccountCaptor.getAllValues();
+		assertTrue(actual.size() == 1);
+		
+		
 	}
 
 // =========================================================================================

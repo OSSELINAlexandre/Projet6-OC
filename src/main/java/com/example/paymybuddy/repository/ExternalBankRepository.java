@@ -7,7 +7,7 @@ import com.example.paymybuddy.model.ExternalBankAccount;
 public interface ExternalBankRepository extends CrudRepository<ExternalBankAccount, Integer>{
 
 	
-	ExternalBankAccount findByIbanAndBiccode(String iban, String bic);
+	ExternalBankAccount findByIbanAndBiccodeAndBankname(String iban, String bic, String bankName);
 
 	
 }

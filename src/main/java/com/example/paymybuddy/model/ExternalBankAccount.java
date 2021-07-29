@@ -22,6 +22,10 @@ public class ExternalBankAccount {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_bankaccount")
 	private int id;
+	
+	@Column(name = "bankname ")
+	private String bankname;
+	
 
 	@Column(name = "location")
 	private String location;
@@ -97,6 +101,16 @@ public class ExternalBankAccount {
 
 	public void setListOfOperationDoneOnThisAccount(List<BankOperation> listOfOperationDoneOnThisAccount) {
 		this.listOfOperationDoneOnThisAccount = listOfOperationDoneOnThisAccount;
+	}
+
+
+	
+	public String getBankname() {
+		return bankname;
+	}
+
+	public void setBankname(String bankname) {
+		this.bankname = bankname;
 	}
 
 	@Override
