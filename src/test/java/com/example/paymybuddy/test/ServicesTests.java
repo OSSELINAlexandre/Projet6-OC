@@ -51,7 +51,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-public class servicesTests {
+public class ServicesTests {
 
 	@Autowired
 	OperationOnAccountServices operationServices;
