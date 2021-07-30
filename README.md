@@ -60,6 +60,7 @@ You can now use PayMyBuddy application.
 * The 'person' table centralizes all important information concerning an user with its authorization in the system.
 * The 'buddiesconnexion' was a requirement from the client : we could have created this table directly in the code thanks to ID of transaciton, but it was specified that an user could add a buddy to its connexion even if no transaction was done. 
 * The 'acount_operation' table keep track of money flowing in and out of the application. * All these tables are linked to 'Person' thanks to foreign keys. 
+* The 'externalbankaccount' table keep track of which count instantiate the withdraw or deposit process. This table is implemented to show how the architecture would work with banking API connected to the app. 
 
 
 ## UML
